@@ -179,39 +179,47 @@ macro fields_to_vars(t::Symbol, x)
     esc(:( (; $(fieldnames(type)...)) = $x::$type ))
 end
 
-function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5), fixed=Dict{String,Tuple{String,String}}(),kwargs...) 
+"""
+    run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5), bounds=Dict{String,Tuple{String,String}}(),kwargs...)
 
-    #optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0)
-    #fixed     = Dict{String,Tuple{String,String}}()
+Run the DICE model (currently v 2023).
+
+This function runs the DICE model and returns the results as a named tuple.
+
+# Parameters
+
+- `optimizer`: The optimizer to use and eventually its options. Defaults: [`optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5)`].
+- `bounds`: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as the key, and a two-elements tuple as the value. The first element is either "<=", ">=", or "==", and the second element is the right-hand side of the constraint (single value or a vector of ntimesteps length). Default: (empty dictionary). See the source code for the name of the variables of the model.
+- `kwargs`: Keyword arguments to override the default parameter values. Again, see the model source code for the name of the parameters.
+
+# Outputs
+
+- A named tuple containing the following fields: `solved`, `status`, `times`, `tidx`, the post_process computed values and the optimization variables.
+
+# Examples:
+
+```Julia
+res = run_dice()
+ECO2_opt = res.ECO2
+plot(res.times[1:11] .+ 2020,ECO2_opt[1:11],ylim=(0,80), title="CO₂ emissions",ylabel="GtCO₂/yr",label="C/B optimal", markershape=:circle, markercolor=:white)
+```
+
+```Julia
+res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0), bounds = Dict("MIU"=>("==",1.0), "TATM"=>("<=",15), "Y" =>(">=",[fill(floatmin(Float64),10);fill(0.1,71)]), "ECO2" =>("<=",10000)), a2base = 0.01)
+```
+
+
+# Notes
+- The `bounds` adds constraint to the problem, but do not substitute to hard-written bounds in the model. In particular, for the upper limit of the emissions controls, use the parameter `miuup` instead 
+
+
+
+"""
+function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
 
     issubset(keys(kwargs), fieldnames(RawParameters)) || error("Not all keywords are valid parameters.")
     p = RawParameters(;kwargs...)   # Override the default parameter values with the keyword arguments
     @fields_to_vars RawParameters p # Copy of the RowParameters fields to local variables (for readibility)
-
-
-    #fixed = Dict("MIU"=>("==",1.0), "TATM"=>("<=",15), "Y" =>(">=",[fill(floatmin(Float64),10);fill(0.1,71)]), "ECO2" =>("<=",10000))
-
-
-    #=
-    # Initial instance of RawParameters with default values
-    p = RawParameters()
-
-    # Overriding of default parameters with function call
-
-    # Copy of the RowParameters fields to local variables (for readibility)
-    tstep=p.tstep; ntsteps=p.ntsteps;
-    gama=p.gama; pop1=p.pop1; popadj=p.popadj; popasym=p.popasym; dk=p.dk; q1=p.q1; al1=p.al1; ga1=p.ga1; dela=p.dela
-    gsigma1=p.gsigma1; delgsig=p.delgsig; asymgsig=p.asymgsig; e1=p.e1; miu1=p.miu1; fosslim=p.fosslim; cumemiss0=p.cumemiss0;
-    a1=p.a1; a2base=p.a2base; a3=p.a3;
-    expcost2=p.expcost2; pback2050=p.pback2050; gback=p.gback; cprice1=p.cprice1; gcprice=p.gcprice;
-    limmiu2070=p.limmiu2070; limmiu2120=p.limmiu2120; limmiu2200=p.limmiu2200; limmiu2300=p.limmiu2300; delmiumax=p.delmiumax;
-    betaclim=p.betaclim; elasmu=p.elasmu; prstp=p.prstp; pi_val=p.pi_val; k0=p.k0; siggc1=p.siggc1;
-    srf=p.srf; scale1=p.scale1; scale2=p.scale2; eland0=p.eland0; deland=p.deland; f_misc2020=p.f_misc2020; f_misc2100=p.f_misc2100; f_ghgabate2020=p.f_ghgabate2020; f_ghgabate2100=p.f_ghgabate2100;
-    eco2eghgb2020=p.eco2eghgb2020; eco2eghgb2100=p.eco2eghgb2100; emissrat2020=p.emissrat2020; emissrat2100=p.emissrat2100; fcoef1=p.fcoef1; fcoef2=p.fcoef2;
-    yr0=p.yr0; emshare0=p.emshare0; emshare1=p.emshare1; emshare2=p.emshare2; emshare3=p.emshare3; tau0=p.tau0; tau1=p.tau1; tau2=p.tau2; tau3=p.tau3;
-    teq1=p.teq1; teq2=p.teq2; d1=p.d1; d2=p.d2; irf0=p.irf0; irc=p.irc; irt=p.irt; fco22x=p.fco22x;
-    mat0=p.mat0; res00=p.res00; res10=p.res10; res20=p.res20; res30=p.res30; mateq=p.mateq; tbox10=p.tbox10; tbox20=p.tbox20; tatm0=p.tatm0;
-    =#
 
     ######################################################################
     # Computed parameters
@@ -466,14 +474,14 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Scenario-dependant constraints
 
     mvars  = object_dictionary(m)
-    for (k,v) in fixed
+    for (k,v) in bounds
         v_vector = (ndims(v[2]) == 0) ? fill(v[2],ntsteps) : v[2]
         if (v[1] == "<=")
-            fixedeq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] <= v_vector[ti])
+            scenboundseq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] <= v_vector[ti])
         elseif (v[1] == ">=")
-            fixedeq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] >= v_vector[ti])
+            scenboundseq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] >= v_vector[ti])
         elseif (v[1] == "==")
-            fixedeq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] == v_vector[ti])
+            scenboundseq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] == v_vector[ti])
         else
             error("Unknown constraint type $(v[1])")
         end
