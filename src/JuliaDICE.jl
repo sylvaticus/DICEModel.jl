@@ -48,7 +48,7 @@ miuupdef[58:end] .= limmiu2300
 Raw (exogenous) parameters.
 This structure hosts the "default" parameters that can then be modified using keyword arguments in the `run_dice(pars)` function.
 """
-@kwdef mutable struct RawParameters
+Base.@kwdef mutable struct RawParameters
     tstep::Int64   = 5  # Years per period
     ntsteps::Int64 = 81 # Number of time periods
 
