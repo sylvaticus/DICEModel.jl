@@ -49,6 +49,10 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           file: lcov.info
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: sylvaticus/JuliaDICE.jl
   docs:
     name: Documentation
     runs-on: ubuntu-latest
