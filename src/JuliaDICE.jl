@@ -12,7 +12,7 @@ module JuliaDICE
 
 
 
-export run_dice
+export run_dice, run_dice_scenario, RawParameters
 using PrecompileTools # just for precompilation
 using JuMP, Ipopt
 
@@ -26,13 +26,13 @@ using JuMP, Ipopt
 # Computation of the default miuup (limits on emissions controls)
 # Note: `miuup` can be overriden by the user in the `run_dice` function
 
-limmiu2070 = 1.0    # Emission control limit from 2070
-limmiu2120 = 1.1  # Emission control limit from 2120
-limmiu2200 = 1.05 # Emission control limit from 2220
-limmiu2300 = 1.0    # Emission control limit from 2300
-delmiumax  = 0.12 # Emission control delta limit per period
-tidx  = 1:81
-miuupdef       = fill(1.0, 81)
+limmiu2070        = 1.0  # Emission control limit from 2070
+limmiu2120        = 1.1  # Emission control limit from 2120
+limmiu2200        = 1.05 # Emission control limit from 2220
+limmiu2300        = 1.0  # Emission control limit from 2300
+delmiumax         = 0.12 # Emission control delta limit per period
+tidx              = 1:81
+miuupdef          = fill(1.0, 81)
 miuupdef[1]       = 0.05; miuupdef[2] = 0.10
 @. miuupdef[3:8]  =  delmiumax*(tidx[3:8] - 1)
 @. miuupdef[9:11] =  0.85+.05*(tidx[9:11]-8)
@@ -43,12 +43,16 @@ miuupdef[58:end] .= limmiu2300
 
 
 """
-   RawParameters
+   Parameters
 
-Raw (exogenous) parameters.
+Parameters of the model.
 This structure hosts the "default" parameters that can then be modified using keyword arguments in the `run_dice(pars)` function.
+
+First are defined some "raw" parameters, and then are defined some "computed" parameters (mostly arrays of ntsteps length). Both can be overriden using keyword arguments in the `run_dice(pars)` function.
 """
 Base.@kwdef mutable struct RawParameters
+
+    
     tstep::Int64   = 5  # Years per period
     ntsteps::Int64 = 81 # Number of time periods
 
@@ -170,6 +174,38 @@ Base.@kwdef mutable struct RawParameters
     # Changed to prevent numerical instability (GAMS original: 1.24715)...
     tatm0::Float64  = 1.247154    # Initial atmospheric temperature change in 2020 (°C)
 
+    ######################################################################
+    # Computed parameters
+    ######################################################################
+
+    # Note: The following parameters can be overridden in two ways: either by override the raw parameters from which they are computed, or by computing in a different way and override the computed parameter
+
+    # --------------------------------------------------------------------
+    # Preferences, growth uncertainty, and timing
+
+    # Time periods sequence
+    times::StepRange{Int64, Int64} = 0:tstep:(ntsteps*tstep)-1  # 0,5,10,...,400
+    # Time periods index sequences
+    tidx::UnitRange{Int64}  = 1:ntsteps                 # 1,2,3,...,81
+    t0idx::UnitRange{Int64} = 0:ntsteps-1               # 0,1,2,...,80
+
+    #Risk-adjusted rate of time preference
+    rartp::Float64 = exp(prstp + betaclim*pi_val)-1  
+
+    # --------------------------------------------------------------------
+    # Precautionary parameters
+
+    # Variance of per capita consumption 
+    varpcc::Vector{Float64}    = [min((siggc1^2)*t,(siggc1^2)*tstep*47) for t in times]
+    # Precautionary rate of return   
+    rprecaut::Vector{Float64}  = @. -0.5 * varpcc * elasmu^2
+    # STP factor without precautionary factor
+    rr1::Vector{Float64}       = @. 1 / ((1+rartp)^times)
+    # STP with precautionary factor
+    rr::Vector{Float64}        = @. rr1 * (1+rprecaut) ^ -times
+
+    # Optimal long-run savings rate used for transversality
+    optlrsav::Float64          = (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
 end
 
 """
@@ -216,7 +252,8 @@ res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_
 
 
 # Notes
-- The `bounds` adds constraint to the problem, but do not substitute to hard-written bounds in the model. In particular, for the upper limit of the emissions controls, use the parameter `miuup` instead 
+- The `bounds` adds constraint to the problem, but do not substitute to hard-written bounds in the model. In particular, for the upper limit of the emissions controls, use the parameter `miuup` instead
+- `bounds` are always intended for the whole time steps. If you need bound for a subset of time steps (e.g. the first time step), you need to still compose your whole time array of the bound, using `floatmin(Float64)` or `floatmax(Float64)` as appropriate.
 
 
 
@@ -228,40 +265,20 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @fields_to_vars RawParameters p # Copy of the RowParameters fields to local variables (for readibility)
 
     ######################################################################
-    # Computed parameters
+    # Further computed parameters
     ######################################################################
+    # These can't be overriden, but they are computed from the raw parameters
 
     # --------------------------------------------------------------------
-    # Preferences, growth uncertainty, and timing
+    # Dynamic parameters
 
-    # Time periods sequence
-    times = 0:tstep:(ntsteps*tstep)-1  # 0,5,10,...,400
-    # Time periods index sequences
-    tidx  = 1:ntsteps                 # 1,2,3,...,81
-    t0idx = 0:ntsteps-1               # 0,1,2,...,80
-
-    # Risk-adjusted rate of time preference
-    rartp = exp(prstp + betaclim*pi_val)-1
-    
-    # --------------------------------------------------------------------
-    # Precautionary dynamic parameters
-
-    # Variance of per capita consumption 
-    varpcc           = [min((siggc1^2)*t,(siggc1^2)*tstep*47) for t in times]
-    # Precautionary rate of return   
-    rprecaut         = @. -0.5 * varpcc * elasmu^2
-    # STP factor without precautionary factor
-    rr1              = @. 1 / ((1+rartp)^times)
-    # STP with precautionary factor
-    rr               = @. rr1 * (1+rprecaut) ^ -times
     # Level of population and labor
     l                = fill(pop1, ntsteps); [l[ti] = l[ti-1] * (popasym / l[ti-1])^popadj for ti in tidx[2:end]]
     # Growth rate of Total Factor Productivity
     ga               = @. ga1*exp(-dela*times)
     # Level of total factor productivity
     al               = fill(al1, ntsteps); [al[ti] = al[ti-1] / (1 - ga[ti-1]) for ti in tidx[2:end]]
-    # Optimal long-run savings rate used for transversality
-    optlrsav         = (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
+
     # Carbon price in base case
     cpricebase       = @. cprice1*(1+gcprice)^times
     # Backstop price 2019$ per ton CO2
@@ -277,7 +294,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     sigma            = fill(sig1,ntsteps)
     [sigma[ti] = sigma[ti-1] * exp(tstep*gsig[ti-1]) for ti in tidx[2:end] ]
 
-     # ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
     # Parameters emissions and non-CO2 
     
     eland          = @. eland0*(1-deland)^t0idx  
@@ -304,7 +321,6 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
         ECO2[tidx]             # Total CO2 emissions (GtCO2 per year)
         ECO2E[tidx]            # Total CO2e emissions including abateable nonCO2 GHG (GtCO2 per year)
         EIND[tidx]             # Industrial CO2 emissions (GtCO2 per yr)
-        # TODO: check this, as in GAMS it is declared without time index, but then it is used with time index!
         F_GHGABATE[tidx]       # Forcings abateable nonCO2 GHG    
         
         MIU[tidx] >= 0.0       # Emission control rate GHGs (**control**)
@@ -527,9 +543,10 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # Return results as named tuple
     return (solved=true, status=status, times=times, tidx=tidx, rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2, ECO2=collect(value.(ECO2)), ECO2E=collect(value.(ECO2E)), EIND=collect(value.(EIND)), F_GHGABATE=collect(value.(F_GHGABATE)),MIU=collect(value.(MIU)), C=collect(value.(C)), K=collect(value.(K)), CPC=collect(value.(CPC)), I=collect(value.(I)), S=collect(value.(S)), Y=collect(value.(Y)), YGROSS=collect(value.(YGROSS)), YNET=collect(value.(YNET)), DAMAGES=collect(value.(DAMAGES)), DAMFRAC=collect(value.(DAMFRAC)), ABATECOST=collect(value.(ABATECOST)), MCABATE=collect(value.(MCABATE)), CCATOT=collect(value.(CCATOT)), PERIODU=collect(value.(PERIODU)), CPRICE=collect(value.(CPRICE)), TOTPERIODU=collect(value.(TOTPERIODU)), UTILITY=value(UTILITY), FORC=collect(value.(FORC)), TATM=collect(value.(TATM)), TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)), RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)), MAT=collect(value.(MAT)), CACC=collect(value.(CACC)), IRFT=collect(value.(IRFT)), ALPHA=collect(value.(ALPHA)))
+
 end
 
-
-include("Precompilation.jl") 
+include("Scenarios.jl")       # Implementation of `run_dice_scenario`` with the "official" scenarios
+include("Precompilation.jl")  # Precompilation stuff for performances
 
 end # module JuliaDICE
