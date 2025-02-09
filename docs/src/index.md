@@ -1,3 +1,3 @@
-# JuliaDICE.jl
+# DICEModel.jl
 
-Documentation for JuliaDICE.jl
+Documentation for DICEModel.jl

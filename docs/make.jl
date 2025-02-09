@@ -4,10 +4,10 @@
 #Pkg.instantiate()
 
 using Documenter
-using JuliaDICE
+using DICEModel
 
 push!(LOAD_PATH,"../src/")
-makedocs(sitename="JuliaDICE.jl Documentation",
+makedocs(sitename="DICEModel.jl Documentation",
          pages = [
             "Index" => "index.md",
             "API" => "api.md",
@@ -22,6 +22,6 @@ makedocs(sitename="JuliaDICE.jl Documentation",
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "github.com/sylvaticus/JuliaDICE.jl.git",
+    repo = "github.com/sylvaticus/DICEModel.jl.git",
     devbranch = "main"
 )

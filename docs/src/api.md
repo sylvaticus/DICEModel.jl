@@ -1,20 +1,20 @@
-# The JuliaDICE Module
+# The DICEModel Module
 
 
 ```@docs
-JuliaDICE
+DICEModel
 ```
 
 ## Module Index
 
 ```@index
-Modules = [JuliaDICE]
+Modules = [DICEModel]
 Order   = [:constant, :type, :function, :macro]
 ```
 
 ## Detailed API
 
 ```@autodocs
-Modules = [JuliaDICE]
+Modules = [DICEModel]
 Order   = [:constant, :type, :function, :macro]
 ```

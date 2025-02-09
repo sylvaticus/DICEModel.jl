@@ -1,6 +1,8 @@
-using Test, JuliaDICE
+using Test, DICEModel
 using JuMP, Ipopt
 
+
+println("Testing DICEModel...")
 
 res_cbopt = run_dice()
 

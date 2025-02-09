@@ -1,3 +1,3 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-JuliaDICE  = "a78ebace-d296-4f52-9067-75f12fe9a0bd"
+DICEModel  = "a78ebace-d296-4f52-9067-75f12fe9a0bd"

@@ -48,7 +48,7 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: sylvaticus/JuliaDICE.jl
+          slug: sylvaticus/DICEModel.jl
   docs:
     name: Documentation
     runs-on: ubuntu-latest

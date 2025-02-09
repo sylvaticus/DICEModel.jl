@@ -1,13 +1,13 @@
-# JuliaDICE
+# DICEModel
 Julia/JuMP port of the Nordhouse's DICE (Dynamic Integrated Climate-Economy model) model.
 
 
 This package currently implements the DICE2023-b-4-3-10.gms gams version.
 
-[![Build status (Github Actions)](https://github.com/sylvaticus/JuliaDICE.jl/workflows/CI/badge.svg)](https://github.com/sylvaticus/JuliaDICE.jl/actions)
-[![codecov.io](http://codecov.io/github/sylvaticus/JuliaDICE.jl/coverage.svg?branch=main)](http://codecov.io/github/sylvaticus/JuliaDICE.jl?branch=main)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sylvaticus.github.io/JuliaDICE.jl/stable)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sylvaticus.github.io/JuliaDICE.jl/dev)
+[![Build status (Github Actions)](https://github.com/sylvaticus/DICEModel.jl/workflows/CI/badge.svg)](https://github.com/sylvaticus/DICEModel.jl/actions)
+[![codecov.io](http://codecov.io/github/sylvaticus/DICEModel.jl/coverage.svg?branch=main)](http://codecov.io/github/sylvaticus/DICEModel.jl?branch=main)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sylvaticus.github.io/DICEModel.jl/stable)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sylvaticus.github.io/DICEModel.jl/dev)
 
 
 **"This program and output is not the original Barrage/Nordhaus version, which is currently only available [in GAMS](https://bit.ly/3TwJ5nO)."**

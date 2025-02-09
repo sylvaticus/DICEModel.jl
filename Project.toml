@@ -1,4 +1,4 @@
-name = "JuliaDICE"
+name = "DICEModel"
 uuid = "a78ebace-d296-4f52-9067-75f12fe9a0bd"
 authors = ["Antonello Lobianco <antonello@lobianco.org>"]
 version = "0.0.1"
