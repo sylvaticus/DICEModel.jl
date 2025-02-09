@@ -8,6 +8,7 @@ module JuliaDICE
 
 
 export run_dice
+using PrecompileTools # just for precompilation
 using JuMP, Ipopt
 
 
