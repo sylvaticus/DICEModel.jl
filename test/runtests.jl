@@ -1,6 +1,6 @@
 using Test, JuliaDICE
 using JuMP, Ipopt
-using Pkg
+
 
 res_cbopt = run_dice()
 
