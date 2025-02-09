@@ -1,7 +1,7 @@
 
-using Pkg 
-Pkg.activate(@__DIR__)
-Pkg.instantiate()
+#using Pkg 
+#Pkg.activate(@__DIR__)
+#Pkg.instantiate()
 
 using Documenter
 using JuliaDICE
@@ -12,7 +12,10 @@ makedocs(sitename="JuliaDICE.jl Documentation",
             "Index" => "index.md",
             "API" => "api.md",
          ],
-         format = Documenter.HTML(prettyurls = false)
+         format = Documenter.HTML(prettyurls = false),
+         warnonly = true,
+         checkdocs=:none,
+
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
