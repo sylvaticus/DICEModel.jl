@@ -9,7 +9,7 @@ JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
 PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 
 [compat]
-Ipopt = "1"
-JuMP = "1"
+Ipopt = "1.4"
+JuMP = "1.20"
 PrecompileTools = "1"
 julia = "1.7"
