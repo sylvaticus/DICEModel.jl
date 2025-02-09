@@ -1,5 +1,5 @@
 # JuliaDICE
-Port in Julia/JuMP of the Nordhouse's DICE (Dynamic Integrated Climate-Economy model) model. Currently v2023
+Julia/JuMP port of the Nordhouse's DICE (Dynamic Integrated Climate-Economy model) model.
 
 
 This package currently implements the DICE2023-b-4-3-10.gms gams version.
@@ -14,4 +14,4 @@ This package currently implements the DICE2023-b-4-3-10.gms gams version.
 
 The licence of the original GAMS code has never being specified. The Julia port itself (and only that) is MIT.
 
-Two functions are provided: `run_dice(scnario_name)` to run one of the official 10 scenarios, or `run_dice(;optimizer,bounds,kwargs...)` to specific custom solver engine (and eventually its option), equality or inequality constraints on any variable or to override some parameters. This function is the one internally used by the `run_dice(scnario_name)` function. 
+Two functions are provided: `run_dice_scenario(scenario_name)` to run one of the official 10 scenarios, or `run_dice(;optimizer,bounds,kwargs...)` to specific custom solver engine (and eventually its option), equality or inequality constraints on any variable or to override some parameters. This function is the one internally used by the `run_dice-scenario(scnario_name)` function. 

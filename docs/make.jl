@@ -22,6 +22,6 @@ makedocs(sitename="JuliaDICE.jl Documentation",
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "github.com/sylvaticus/JuliaDice.jl.git",
+    repo = "github.com/sylvaticus/JuliaDICE.jl.git",
     devbranch = "main"
 )

@@ -1,10 +1,15 @@
-module JuliaDICE
+"""
+   JuliaDICE
 
-# Implementation of the DICE 2023 model
+Implementation of the DICE 2023 model
 
 # Notes:
-# - Based on DICE2023-b-4-3-10.gms and included files (Nonco2-b-4-3-1.gms and FAIR-beta-4-3-1.gms)
-# (Nonco2-b-4-3-1.gms and FAIR-beta-4-3-1.gms)
+- Based on DICE2023-b-4-3-10.gms and included files (Nonco2-b-4-3-1.gms and FAIR-beta-4-3-1.gms)
+- Variable casing has been harmonized that all parameters and post-optimization computation have lower cases, and all optimization variables have upper case.
+"""
+module JuliaDICE
+
+
 
 
 export run_dice
