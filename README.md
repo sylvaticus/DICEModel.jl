@@ -6,20 +6,21 @@ Julia/JuMP port of the Nordhouse's DICE (Dynamic Integrated Climate-Economy mode
 This package currently implements the DICE2023-b-4-3-10.gms gams version.
 
 [![Build status (Github Actions)](https://github.com/sylvaticus/DICEModel.jl/workflows/CI/badge.svg)](https://github.com/sylvaticus/DICEModel.jl/actions)
-[![codecov.io](http://codecov.io/github/sylvaticus/DICEModel.jl/coverage.svg?branch=main)](http://codecov.io/github/sylvaticus/DICEModel.jl?branch=main)
+[![codecov](https://codecov.io/gh/sylvaticus/DICEModel.jl/graph/badge.svg?token=kHYccMbxe5)](https://codecov.io/gh/sylvaticus/DICEModel.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sylvaticus.github.io/DICEModel.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sylvaticus.github.io/DICEModel.jl/dev)
 
 
-**"This program and output is not the original Barrage/Nordhaus version, which is currently only available [in GAMS](https://bit.ly/3TwJ5nO)."**
+**"This program and output is not the original Barrage/Nordhaus version, which is currently only [available in GAMS](https://bit.ly/3TwJ5nO)."**
 
 
 This package provides two functions:
-- `run_dice_scenario(scenario_name)` [browse code] [documentation] : run one of the "official" 10 scenarios;
-- `run_dice(;optimizer,bounds,kwargs...)` [browse code] [documentation] : allow to run DICE with custom solver engine (and eventually options), custom equality or inequality constraints or custom parameters.
+- `run_dice_scenario(scenario_name)` [[browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/Scenarios.jl) - [documentation](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice_scenario-Tuple{String}) ] : runs one of the "official" 10 scenarios;
+- `run_dice(;optimizer,bounds,kwargs...)` [[browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) - [documentation](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice-Tuple{})]  : run DICE with custom solver engine (and eventually options), custom variable constraints (bounds) or custom parameters.
 
-In both cases the output is a named tuple. See `keys(result)` to find the available information and `result.VARIABLEX` to obtain the values (or just look at the source code) 
+In both cases the output (results) is a named tuple. Use `keys(results)` to find the available information (or just look at the source code) and `results.VARIABLEX` to obtain the values.
 
+A summary of the main results is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
 
 
 ## Example
