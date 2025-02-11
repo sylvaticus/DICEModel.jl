@@ -1,10 +1,11 @@
 """
     run_dice_scenario(scenario::String)
 
-Run one of the "official" 10 scenarios in Nordhous's DICE 2023 model:
+Run one of the "official" 11 scenarios in Nordhous's DICE 2023 model:
 
 - `cbopt`: The C/B optimal scenario
 - `t2c`:   The temperature constrained to max 2 °C scenario
+- `t15c`:   The temperature constrained to max 1.5 °C scenario
 - `altdam`: The alternative damage scenario
 - `parisext`: The Paris extended scenario
 - `base`:     The base (current policies) scenario

@@ -9,203 +9,326 @@ Implementation of the DICE 2023 model
 """
 module DICEModel
 
-
-
-
-export run_dice, run_dice_scenario, RawParameters
-using PrecompileTools # just for precompilation
+export run_dice, run_dice_scenario, Parameters
+using PrecompileTools, DocStringExtensions # just for precompilation and documentation 
 using JuMP, Ipopt
 
 
-######################################################################
-# Raw (exogenous) parameters
-######################################################################
+"""
+    Parameters
 
-# --------------------------------------------------------------------
-#  
-# Computation of the default miuup (limits on emissions controls)
-# Note: `miuup` can be overriden by the user in the `run_dice` function
+This structure contains the "default" parameters, which can eventually be modified using keyword arguments in the `run_dice(pars)` function (e.g. `run_dice(a2base = 0.01)`).
 
-limmiu2070        = 1.0  # Emission control limit from 2070
-limmiu2120        = 1.1  # Emission control limit from 2120
-limmiu2200        = 1.05 # Emission control limit from 2220
-limmiu2300        = 1.0  # Emission control limit from 2300
-delmiumax         = 0.12 # Emission control delta limit per period
-tidx              = 1:81
-miuupdef          = fill(1.0, 81)
-miuupdef[1]       = 0.05; miuupdef[2] = 0.10
-@. miuupdef[3:8]  =  delmiumax*(tidx[3:8] - 1)
-@. miuupdef[9:11] =  0.85+.05*(tidx[9:11]-8)
-miuupdef[12:20]  .= limmiu2070
-miuupdef[21:37]  .= limmiu2120
-miuupdef[38:57]  .= limmiu2200
-miuupdef[58:end] .= limmiu2300
+The structure first defines some "raw" parameters, and then some "computed" parameters (mostly arrays of ntsteps length).
+Both can be overridden with keyword arguments in the `run_dice(pars)` function. In particular, "computed" parameters can be overridden in two ways: either by overriding the raw parameters from which they are computed, or by computing the parameter in a different way (outside the model) and overriding the computed parameter.
 
+# Available parameters:
+$(FIELDS)
 
 """
-   Parameters
+Base.@kwdef struct Parameters
 
-Parameters of the model.
-This structure hosts the "default" parameters that can then be modified using keyword arguments in the `run_dice(pars)` function.
-
-First are defined some "raw" parameters, and then are defined some "computed" parameters (mostly arrays of ntsteps length). Both can be overriden using keyword arguments in the `run_dice(pars)` function.
-"""
-Base.@kwdef mutable struct RawParameters
-
+    ######################################################################
+    # Raw parameters
+    ######################################################################
     
-    tstep::Int64   = 5  # Years per period
-    ntsteps::Int64 = 81 # Number of time periods
+    "Years per period"
+    tstep   = 5
+    "Number of time periods"
+    ntsteps = 81 
 
     # --------------------------------------------------------------------
     # Population and technology
 
-    gama::Float64    = 0.3     # Capital elasticity in production function
-    pop1::Float64    = 7752.9  # Initial world population 2020 (millions)
-    popadj::Float64  = 0.145   # Growth rate to calibrate to 2050 population projection
-    popasym::Float64 = 10825   # Asymptotic population (millions)
-    dk::Float64      = 0.1     # Depreciation rate on capital (per year)
-    q1::Float64      = 135.7   # Initial world output 2020 (trill 2019 USD)
-    al1::Float64     = 5.84    # Initial level of total factor productivity
-    ga1::Float64     = 0.066   # Initial growth rate for TFP per 5 years
-    dela::Float64    = 0.0015  # Decline rate of TFP per 5 years
+    "Capital elasticity in production function"
+    gama    = 0.3    
+    "Initial world population 2020 (millions)"  
+    pop1    = 7752.9  
+    "Growth rate to calibrate to 2050 population projection"
+    popadj  = 0.145   
+    "Asymptotic population (millions)"
+    popasym = 10825   
+    "Depreciation rate on capital (per year)"
+    dk      = 0.1     
+    "Initial world output 2020 (trill 2019 USD)"
+    q1      = 135.7   
+    "Initial level of total factor productivity"
+    al1     = 5.84    
+    "Initial growth rate for TFP per 5 years"
+    ga1     = 0.066   
+    "Decline rate of TFP per 5 years"
+    dela    = 0.0015  
 
     # --------------------------------------------------------------------
     # Emissions parameters and Non-CO2 GHG with sigma = emissions/output
 
-    gsigma1::Float64   = -0.015 # Initial growth of sigma (per year)
-    delgsig::Float64   = 0.96   # Decline rate of gsigma per period
-    asymgsig::Float64  = -0.005 # Asymptotic gsigma
-    e1::Float64        = 37.56  # Industrial emissions 2020 (GtCO2 per year)
-    miu1::Float64      = 0.05   # Emissions control rate historical 2020
-    fosslim::Float64   = 6000   # Maximum cumulative extraction fossil fuels (GtC)
-    cumemiss0::Float64 = 633.5  # Cumulative emissions 2020 (GtC)
+    "Initial growth of sigma (per year)"
+    gsigma1   = -0.015
+    "Decline rate of gsigma per period"
+    delgsig   = 0.96
+    "Asymptotic sigma"
+    asymgsig  = -0.005 
+    "Industrial emissions 2020 (GtCO2 per year)"
+    e1        = 37.56 
+    "Emissions control rate historical 2020"
+    miu1      = 0.05 
+    "Maximum cumulative extraction fossil fuels (GtC)"
+    fosslim   = 6000 
+    "Cumulative emissions 2020 (GtC)"
+    cumemiss0 = 633.5
 
     # --------------------------------------------------------------------
     # Climate damage parameters
 
-    a1::Float64     = 0        # Damage intercept
-    a2base::Float64 = 0.003467 # Damage quadratic term
-    a3::Float64     = 2        # Damage exponent
+    "Damage intercept"
+    a1     = 0       
+    "Damage quadratic term"
+    a2base = 0.003467
+    "Damage exponent"
+    a3     = 2
 
     # --------------------------------------------------------------------
     # Abatement cost
-
-    expcost2::Float64  = 2.6    # Exponent of control cost function
-    pback2050::Float64 = 515    # Cost of backstop in 2019$ per tCO2 (2050)
-    gback::Float64     = -0.012 # Initial cost decline of backstop cost per year
-    cprice1::Float64   = 6      # Carbon price in 2020 (2019$ per tCO2)
-    gcprice::Float64   = 0.025  # Growth rate of base carbon price per year
+    "Exponent of control cost function"
+    expcost2  = 2.6   
+    "Cost of backstop in 2019\$ per tCO2 (2050)"
+    pback2050 = 515   
+    "Initial cost decline of backstop cost per year"
+    gback     = -0.012
+    "Carbon price in 2020 (2019\$ per tCO2)"
+    cprice1   = 6     
+    "Growth rate of base carbon price per year"
+    gcprice   = 0.025 
 
     # --------------------------------------------------------------------
     # Limits on emissions controls
-    miuup::Vector{Float64} = miuupdef # Upper bounds on miu
+
+    "Emission control limit from 2070"
+    limmiu2070        = 1.0 
+    "Emission control limit from 2120"
+    limmiu2120        = 1.1 
+    "Emission control limit from 2220"
+    limmiu2200        = 1.05
+    "Emission control limit from 2300"
+    limmiu2300        = 1.0 
+    "Emission control delta limit per period"
+    delmiumax         = 0.12
 
     # --------------------------------------------------------------------
     # Preferences, growth uncertainty, and timing
 
-    betaclim::Float64 = 0.5   # Climate beta
-    elasmu::Float64   = 0.95  # Elasticity of marginal utility of consumption
-    prstp::Float64    = 0.001 # Pure rate of social time preference
-    pi_val::Float64   = 0.05  # Capital risk premium (renamed to avoid conflict with Julia's pi)
-    k0::Float64       = 295   # Initial capital stock (10^12 2019 USD)
-    siggc1::Float64   = 0.01  # Annual standard deviation of consumption growth
+    "Climate beta"
+    betaclim = 0.5  
+    "Elasticity of marginal utility of consumption"
+    elasmu   = 0.95 
+    "Pure rate of social time preference"
+    prstp    = 0.001
+    "Capital risk premium (renamed to avoid conflict with Julia's pi)"
+    pi_val   = 0.05 
+    "Initial capital stock (10^12 2019 USD)"
+    k0       = 295  
+    "Annual standard deviation of consumption growth"
+    siggc1   = 0.01 
 
     # --------------------------------------------------------------------
     # Scaling so that MU(C(1)) = 1 and objective function = PV consumption
 
-    srf::Float64    = 1000000    # Scaling factor for discounting
-    scale1::Float64 = 0.00891061 # Multiplicative scaling coefficient
-    scale2::Float64 = -6275.91   # Additive scaling coefficient
+    "Scaling factor for discounting"
+    srf    = 1000000   
+    "Multiplicative scaling coefficient"
+    scale1 = 0.00891061
+    "Additive scaling coefficient"
+    scale2 = -6275.91  
 
     # --------------------------------------------------------------------
     # Parameters for non-industrial emissions
 
-    eland0::Float64         = 5.9     # Carbon emissions from land 2015 (GtCO2 per year)
-    deland::Float64         = 0.1     # Decline rate of land emissions (per period)
-    f_misc2020::Float64     = -0.054  # Non-abatable forcings 2020
-    f_misc2100::Float64     = 0.265   # Non-abatable forcings 2100
-    f_ghgabate2020::Float64 = 0.518   # Forcings of abatable non-CO2 GHG
-    f_ghgabate2100::Float64 = 0.957   # Forcings of abatable non-CO2 GHG
+    "Carbon emissions from land 2015 (GtCO2 per year)"
+    eland0         = 5.9    
+    "Decline rate of land emissions (per period)"
+    deland         = 0.1    
+    "Non-abatable forcings 2020"
+    f_misc2020     = -0.054 
+    "Non-abatable forcings 2100"
+    f_misc2100     = 0.265  
+    "Forcings of abatable non-CO2 GHG in 2020"
+    f_ghgabate2020 = 0.518  
+    "Forcings of abatable non-CO2 GHG in 2100"
+    f_ghgabate2100 = 0.957  
 
-    eco2eghgb2020::Float64  = 9.96    # Emissions of abatable non-CO2 GHG (GtCO2e) in 2020
-    eco2eghgb2100::Float64  = 15.5    # Emissions of abatable non-CO2 GHG (GtCO2e) in 2100
-    emissrat2020::Float64   = 1.4     # Ratio of CO2e to industrial CO2 in 2020
-    emissrat2100::Float64   = 1.21    # Ratio of CO2e to industrial CO2 in 2100
-    fcoef1::Float64         = 0.00955 # Coefficient of non-CO2 abateable emissions
-    fcoef2::Float64         = 0.861   # Coefficient of non-CO2 abateable emissions
+    "Emissions of abatable non-CO2 GHG (GtCO2e) in 2020"
+    eco2eghgb2020  = 9.96   
+    "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"
+    eco2eghgb2100  = 15.5   
+    "Ratio of CO2e to industrial CO2 in 2020"
+    emissrat2020   = 1.4    
+    "Ratio of CO2e to industrial CO2 in 2100"
+    emissrat2100   = 1.21   
+    "Coefficient of non-CO2 abateable emissions"
+    fcoef1         = 0.00955
+    "Coefficient of non-CO2 abateable emissions"
+    fcoef2         = 0.861  
 
     # --------------------------------------------------------------------
     # Parameters for the DFAIR model
+    
+    "Calendar year that corresponds to model year zero"
+    yr0      = 2020       
 
-    yr0::Int64      = 2020        # Calendar year that corresponds to model year zero
+    "Carbon emissions share into Reservoir 0"
+    emshare0 = 0.2173   
+    "Carbon emissions share into Reservoir 1"
+    emshare1 = 0.224    
+    "Carbon emissions share into Reservoir 2"
+    emshare2 = 0.2824   
+    "Carbon emissions share into Reservoir 3"
+    emshare3 = 0.2763   
+    "Decay time constant for Reservoir 0"
+    tau0     = 1000000  
+    "Decay time constant for Reservoir 1"
+    tau1     = 394.4    
+    "Decay time constant for Reservoir 2"
+    tau2     = 36.53    
+    "Decay time constant for Reservoir 3"
+    tau3     = 4.304    
 
-    emshare0::Float64 = 0.2173    # Carbon emissions share into Reservoir 0
-    emshare1::Float64 = 0.224     # Carbon emissions share into Reservoir 1
-    emshare2::Float64 = 0.2824    # Carbon emissions share into Reservoir 2
-    emshare3::Float64 = 0.2763    # Carbon emissions share into Reservoir 3
-    tau0::Float64     = 1000000   # Decay time constant for Reservoir 0
-    tau1::Float64     = 394.4     # Decay time constant for Reservoir 1
-    tau2::Float64     = 36.53     # Decay time constant for Reservoir 2
-    tau3::Float64     = 4.304     # Decay time constant for Reservoir 3
+    "Thermal equilibration parameter for box 1"
+    teq1     = 0.324    
+    "Thermal equilibration parameter for box 2"
+    teq2     = 0.44     
+    "Thermal response timescale for deep ocean"
+    d1       = 236      
+    "Thermal response timescale for upper ocean"
+    d2       = 4.07     
 
-    teq1::Float64     = 0.324     # Thermal equilibration parameter for box 1
-    teq2::Float64     = 0.44      # Thermal equilibration parameter for box 2
-    d1::Float64       = 236       # Thermal response timescale for deep ocean
-    d2::Float64       = 4.07      # Thermal response timescale for upper ocean
-
-    irf0::Float64     = 32.4      # Pre-industrial IRF100
-    irc::Float64      = 0.019     # Increase in IRF100 with cumulative carbon uptake
-    irt::Float64      = 4.165     # Increase in IRF100 with warming
-    fco22x::Float64   = 3.93      # Forcings of equilibrium CO2 doubling
-
+    "Pre-industrial IRF100"
+    irf0     = 32.4     
+    "Increase in IRF100 with cumulative carbon uptake"
+    irc      = 0.019    
+    "Increase in IRF100 with warming"
+    irt      = 4.165    
+    "Forcings of equilibrium CO2 doubling"
+    fco22x   = 3.93     
     # --------------------------------------------------------------------
     # Initial conditions to be calibrated to history calibration
 
-    mat0::Float64   = 886.5128014 # Initial concentration in atmosphere in 2020 (GtC)
+    "Initial concentration in atmosphere in 2020 (GtC)"
+    mat0   = 886.5128014
 
-    res00::Float64  = 150.093     # Initial concentration in Reservoir 0 in 2020 (GtC)
-    res10::Float64  = 102.698     # Initial concentration in Reservoir 1 in 2020 (GtC)
-    res20::Float64  = 39.534      # Initial concentration in Reservoir 2 in 2020 (GtC)
-    res30::Float64  = 6.1865      # Initial concentration in Reservoir 3 in 2020 (GtC)
+    "Initial concentration in Reservoir 0 in 2020 (GtC)"
+    res00  = 150.093    
+    "Initial concentration in Reservoir 1 in 2020 (GtC)"
+    res10  = 102.698    
+    "Initial concentration in Reservoir 2 in 2020 (GtC)"
+    res20  = 39.534     
+    "Initial concentration in Reservoir 3 in 2020 (GtC)"
+    res30  = 6.1865     
 
-    mateq::Float64  = 588         # Equilibrium concentration in atmosphere (GtC)
-    tbox10::Float64 = 0.1477      # Initial temperature box 1 change in 2020 (°C)
-    tbox20::Float64 = 1.099454    # Initial temperature box 2 change in 2020 (°C)
-    # Changed to prevent numerical instability (GAMS original: 1.24715)...
-    tatm0::Float64  = 1.247154    # Initial atmospheric temperature change in 2020 (°C)
+    "Equilibrium concentration in atmosphere (GtC)"
+    mateq  = 588        
+    "Initial temperature box 1 change in 2020 (°C)"
+    tbox10 = 0.1477     
+    "Initial temperature box 2 change in 2020 (°C)"
+    tbox20 = 1.099454   
+    "Initial atmospheric temperature change in 2020 (°C)"
+    tatm0  = 1.247154    # Changed to prevent numerical instability (GAMS original: 1.24715)
 
     ######################################################################
     # Computed parameters
     ######################################################################
 
-    # Note: The following parameters can be overridden in two ways: either by override the raw parameters from which they are computed, or by computing in a different way and override the computed parameter
-
     # --------------------------------------------------------------------
     # Preferences, growth uncertainty, and timing
 
-    # Time periods sequence
-    times::StepRange{Int64, Int64} = 0:tstep:(ntsteps*tstep)-1  # 0,5,10,...,400
-    # Time periods index sequences
-    tidx::UnitRange{Int64}  = 1:ntsteps                 # 1,2,3,...,81
-    t0idx::UnitRange{Int64} = 0:ntsteps-1               # 0,1,2,...,80
+    "Time periods sequence (0,5,10,...,400)"
+    times= 0:tstep:(ntsteps*tstep-1)
+    "Time periods index sequence (1,2,3,...,81)"
+    tidx  = 1:ntsteps           
+    "Time periods index sequence (0,1,2,...,80)"      
+    t0idx = 0:ntsteps-1    
 
-    #Risk-adjusted rate of time preference
-    rartp::Float64 = exp(prstp + betaclim*pi_val)-1  
+    "Risk-adjusted rate of time preference"
+    rartp = exp(prstp + betaclim*pi_val)-1  
+
+    # --------------------------------------------------------------------
+    # Limits on emissions controls (computed)
+
+    "Upper bounds on miu"
+    miuup = map(tid -> 
+        if tid == 1
+            0.05
+        elseif tid == 2
+            0.10
+        elseif tid < 9
+            delmiumax*(tid - 1)
+        elseif tid < 12
+            0.85+.05*(tid-8)
+        elseif tid < 21
+            limmiu2070
+        elseif tid < 38
+            limmiu2120
+        elseif tid < 58
+            limmiu2200
+        else
+            limmiu2300       
+        end
+        , 1:ntsteps
+    )
 
     # --------------------------------------------------------------------
     # Precautionary parameters
 
-    # Variance of per capita consumption 
-    varpcc::Vector{Float64}    = [min((siggc1^2)*t,(siggc1^2)*tstep*47) for t in times]
-    # Precautionary rate of return   
-    rprecaut::Vector{Float64}  = @. -0.5 * varpcc * elasmu^2
-    # STP factor without precautionary factor
-    rr1::Vector{Float64}       = @. 1 / ((1+rartp)^times)
-    # STP with precautionary factor
-    rr::Vector{Float64}        = @. rr1 * (1+rprecaut) ^ -times
+    "Variance of per capita consumption"
+    varpcc    = [min((siggc1^2)*t,(siggc1^2)*tstep*47) for t in times]
+    "Precautionary rate of return" 
+    rprecaut  = @. -0.5 * varpcc * elasmu^2
+    "STP factor without precautionary factor"
+    rr1       = @. 1 / ((1+rartp)^times)
+    "STP with precautionary factor"
+    rr        = @. rr1 * (1+rprecaut) ^ -times
+    "Optimal long-run savings rate used for transversality"
+    optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
 
-    # Optimal long-run savings rate used for transversality
-    optlrsav::Float64          = (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
+    # --------------------------------------------------------------------
+    # Dynamic parameters
+
+    "Level of population and labor (temp, used only for its first value)"
+    l_temp     = fill(pop1, ntsteps)
+    "Level of population and labor"
+    l          = [l_temp[ti] = (ti == 1) ? pop1 : l_temp[ti-1] * (popasym / l_temp[ti-1])^popadj for ti in tidx]
+    "Growth rate of Total Factor Productivity"
+    ga         = @. ga1*exp(-dela*times)
+    "Level of total factor productivity (temp, used only for its first value)"
+    al_temp    = fill(al1,ntsteps)
+    "Level of total factor productivity"
+    al         = [al_temp[ti] = (ti == 1) ? al1 :  al_temp[ti-1] / (1 - ga[ti-1]) for ti in tidx]
+
+    "Carbon price in base case"
+    cpricebase = @. cprice1*(1+gcprice)^times
+    "Backstop price 2019\$ per ton CO2"
+    pbacktime  = vcat(pback2050 .* exp.(-tstep .* 0.01 .* (tidx[1:7] .- 7)), pback2050 .* exp.(-tstep .* 0.001 .*(tidx[8:end] .-7 )) )
+
+    "Carbon intensity 2020 kgCO2-output 2020"
+    sig1       = e1/(q1*(1-miu1))
+
+    "Change in sigma (rate of decarbonization)"
+    gsig       = @. min(gsigma1*delgsig ^(tidx-1),asymgsig)
+
+    "CO2-emissions output ratio (temp, used only for its first value)"
+    sigma_temp = fill(sig1,ntsteps)
+    "CO2-emissions output ratio"
+    sigma      = [sigma_temp[ti] = (ti==1) ? sig1 : sigma_temp[ti-1] * exp(tstep*gsig[ti-1]) for ti in tidx]
+
+    # ------------------------------------------------------------------------------
+    # Parameters emissions and non-CO2 
+    
+    eland          = @. eland0*(1-deland)^t0idx      
+    co2e_ghgabateb = eco2eghgb2020 .+ [(eco2eghgb2100-eco2eghgb2020) * min(1,ti/16) for ti in t0idx]
+    f_misc         = f_misc2020    .+ [(f_misc2100-f_misc2020) * min(1,ti/16) for ti in t0idx]
+    emissrat       = emissrat2020  .+ [(emissrat2100-emissrat2020) * min(1,ti/16) for ti in t0idx]
+    sigmatot       = @. sigma * emissrat
+    cost1tot       = @. pbacktime * sigmatot / expcost2/1000
+
 end
 
 """
@@ -224,19 +347,19 @@ end
 """
     run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5), bounds=Dict{String,Tuple{String,String}}(),kwargs...)
 
-Run the DICE model (currently v 2023).
+Run the DICE model (currently v 2023), possibly with custom optimiser, bounds or parameters.
 
 This function runs the DICE model and returns the results as a named tuple.
 
-# Parameters
+# Function arguments
 
-- `optimizer`: The optimizer to use and eventually its options. Defaults: [`optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5)`].
-- `bounds`: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as the key, and a two-elements tuple as the value. The first element is either "<=", ">=", or "==", and the second element is the right-hand side of the constraint (single value or a vector of ntimesteps length). Default: (empty dictionary). See the source code for the name of the variables of the model.
-- `kwargs`: Keyword arguments to override the default parameter values. Again, see the model source code for the name of the parameters.
+- `optimizer': The optimiser to use and possibly its options. Defaults to: [`optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5)`].
+- `bounds``: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as key and a two-element tuple as value. The first element is either "<=", ">=" or "==", and the second element is the right-hand side of the constraint (a single value or a vector of ntimesteps length). Default: (empty dictionary). See the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) for the names of the model variables.
+- `kwargs``: Keyword arguments to override the default parameter values. See the documentation for the [`Parameters`](@ref) structure for the available model parameters. 
 
 # Outputs
 
-- A named tuple containing the following fields: `solved`, `status`, `times`, `tidx`, the post_process computed values and the optimization variables.
+- A named tuple containing the following fields: `solved`, `status`, `times`, `tidx`, the post_process computed values, the optimisation variables, the parameters structure (`pars`).
 
 # Examples:
 
@@ -252,65 +375,20 @@ res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_
 
 
 # Notes
-- The `bounds` adds constraint to the problem, but do not substitute to hard-written bounds in the model. In particular, for the upper limit of the emissions controls, use the parameter `miuup` instead
-- `bounds` are always intended for the whole time steps. If you need bound for a subset of time steps (e.g. the first time step), you need to still compose your whole time array of the bound, using `floatmin(Float64)` or `floatmax(Float64)` as appropriate.
-
-
-
+- The `bounds` add constraints to the problem, but do not replace hard written bounds in the model. In particular, the `miuup` parameter should be used instead for the upper limit of emission controls.
+- Bounds are always intended for the full time steps. If you need a bound for a subset of time steps (e.g. the first time step), you still need to assemble your full time array of the bound using `floatmin(Float64)` or `floatmax(Float64)` as appropriate.
 """
 function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
 
-    issubset(keys(kwargs), fieldnames(RawParameters)) || error("Not all keywords are valid parameters.")
-    p = RawParameters(;kwargs...)   # Override the default parameter values with the keyword arguments
-    @fields_to_vars RawParameters p # Copy of the RowParameters fields to local variables (for readibility)
-
-    ######################################################################
-    # Further computed parameters
-    ######################################################################
-    # These can't be overriden, but they are computed from the raw parameters
-
-    # --------------------------------------------------------------------
-    # Dynamic parameters
-
-    # Level of population and labor
-    l                = fill(pop1, ntsteps); [l[ti] = l[ti-1] * (popasym / l[ti-1])^popadj for ti in tidx[2:end]]
-    # Growth rate of Total Factor Productivity
-    ga               = @. ga1*exp(-dela*times)
-    # Level of total factor productivity
-    al               = fill(al1, ntsteps); [al[ti] = al[ti-1] / (1 - ga[ti-1]) for ti in tidx[2:end]]
-
-    # Carbon price in base case
-    cpricebase       = @. cprice1*(1+gcprice)^times
-    # Backstop price 2019$ per ton CO2
-    pbacktime        = @. pback2050*exp(-tstep*0.01*(tidx-7))
-    pbacktime[8:end] = @. pback2050*exp(-tstep*0.001*(tidx[8:end]-7))
-    # Carbon intensity 2020 kgCO2-output 2020
-    sig1             = e1/(q1*(1-miu1))
-
-    # Change in sigma (rate of decarbonization)
-    gsig             = @. min(gsigma1*delgsig ^(tidx-1),asymgsig)
-
-    # CO2-emissions output ratio
-    sigma            = fill(sig1,ntsteps)
-    [sigma[ti] = sigma[ti-1] * exp(tstep*gsig[ti-1]) for ti in tidx[2:end] ]
-
-    # ------------------------------------------------------------------------------
-    # Parameters emissions and non-CO2 
-    
-    eland          = @. eland0*(1-deland)^t0idx  
-    co2e_ghgabateb = eco2eghgb2020 .+ [(eco2eghgb2100-eco2eghgb2020) * min(1,ti/16) for ti in t0idx]
-    f_misc         = f_misc2020    .+ [(f_misc2100-f_misc2020) * min(1,ti/16) for ti in t0idx]
-    emissrat       = emissrat2020  .+ [(emissrat2100-emissrat2020) * min(1,ti/16) for ti in t0idx]
-    sigmatot       = @. sigma * emissrat
-    cost1tot       = @. pbacktime * sigmatot / expcost2/1000
+    issubset(keys(kwargs), fieldnames(Parameters)) || error("Not all keywords are valid parameters.")
+    p = Parameters(;kwargs...)   # Override the default parameter values with the keyword arguments
+    @fields_to_vars Parameters p # Copy of the RowParameters fields to local variables (for readibility)
 
     ######################################################################
     # Optimization model & computation options
     ######################################################################
 
-
     m = Model(optimizer)
-
 
     ######################################################################
     # Variables declaration
@@ -371,7 +449,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Reservoir 0 law of motion
     @constraint(m, res0lom[ti in tidx], RES0[ti] ==  ((ti == 1) ? res00 : (emshare0*tau0*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-tstep/(tau0*ALPHA[ti])))+RES0[ti-1]*exp(-tstep/(tau0*ALPHA[ti]))))
 
-    # Reservoir 1 law of motion
+    #Reservoir 1 law of motion
     @constraint(m, res1lom[ti in tidx], RES1[ti] == ((ti == 1) ? res10 :  (emshare1*tau1*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-tstep/(tau1*ALPHA[ti])))+RES1[ti-1]*exp(-tstep/(tau1*ALPHA[ti]))))
 
     # Reservoir 2 law of motion
@@ -542,7 +620,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     forc_co2   = collect(@. fco22x*log(value(MAT)/mateq)/log(2))
 
     # Return results as named tuple
-    return (solved=true, status=status, times=times, tidx=tidx, rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2, ECO2=collect(value.(ECO2)), ECO2E=collect(value.(ECO2E)), EIND=collect(value.(EIND)), F_GHGABATE=collect(value.(F_GHGABATE)),MIU=collect(value.(MIU)), C=collect(value.(C)), K=collect(value.(K)), CPC=collect(value.(CPC)), I=collect(value.(I)), S=collect(value.(S)), Y=collect(value.(Y)), YGROSS=collect(value.(YGROSS)), YNET=collect(value.(YNET)), DAMAGES=collect(value.(DAMAGES)), DAMFRAC=collect(value.(DAMFRAC)), ABATECOST=collect(value.(ABATECOST)), MCABATE=collect(value.(MCABATE)), CCATOT=collect(value.(CCATOT)), PERIODU=collect(value.(PERIODU)), CPRICE=collect(value.(CPRICE)), TOTPERIODU=collect(value.(TOTPERIODU)), UTILITY=value(UTILITY), FORC=collect(value.(FORC)), TATM=collect(value.(TATM)), TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)), RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)), MAT=collect(value.(MAT)), CACC=collect(value.(CACC)), IRFT=collect(value.(IRFT)), ALPHA=collect(value.(ALPHA)))
+    return (solved=true, status=status, times=times, tidx=tidx, rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2, ECO2=collect(value.(ECO2)), ECO2E=collect(value.(ECO2E)), EIND=collect(value.(EIND)), F_GHGABATE=collect(value.(F_GHGABATE)),MIU=collect(value.(MIU)), C=collect(value.(C)), K=collect(value.(K)), CPC=collect(value.(CPC)), I=collect(value.(I)), S=collect(value.(S)), Y=collect(value.(Y)), YGROSS=collect(value.(YGROSS)), YNET=collect(value.(YNET)), DAMAGES=collect(value.(DAMAGES)), DAMFRAC=collect(value.(DAMFRAC)), ABATECOST=collect(value.(ABATECOST)), MCABATE=collect(value.(MCABATE)), CCATOT=collect(value.(CCATOT)), PERIODU=collect(value.(PERIODU)), CPRICE=collect(value.(CPRICE)), TOTPERIODU=collect(value.(TOTPERIODU)), UTILITY=value(UTILITY), FORC=collect(value.(FORC)), TATM=collect(value.(TATM)), TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)), RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)), MAT=collect(value.(MAT)), CACC=collect(value.(CACC)), IRFT=collect(value.(IRFT)), ALPHA=collect(value.(ALPHA)),pars=p)
 
 end
 
