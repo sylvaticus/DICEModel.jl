@@ -13,6 +13,8 @@ This package currently implements the DICE2023-b-4-3-10.gms gams version.
 
 **This program and output is not the original Barrage/Nordhaus version, which is currently only [available in GAMS](https://bit.ly/3TwJ5nO).**
 
+While `DICEModel.jl` is _implemented_ in Julia it can easily be used in Python or R using the [`JuliaCall` (Python)](https://github.com/JuliaPy/PythonCall.jl) and [`JuliaCall` (R)](https://cran.r-project.org/web/packages/JuliaCall/index.html) packages respectively. 
+
 ## Goals of this package
 
 Provide a practical, full open-source (using all open-source tools) implementation of the latest version of the DICE model, keeping the model readable, compact and as close as possible to the original (GAMS) code.   
@@ -67,7 +69,7 @@ plot!(times[1:9],res_t2c.CPRICE[1:9], label="T < 2 °C", colour=:green, markersh
 
 <img src="assets/imgs/CO₂_emissions.png" width="400"/> <img src="assets/imgs/Carbon_price.png" width="400"/>
 
-## Other packages or implementations
+## Other packages or implementations of the DICE model
 
 - [DuBois Julia implementation](https://github.com/Libbum/DICE.jl): No updates to DICE 2023, code divided in many pieces
 - MIMI framework based implementations (eg. [v2016](https://github.com/AlexandrePavlov/MimiDICE2016.jl) or [v2016R2](https://github.com/anthofflab/MimiDICE2016R2.jl)): Not updated to DICE 2023, code divided in many pieces (different implementation and solver structure)

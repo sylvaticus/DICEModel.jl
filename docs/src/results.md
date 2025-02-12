@@ -1,8 +1,8 @@
-# Main results
+# Results
 
-We report here some results from running the codepackage with the official scenarios and compare the output of `DICEModel.jl` with the official GAMS output as given in the _DICE 2023 Introduction and User's Manual_ (v3.1.2, May 15, 2024)
+In this page we report the results from running the package with the official scenarios and compare the output of `DICEModel.jl` with the official GAMS output as given in the _DICE 2023 Introduction and User's Manual_ (v3.1.2, May 15, 2024)
 
-The scenarios we run here are:
+The scenarios considered are:
 
 - `cbopt`:    The C/B optimal scenario
 - `t2c`:      The temperature constrained to max 2 °C scenario
@@ -16,13 +16,18 @@ The scenarios we run here are:
 - `r2`:       The scenario with discount rate of 2%
 - `r1`:       The scenario with discount rate of 1%
 
+```@contents
+Pages = ["results.md"]
+Depth = 4
+```
+
 We start by loading the required packages.
 
 ```@example r
 using Pkg
 Pkg.activate(joinpath(@__DIR__,".."))
 #Pkg.add(["DICEModel", "CSV","DataFrames","Plots"]) # Run once and comment this back
-using DICEModel, CSV, DataFrames, Plots
+using DICEModel, CSV, DataFrames, Plots, XLSX
 ```
 
 ```@example r
@@ -42,12 +47,12 @@ plot_attributes = Dict(
     "r1"       => (label="R = 1%", linestyle=:solid, colour=:lightskyblue, markershape=:diamond, markercolor=:lightskyblue, markerstrokecolor=:lightskyblue)      
 )
 
-# Run them and collect the results in the "results" dictionary
+# Run the scenarios and collect their results in the "results" dictionary
 results = Dict([s => run_dice_scenario(s) for s in scenarios])
 times  = results["cbopt"].times.+2020
-
-base_attributes = (label="Base", markershape=:utriangle, markercolor=:red, colour=:red)
 ```
+
+## Main results and comparison with the official GAMS version
 
 ---
 
@@ -94,7 +99,7 @@ ECO2_diff[:,2:end] .= ECO2_gams[:,2:end] .- ECO2[:,2:end]
 ECO2_diff
 ```
 
-As you can see, there are only two minor differences in `r5` for 2100 and, above all, for `r1` in 2020.
+There are only two minor differences in `r5` for 2100 and, above all, for `r1` in 2020.
 
 
 #### Plot:
@@ -158,7 +163,7 @@ ppm_diff[:,2:end] .= ppm_gams[:,2:end] .- ppm[:,2:end]
 ppm_diff
 ```
 
-As you can see, there are only two minor differences in `r5` for 2100 and, above all, for `r1` in 2020.
+Again, the only minor difference is for `r5` in 2150.
 
 #### Plot:
 
@@ -173,4 +178,237 @@ for(i,s) in enumerate(scenarios_plot)
 end
 p
 ```
+---
 
+### `TATM`: Global Temperatures [°C diff since 1765]
+
+#### Official GAMS outputs:
+
+```@example r
+# Data from the DICE2023 manual
+TATM_gams = CSV.read(IOBuffer("""
+scen       2020  2025  2050  2100  2150
+cbopt      1.25  1.42  1.92  2.58  2.29
+t2c        1.25  1.42  1.85  2.00  1.86     
+altdam     1.25  1.42  1.81  1.89  1.58 
+parisext   1.25  1.43  2.01  3.00  3.61   
+base       1.25  1.43  2.10  3.55  4.91
+r5         1.25  1.42  1.97  2.93  3.24
+r4         1.25  1.43  1.95  2.77  2.84
+r3         1.25  1.43  1.90  2.49  2.26
+r2         1.25  1.43  1.84  2.07  1.73
+r1         1.25  1.43  1.84  1.81  1.49
+"""), DataFrame, delim=" ", ignorerepeated=true)
+```
+
+#### DICEModel.jl output
+
+```@example r
+scenarios_TATM = ["cbopt","t2c","altdam","parisext","base","r5","r4","r3","r2","r1"]
+TATM = DataFrame([
+    scenarios_TATM,
+    [results[s].TATM[1] for s in scenarios_TATM],
+    [results[s].TATM[2] for s in scenarios_TATM],
+    [results[s].TATM[7] for s in scenarios_TATM],
+    [results[s].TATM[17] for s in scenarios_TATM],
+    [results[s].TATM[27] for s in scenarios_TATM],
+    ],
+    ["scen","2020","2025","2050","2100","2150"]
+)
+```
+#### Differences:
+
+```@example r
+TATM_diff = copy(TATM_gams);
+TATM_diff[:,2:end] .= TATM_gams[:,2:end] .- TATM[:,2:end]
+TATM_diff
+```
+
+Again, the only minor difference is for `r5` in 2150 (3.25 instead of 3.24)
+
+#### Plot:
+
+```@example r
+scenarios_plot=["base","cbopt","parisext","t2c","r4","r2"]
+for(i,s) in enumerate(scenarios_plot)
+    if i == 1
+        global p = plot(times[1:17] ,results[s].TATM[1:17],ylim=(0.0,4.0), title="Global Temperatures",ylabel="°C from 1765";plot_attributes[s]...);
+    else
+        plot!(times[1:17] ,results[s].TATM[1:17];plot_attributes[s]...)
+    end
+end
+p
+```
+
+---
+
+### `MIU`: Emission control rate [%]
+
+#### Official GAMS outputs:
+
+```@example r
+# Data from the DICE2023 manual
+MIU_gams = CSV.read(IOBuffer("""
+scen    2020 2030 2040 2050 2060 2100
+cbopt      5   24   31   39   46   84
+t2c        5   24   42   55   69   99   
+altdam     5   24   48   65   76  100
+parisext   5   13   21   27   33   57 
+base       5    6    8   10   12   22
+r5         5   19   23   29   34   60
+r4         5   24   29   36   42   70
+r3         5   24   39   47   54   85
+r2         5   24   48   66   73  100
+r1         5   24   48   72   90  100
+"""), DataFrame, delim=" ", ignorerepeated=true)
+```
+
+#### DICEModel.jl output
+
+```@example r
+scenarios_MIU = ["cbopt","t2c","altdam","parisext","base","r5","r4","r3","r2","r1"]
+MIU = DataFrame([
+    scenarios_MIU,
+    [results[s].MIU[1] for s in scenarios_MIU] .* 100,
+    [results[s].MIU[3] for s in scenarios_MIU] .* 100,
+    [results[s].MIU[5] for s in scenarios_MIU] .* 100,
+    [results[s].MIU[7] for s in scenarios_MIU] .* 100,
+    [results[s].MIU[9] for s in scenarios_MIU] .* 100,
+    [results[s].MIU[17] for s in scenarios_MIU] .* 100,
+    ],
+    ["scen","2020","2030","2040","2050","2060","2100"]
+)
+```
+#### Differences:
+
+```@example r
+MIU_diff = copy(MIU);
+MIU_diff[:,2:end] .= MIU_gams[:,2:end] .- MIU[:,2:end]
+MIU_diff
+```
+
+No differences here !
+
+#### Plot:
+
+```@example r
+scenarios_plot=["cbopt","parisext","t2c","altdam"]
+for(i,s) in enumerate(scenarios_plot)
+    if i == 1
+        global p = plot(times[1:17] ,results[s].MIU[1:17] .* 100,ylim=(0.0,100), title="Emission control rate",ylabel="%";plot_attributes[s]...);
+    else
+        plot!(times[1:17] ,results[s].MIU[1:17] .* 100;plot_attributes[s]...)
+    end
+end
+p
+```
+
+---
+
+### `CPRICE`: Carbon price [2019$ / tCO₂]
+
+
+#### Plot:
+
+```@example r
+scenarios_plot=["cbopt","parisext","t2c","r3"]
+for(i,s) in enumerate(scenarios_plot)
+    if i == 1
+        global p = plot(times[1:9] ,results[s].CPRICE[1:9],ylim=(0,350), title="Carbon price",ylabel="2019\$ / tCO₂";plot_attributes[s]...);
+    else
+        plot!(times[1:9] ,results[s].CPRICE[1:9];plot_attributes[s]...)
+    end
+end
+p
+```
+
+---
+
+### `scc`: Social cost of carbon [2019\$ / tCO₂]
+
+#### Official GAMS outputs:
+
+```@example r
+# Data from the DICE2023 manual
+scc_gams = CSV.read(IOBuffer("""
+scen       2020  2025  2050
+cbopt        50    59   125
+t2c          75    89   213
+t15c       3557  4185 16552          
+altdam      124   146   281
+parisext     61    72   159     
+base         66    78   175
+r5           32    37    74
+r4           49    58   107
+r3           87   102   172         
+r2          176   207   302
+r1          485   571   695
+"""), DataFrame, delim=" ", ignorerepeated=true)
+```
+
+#### DICEModel.jl output
+
+```@example r
+scenarios_scc = ["cbopt","t2c","t15c", "altdam","parisext","base","r5","r4","r3","r2","r1"]
+scc = DataFrame([
+    scenarios_scc,
+    [results[s].scc[1] for s in scenarios_scc],
+    [results[s].scc[2] for s in scenarios_scc],
+    [results[s].scc[7] for s in scenarios_scc],
+    ],
+    ["scen","2020","2025","2050"]
+)
+```
+#### Differences:
+
+```@example r
+scc_diff = copy(scc);
+scc_diff[:,2:end] .= scc_gams[:,2:end] .- scc[:,2:end]
+scc_diff
+```
+
+This is the only part that still needs to be checked, as there are significant differences for the base year (2020). For the other years `DICEModel.jl` provides identical results (up to the approximation of the data published) than the official GAMS version.
+
+#### Plot:
+
+```@example r
+scenarios_plot=["base","cbopt","t2c","altdam","r4","r2"]
+for(i,s) in enumerate(scenarios_plot)
+    if i == 1
+        global p = plot(times[1:7] ,results[s].scc[1:7],ylim=(0,400), title="Social cost of carbon",ylabel="2019\$ / tCO₂";plot_attributes[s]...);
+    else
+        plot!(times[1:7] ,results[s].scc[1:7];plot_attributes[s]...)
+    end
+end
+p
+```
+
+
+## Detailed model output
+
+
+The whole model output (variables and post-processing computed values) can be retrieved in the Excel file below:
+
+
+```@example r
+keys(results["cbopt"]) 
+out_vars = [v for v in keys(results["cbopt"]) if typeof(results["cbopt"][v]) <: Vector{<: Number}]
+
+all_results = DataFrame(
+    scenario = String[],
+    variable = String[],
+    year     = Int64[],
+    value    = Float64[],
+)
+
+for s in scenarios, v in out_vars, ti in 1:length(times)
+    push!(all_results,[s,string(v),times[ti],results[s][v][ti]])
+end
+all_results = unstack(all_results,"year","value")
+
+XLSX.writetable("DICEModelDetailedResults.xlsx",
+  all_results=(collect(DataFrames.eachcol(all_results)),DataFrames.names(all_results))
+)
+```
+
+[DICEModelDetailedResults.xlsx](DICEModelDetailedResults.xlsx)

@@ -7,6 +7,8 @@ This package currently implements the DICE2023-b-4-3-10.gms gams version.
 
 **This program and output is not the original Barrage/Nordhaus version, which is currently only [available in GAMS](https://bit.ly/3TwJ5nO).**
 
+While `DICEModel.jl` is _implemented_ in Julia it can easily be used in Python or R using the [`JuliaCall` (Python)](https://github.com/JuliaPy/PythonCall.jl) and [`JuliaCall` (R)](https://cran.r-project.org/web/packages/JuliaCall/index.html) packages respectively. 
+
 
 ### Available documentation
 - [`run_dice_scenario(scenario_name)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice_scenario-Tuple{String}): run one of the "official" 10 scenarios ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/Scenarios.jl));
@@ -19,7 +21,7 @@ In both cases the output (results) is a named tuple. Use `keys(results)` to find
 
 A summary of the main results, and a comparision with the official Barrage/Nordhaus version, is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
 
-An Excel version of all the results is available here.
+An Excel version of all the results is available [here](DICEModelDetailedResults.xlsx).
 
 ### Example
 
@@ -60,9 +62,9 @@ plot!(times[1:9],res_parisext.CPRICE[1:9], label="Paris ext", colour=:red, lines
 plot!(times[1:9],res_t2c.CPRICE[1:9], label="T < 2 °C", colour=:green, markershape=:cross, markercolor=:green)
 ```
 
-<img src="![assets/imgs/CO₂_emissions.png](https://github.com/sylvaticus/DICEModel.jl/blob/main/assets/imgs/CO%E2%82%82_emissions.png?raw=true)" width="400"/> <img src="![assets/imgs/Carbon_price.png](https://github.com/sylvaticus/DICEModel.jl/blob/main/assets/imgs/Carbon_price.png?raw=true)" width="400"/>
-
-
+```@raw html
+<img src="https://github.com/sylvaticus/DICEModel.jl/blob/main/assets/imgs/CO%E2%82%82_emissions.png?raw=true" width="300"/><img src="https://github.com/sylvaticus/DICEModel.jl/blob/main/assets/imgs/Carbon_price.png?raw=true" width="300"/>
+```
 
 ## Licence
 The licence of the original GAMS code has never being specified. The Julia port itself (and only that) is MIT.
