@@ -13,7 +13,7 @@ makedocs(sitename="DICEModel.jl Documentation",
             "API" => "api.md",
             "Results" => "results.md"
          ],
-         format = Documenter.HTML(prettyurls = false, assets=["assets/custom.js","assets/custom.css"]),
+         format = Documenter.HTML(prettyurls = false, assets=["assets/custom.js","assets/custom.css"], analytics = "G-0MDFVNSBYE"),
          warnonly = true,
          checkdocs=:none,
 )
