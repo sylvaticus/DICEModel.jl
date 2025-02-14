@@ -13,10 +13,9 @@ makedocs(sitename="DICEModel.jl Documentation",
             "API" => "api.md",
             "Results" => "results.md"
          ],
-         format = Documenter.HTML(prettyurls = false),
+         format = Documenter.HTML(prettyurls = false, assets=["assets/custom.js","assets/custom.css"]),
          warnonly = true,
          checkdocs=:none,
-
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
