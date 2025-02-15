@@ -357,6 +357,8 @@ This function runs the DICE model and returns the results as a named tuple.
 - `bounds``: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as key and a two-element tuple as value. The first element is either "<=", ">=" or "==", and the second element is the right-hand side of the constraint (a single value or a vector of ntimesteps length). Default: (empty dictionary). See the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) for the names of the model variables.
 - `kwargs``: Keyword arguments to override the default parameter values. See the documentation for the [`Parameters`](@ref) structure for the available model parameters. 
 
+**WARNING**: Sometimes changing a parameter doesn't lead to the expected behavior. This is because the model (in its original GAMS form that has been re-implemented in this package) performs some calibrations with the parameters, so several parameters have to be changed together. For example all the scenarios that test different discount rates don't change only the `prstp` parameter, but compute several other parameters, sometimes in a different matter than the default model, and have different calibration for initial conditions. Always check the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) to make sure that the parameter you want to change doesn't have other side effects in the model.
+
 # Outputs
 
 - A named tuple containing the following fields: `solved`, `status`, `times`, `tidx`, the post_process computed values, the optimisation variables, the parameters structure (`pars`).
