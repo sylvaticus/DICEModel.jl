@@ -1,6 +1,6 @@
 # DICEModel.jl
 
-Documentation for `DICEModel.jl`, a Julia/JuMP port of the Nordhaus' DICE (Dynamic Integrated Climate-Economy model) model.
+Documentation for [`DICEModel.jl`](https://github.com/sylvaticus/DICEModel.jl), a Julia/JuMP port of the Nordhaus' DICE (Dynamic Integrated Climate-Economy model) model.
 
 
 This package currently implements the DICE2023-b-4-3-10.gms gams version.
