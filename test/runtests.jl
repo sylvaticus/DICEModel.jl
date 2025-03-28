@@ -1,6 +1,6 @@
 using Test, DICEModel
 using JuMP, Ipopt
-
+#using JLD2
 
 println("Testing DICEModel...")
 

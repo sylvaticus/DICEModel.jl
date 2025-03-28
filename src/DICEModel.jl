@@ -59,7 +59,7 @@ Base.@kwdef struct Parameters
     ntsteps = 81 
 
     "Name of the regions"
-    regions = "World"
+    regions = ["World"]
 
     # --------------------------------------------------------------------
     # Population and technology
@@ -432,7 +432,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
         ECO2E_R[tidx,ridx]      # Total CO2e emissions including abateable nonCO2 GHG (GtCO2 per year), regional
         ECO2E[tidx]             # Total CO2e emissions including abateable nonCO2 GHG (GtCO2 per year)
         F_GHGABATE_R[tidx,ridx] # Forcings abateable nonCO2 GHG, regional   
-        F_GHGABATE[tidx]        # Forcings abateable nonCO2 GHG    
+    
         
         MIU_R[tidx,ridx] >= 0.0       # Emission control rate GHGs (**control**), regional
         #MIU[tidx] >= 0.0       # Emission control rate GHGs (**control**)
@@ -510,7 +510,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @constraint(m, cacceq[ti in tidx], CACC[ti] == CCATOT[ti]-(MAT[ti]-mateq))
 
     # Radiative forcing equation
-    @constraint(m, force[ti in tidx], FORC[ti] == fco22x*((log((MAT[ti]/mateq))/log(2))) + f_misc[ti]+F_GHGABATE[ti] )
+    @constraint(m, force[ti in tidx, ri in ridx], FORC[ti] == fco22x*(log(MAT[ti]/mateq)/log(2)) + f_misc[ti]+sum(F_GHGABATE_R[ti,ri] for ri in ridx))
 
     # Temperature box 1 law of motion
     @constraint(m, tbox1eq[ti in tidx], TBOX1[ti] ==  ((ti == 1) ? tbox10 : TBOX1[ti-1]*exp(-tstep/d1)+teq1*FORC[ti]*(1-exp(-tstep/d1))))
@@ -550,8 +550,6 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # Forcings abateable nonCO2 GHG equation, regional 
     @constraint(m, f_ghgabateeq_r[ti in tidx, ri in ridx], F_GHGABATE_R[ti,ri] == ((ti == 1) ? f_ghgabate2020 : fcoef2*F_GHGABATE_R[ti-1,ri]+ fcoef1*co2e_ghgabateb[ti-1]*(1-MIU_R[ti-1,ri])))
-    # Forcings abateable nonCO2 GHG equation 
-    @constraint(m, f_ghgabateeq[ti in tidx], F_GHGABATE[ti] == sum(F_GHGABATE_R[ti,ri] for ri in ridx))
 
 
     # --------------------------------------------------------------------
@@ -682,6 +680,9 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     atfrac2020 = collect(@. (value(MAT)-mat0)/(value(CCATOT)+0.00001-cumemiss0))
     atfrac1765 = collect(@. (value(MAT)-mateq)/(value(CCATOT)+0.00001))
     forc_co2   = collect(@. fco22x*log(value(MAT)/mateq)/log(2))
+
+    F_GHGABATE = sum(F_GHGABATE_R[ti,ri] for ti in tidx, ri in ridx)
+
 
     # Return results as named tuple
     return (solved=true, status=status, times=times, tidx=tidx, rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2, ECO2=collect(value.(ECO2)), ECO2E=collect(value.(ECO2E)), EIND=collect(value.(EIND)), F_GHGABATE=collect(value.(F_GHGABATE)),MIU_R=collect(value.(MIU_R)), C=collect(value.(C)), K=collect(value.(K)), CPC=collect(value.(CPC)), I=collect(value.(I)), S=collect(value.(S)), Y=collect(value.(Y)), YGROSS=collect(value.(YGROSS)), YNET=collect(value.(YNET)), DAMAGES=collect(value.(DAMAGES)), DAMFRAC_R=collect(value.(DAMFRAC_R)), ABATECOST=collect(value.(ABATECOST)), CCATOT=collect(value.(CCATOT)), PERIODU=collect(value.(PERIODU)), CPRICE_R=value.(CPRICE_R), TOTPERIODU=collect(value.(TOTPERIODU)), UTILITY=value(UTILITY), FORC=collect(value.(FORC)), TATM=collect(value.(TATM)), TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)), RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)), MAT=collect(value.(MAT)), CACC=collect(value.(CACC)), IRFT=collect(value.(IRFT)), ALPHA=collect(value.(ALPHA)),pars=p, model=m)
