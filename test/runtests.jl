@@ -32,7 +32,7 @@ res_r1       = run_dice_scenario("r1")
     @test isapprox(res_cbopt.MIU[17], 0.84, atol=0.0051)
 end
 
-res_crazy = run_dice(a2base = 0.01, bounds = Dict("MIU"=>("==",1.0), "TATM"=>("<=",15), "Y" =>(">=",[fill(floatmin(Float64),10);fill(0.1,71)]), "ECO2" =>("<=",10000)),optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0))
+res_crazy = run_dice(a2base = 0.01, bounds = Dict("MIU_R"=>("==",1.0), "TATM"=>("<=",15), "Y_R" =>(">=",[fill(floatmin(Float64),10);fill(0.1,71)]), "ECO2" =>("<=",10000)),optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0))
 
 @testset "Test Crazy call" begin
     @test res_crazy.solved == false
@@ -72,8 +72,7 @@ end
 
 @testset "Social cost of carbon with R2 and R1 scenarios" begin
     #@test isapprox(res_r2.scc[1], 176, atol=0.51)
-    @test isapprox(res_r2.scc[7], 302, atol=0.51)
+    @test isapprox(res_r2.scc[7,1], 302, atol=0.51)
     #@test isapprox(res_r1.scc[1], 485, atol=0.51)
-    @test isapprox(res_r1.scc[7], 695, atol=0.51)
+    @test isapprox(res_r1.scc[7,1], 695, atol=0.51)
 end
-

@@ -382,7 +382,7 @@ This function runs the DICE model and returns the results as a named tuple.
 # Function arguments
 
 - `optimizer': The optimiser to use and possibly its options. Defaults to: [`optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5)`].
-- `bounds``: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as key and a two-element tuple as value. The first element is either "<=", ">=" or "==", and the second element is the right-hand side of the constraint (a single value or a vector of ntimesteps length). Default: (empty dictionary). See the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) for the names of the model variables.
+- `bounds``: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as key and a two-element tuple as value. The first element is either "<=", ">=" or "==", and the second element is the right-hand side of the constraint (a single value, a vector of ntimesteps length or a matrix of ntimesteps x nregions). Default: (empty dictionary). See the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) for the names of the model variables.
 - `kwargs``: Keyword arguments to override the default parameter values. See the documentation for the [`Parameters`](@ref) structure for the available model parameters. 
 
 **WARNING**: Sometimes changing a parameter doesn't lead to the expected behavior. This is because the model (in its original GAMS form that has been re-implemented in this package) performs some calibrations with the parameters, so several parameters have to be changed together. For example all the scenarios that test different discount rates don't change only the `prstp` parameter, but compute several other parameters, sometimes in a different matter than the default model, and have different calibration for initial conditions. Always check the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) to make sure that the parameter you want to change doesn't have other side effects in the model.
@@ -408,7 +408,7 @@ res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_
 - The `bounds` add constraints to the problem, but do not replace hard written bounds in the model. In particular, the `miuup` parameter should be used instead for the upper limit of emission controls.
 - Bounds are always intended for the full time steps. If you need a bound for a subset of time steps (e.g. the first time step), you still need to assemble your full time array of the bound using `floatmin(Float64)` or `floatmax(Float64)` as appropriate.
 """
-function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 10000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
+function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
 
     issubset(keys(kwargs), fieldnames(Parameters)) || error("Not all keywords are valid parameters.")
     p = Parameters(;kwargs...)   # Override the default parameter values with the keyword arguments
@@ -426,26 +426,39 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     @variables m begin
         EIND_R[tidx,ridx]       # Industrial CO2 emissions (GtCO2 per yr), regional
+        EIND[tidx]              # Industrial CO2 emissions (GtCO2 per yr)
         ECO2_R[tidx,ridx]       # Total CO2 emissions (GtCO2 per year), regional
-        ECO2[tidx]              # Total CO2 emissions (GtCO2 per year), global
+        ECO2[tidx]              # Total CO2 emissions (GtCO2 per year)
         ECO2E_R[tidx,ridx]      # Total CO2e emissions including abateable nonCO2 GHG (GtCO2 per year), regional
+        ECO2E[tidx]             # Total CO2e emissions including abateable nonCO2 GHG (GtCO2 per year)
         F_GHGABATE_R[tidx,ridx] # Forcings abateable nonCO2 GHG, regional   
     
         
-        MIU_R[tidx,ridx] >= 0.0       # Emission control rate GHGs (**control**), regional
-        C_R[tidx,ridx] >= 0.0         # Consumption (trillions 2019 US dollars per year), regional
+        MIU_R[tidx,ridx] >= 0.0      # Emission control rate GHGs (**control**), regional
+        C_R[tidx,ridx]  >= 0.0       # Consumption (trillions 2019 US dollars per year), regional
+        C[tidx] >= 0.0         # Consumption (trillions 2019 US dollars per year)
         K_R[tidx,ridx] >= 0.0         # Capital stock (trillions 2019 US dollars), regional
+        K[tidx] >= 0.0         # Capital stock (trillions 2019 US dollars)
         CPC_R[tidx,ridx]              # Per capita consumption (thousands 2019 USD per year), regional
+        CPC[tidx]              # Per capita consumption (thousands 2019 USD per year)
         I_R[tidx,ridx] >= 0.0         # Investment (trillions 2019 USD per year), regional
+        I[tidx] >= 0.0         # Investment (trillions 2019 USD per year)
         S_R[tidx,ridx]               # Gross savings rate as fraction of gross world product (**control**), regional
+        S[tidx]                # Gross savings rate as fraction of gross world product (**control**)
         Y_R[tidx,ridx] >= 0.0         # Gross world product net of abatement and damages (trillions 2019 USD per year), regional
+        Y[tidx] >= 0.0         # Gross world product net of abatement and damages (trillions 2019 USD per year)
         YGROSS_R[tidx,ridx] >= 0.0    # Gross world product GROSS of abatement and damages (trillions 2019 USD per year), regional
+        YGROSS[tidx] >= 0.0    # Gross world product GROSS of abatement and damages (trillions 2019 USD per year)
         YNET_R[tidx,ridx] >= 0.0      # Output net of damages equation (trillions 2019 USD per year)
+        YNET[tidx] >= 0.0      # Output net of damages equation (trillions 2019 USD per year)
         0.0 <= DAMFRAC_R[tidx,ridx] <= 1.0    # Damages as fraction of gross output, regional
+        DAMAGES[tidx]          # Damages (trillions 2019 USD per year)
         DAMAGES_R[tidx,ridx] >= 0.0         # Damages (trillions 2019 USD per year)
         ABATECOST_R[tidx, ridx]        # Cost of emissions reductions  (trillions 2019 USD per year), regional
+        ABATECOST[tidx]        # Cost of emissions reductions  (trillions 2019 USD per year)
         CCATOT[tidx]           # Total carbon emissions (GtC)
         PERIODU_R[tidx,ridx]   # One period utility function, regional
+        PERIODU[tidx]          # One period utility function
         CPRICE_R[tidx,ridx]           # Carbon price (2019$ per ton of CO2) from marginal abatement cost
         TOTPERIODU[tidx]       # Period utility
         UTILITY                # Welfare function
@@ -520,6 +533,9 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # Industrial CO2 equation, regional
     @constraint(m, eindeq_r[ti in tidx, ri in ridx], EIND_R[ti,ri] == (sigma[ti]*YGROSS_R[ti,ri])*(1-MIU_R[ti,ri]))
+    # Industrial CO2 equation, total
+    @constraint(m, eindeq[ti in tidx], EIND[ti] == sum(EIND_R[ti,ri] for ri in ridx))
+
 
     # CO2 Emissions equation, regional
     @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((sigma[ti]*YGROSS_R[ti,ri]) + eland[ti]) *(1-MIU_R[ti,ri]))
@@ -528,6 +544,8 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # CO2E Emissions equation, regional
     @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((sigma[ti]*YGROSS_R[ti,ri]) + eland[ti] + co2e_ghgabateb[ti])*(1-MIU_R[ti,ri]))
+    # CO2E Emissions equation
+    @constraint(m, eco2eeq[ti in tidx], ECO2E[ti] == sum(ECO2E_R[ti,ri] for ri in ridx))
 
     # Forcings abateable nonCO2 GHG equation, regional 
     @constraint(m, f_ghgabateeq_r[ti in tidx, ri in ridx], F_GHGABATE_R[ti,ri] == ((ti == 1) ? f_ghgabate2020 : fcoef2*F_GHGABATE_R[ti-1,ri]+ fcoef1*co2e_ghgabateb[ti-1]*(1-MIU_R[ti-1,ri])))
@@ -544,9 +562,11 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # Damage equation
     @constraint(m, dameq_r[ti in tidx, ri in ridx], DAMAGES_R[ti,ri] == YGROSS_R[ti,ri] * DAMFRAC_R[ti,ri])
+    @constraint(m, dameq[ti in tidx], DAMAGES[ti] == sum(DAMAGES_R[ti,ri] for ri in ridx))
 
     # Cost of emissions reductions equation
     @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * cost1tot[ti] * (MIU_R[ti,ri]^expcost2))
+    @constraint(m, abateeq[ti in tidx], ABATECOST[ti] == sum(ABATECOST_R[ti,ri] for ri in ridx))
 
     # Carbon price equation from abatement
     @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == pbacktime[ti] * MIU_R[ti,ri]^(expcost2-1))
@@ -555,29 +575,36 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Economic variables
 
     # Output gross equation
-    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti]*(l[ti]/1000)^(1-gama))*(K_R[ti,ri]^gama))
+    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti]*(l[ti]/1000)^(1-gama))*(K[ti]^gama))
+    @constraint(m, ygrosseq[ti in tidx], YGROSS[ti] ==  sum(YGROSS_R[ti,ri] for ri in ridx))
 
     # Output net of damage equation
     @constraint(m, yneteq_r[ti in tidx, ri in ridx], YNET_R[ti,ri] == YGROSS_R[ti,ri]*(1-DAMFRAC_R[ti,ri]))
+    @constraint(m, yneteq[ti in tidx], YNET[ti] == sum(YNET_R[ti,ri] for ri in ridx))
 
     # Output net equation
     @constraint(m, yy_r[ti in tidx, ri in ridx], Y_R[ti,ri] == YNET_R[ti,ri] - ABATECOST_R[ti,ri])
+    @constraint(m, yy[ti in tidx], Y[ti] == sum(Y_R[ti,ri] for ri in ridx))
 
     # Consumption equation
     @constraint(m, cc_r[ti in tidx,ri in ridx], C_R[ti,ri] == Y_R[ti,ri] - I_R[ti,ri])
-    @constraint(m, clb[ti in tidx,ri in ridx],  C_R[ti,ri] >= 2)
+    @constraint(m, cc[ti in tidx], C[ti] == sum(C_R[ti,ri] for ri in ridx))
+    
 
     # Per capita consumption definition
     @constraint(m, cpce_r[ti in tidx, ri in ridx], CPC_R[ti,ri] == 1000 * C_R[ti,ri] / l[ti])
-    @constraint(m, cpclb[ti in tidx, ri in ridx],  CPC_R[ti,ri] >= 0.01)
+    @constraint(m, cpce[ti in tidx], CPC[ti] == 1000 * C[ti] / l[ti])
+    
 
     # Savings rate equation
     @constraint(m, ieq_r[ti in tidx, ri in ridx], I_R[ti,ri] == S_R[ti,ri] * Y_R[ti,ri])
-   
+    @constraint(m, ieq[ti in tidx], I[ti] == sum(I_R[ti,ri] for ri in ridx))
+    @constraint(m, seq[ti in tidx], S[ti] == I[ti] / Y[ti]) 
 
     # Capital balance equation
     @constraint(m, kk0_r[ri in ridx], K_R[1,ri] == k0)
     @constraint(m, kk_r[ti in tidx[2:end],ri in ridx],  K_R[ti,ri] <= (1-dk)^tstep * K_R[ti-1,ri] + tstep * I_R[ti-1,ri])
+    @constraint(m, kk[ti in tidx],  K[ti] == sum(K_R[ti,ri] for ri in ridx))
     @constraint(m, klb_r[ti in tidx, ri in ridx],  K_R[ti,ri] >= 1)
 
     # -------------------------------------------------------------------- 
@@ -585,6 +612,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # Instantaneous utility function equation
     @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/l[ti])^(1-elasmu)-1)/(1-elasmu)-1)
+    @constraint(m, periodueq[ti in tidx], PERIODU[ti] == sum(PERIODU_R[ti,ri] for ri in ridx))
 
     # Period utility
     @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * l[ti] * rr[ti] for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
@@ -599,20 +627,32 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @constraint(m, alphalb[ti in tidx] , ALPHA[ti] >= 0.1)
     @constraint(m, alphaub[ti in tidx] , ALPHA[ti] <= 100.0)
     @constraint(m, miuub[ti in tidx, ri in ridx] , MIU_R[ti,ri] <= miuup[ti])
-    @constraint(m, sfix[ti in tidx[38:end]] , sum(S_R[ti,ri] for ri in ridx) == 0.28)
+    @constraint(m, sfix[ti in tidx[38:end]] , S[ti] == 0.28)
+    @constraint(m, clb[ti in tidx,ri in ridx],  C_R[ti,ri] >= 2.0)
+    @constraint(m, cpclb[ti in tidx, ri in ridx],  CPC_R[ti,ri] >= 0.01)
 
     # -------------------------------------------------------------------- 
     # Scenario-dependant constraints
 
     mvars  = object_dictionary(m)
     for (k,v) in bounds
-        v_vector = (ndims(v[2]) == 0) ? fill(v[2],ntsteps) : v[2]
+        # Getting the bound value always as a t x r matrix, even if it has been expressed as a scalar or as a (temporal) vector
+        v_matrix = Array{Float64}(undef,ntsteps,nreg)
+        if (ndims(v[2]) == 0)
+            v_matrix .= v[2]
+        elseif (ndims(v[2]) == 1)
+            [v_matrix[:,c] .= v[2] for c in 1:nreg]
+        elseif (ndims(v[2]) == 2)
+            v_matrix .= v[2]
+        else
+            error("Unknown constraint type $(k)")
+        end 
         if (v[1] == "<=")
-            scenboundseq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] <= v_vector[ti])
+            scenboundseq = @constraint(m, [ti in tidx, ri in ridx], mvars[Symbol(k)][ti,ri] <= v_matrix[ti, ri])
         elseif (v[1] == ">=")
-            scenboundseq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] >= v_vector[ti])
+            scenboundseq = @constraint(m, [ti in tidx, ri in ridx], mvars[Symbol(k)][ti,ri] >= v_matrix[ti, ri])
         elseif (v[1] == "==")
-            scenboundseq = @constraint(m, [ti in tidx], mvars[Symbol(k)][ti] == v_vector[ti])
+            scenboundseq = @constraint(m, [ti in tidx, ri in ridx], mvars[Symbol(k)][ti,ri] == v_matrix[ti, ri])
         else
             error("Unknown constraint type $(v[1])")
         end
@@ -639,38 +679,58 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # POST-OPTIMIZATION COMPUTATIONS
     #####################################################################
 
-    #rfactlong  =  collect(@. srf *(value(CPC_R)/value(CPC_R[1]))^(-elasmu)*rr)
+    # Ex-post computation of global variables
+    F_GHGABATE = [sum(value.(F_GHGABATE_R)[ti,ri] for ri in ridx) for ti in tidx]
+    MIU        = [(1 - sum(value.(EIND_R)[ti,ri] for ri in ridx)/sum(sigma[ti,ri] * value.(YGROSS_R)[ti,ri] for ri in ridx)) for ti in tidx]
+    DAMFRAC    = [ sum(value.(DAMFRAC_R)[ti,ri] for ri in ridx) / sum(value.(YGROSS_R)[ti,ri] for ri in ridx) for ti in tidx]
+
+    # Other post-optimization computaitons
+    rfactlong  =  collect(@. srf *(value(CPC)/value(CPC[1]))^(-elasmu)*rr)
     rlong      =  [-log(rfactlong[ti]/srf)/(tstep*ti) for ti in tidx]
     rshort     =  vcat(missing,[-log(rfactlong[ti]/rfactlong[ti-1])/tstep for ti in tidx[2:end]])
 
-    scc        = collect(@. -1000*dual(eco2eq) /(0.00001+dual(cc)))
+    scc        = collect(@. -1000*dual(eco2eq_r) /(0.00001+dual(cc_r)))
     ppm        = collect(value.(MAT) ./ 2.13)
     abaterat   = collect(@. value(ABATECOST)/value(Y))
     atfrac2020 = collect(@. (value(MAT)-mat0)/(value(CCATOT)+0.00001-cumemiss0))
     atfrac1765 = collect(@. (value(MAT)-mateq)/(value(CCATOT)+0.00001))
     forc_co2   = collect(@. fco22x*log(value(MAT)/mateq)/log(2))
 
-    # Computation of world-level aggregated variables
-    EIND = [sum(value.(EIND_R)[ti,ri] for ri in ridx) for ti in tidx]
-    ECO2E = [sum(value.(ECO2E_R)[ti,ri] for ri in ridx) for ti in tidx]
-    MIU = [((sum(value.(EIND_R)[ti,ri] for ri in ridx)/sum(sigma[ti,ri] * value.(YGROSS_R)[ti,ri] for ri in idx)) -1) for ti in tidx]
-    C = [sum(value.(C_R)[ti,ri] for ri in ridx) for ti in tidx]
-    K = [sum(value.(K_R)[ti,ri] for ri in ridx) for ti in tidx]
-    CPC = 1000 .* C ./ l
-    I = [sum(value.(I_R)[ti,ri] for ri in ridx) for ti in tidx]
-    S = [sum(value.(I_R)[ti,ri] for ri in ridx) / sum(value.(Y_R)[ti,ri] for ri in ridx) for ti in tidx]
-    Y = [sum(value.(Y_R)[ti,ri] for ri in ridx) for ti in tidx]
-    YGROSS = [sum(value.(YGROSS_R)[ti,ri] for ri in ridx) for ti in tidx]
-    YNET = [sum(value.(YNET_R)[ti,ri] for ri in ridx) for ti in tidx]
-    DAMAGES = [sum(value.(DAMAGES_R)[ti,ri] for ri in ridx) for ti in tidx]
-    DAMFRAC == [ sum(value.(DAMFRAC_R)[ti,ri] for ri in ridx) / sum(value.(YGROSS_R)[ti,ri] for ri in ridx) for ti in tidx]
-    ABATECOST = [sum(value.(ABATECOST_R)[ti,ri] for ri in ridx) for ti in tidx]
-
-    PERIODU = [sum(value.(PERIODU_R)[ti,ri] for ri in ridx) for ti in tidx]
-    F_GHGABATE = [sum(value.(F_GHGABATE_R)[ti,ri] for ri in ridx) for ti in tidx]
+    
 
     # Return results as named tuple
-    return (solved=true, status=status, times=times, tidx=tidx, rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2, EIND_R=collect(value.(EIND_R)), EIND=EIND, ECO2_R=collect(value.(ECO2_R)), ECO2=collect(value.(ECO2)), ECO2E=collect(value.(ECO2E)), F_GHGABATE_R=collect(value.(F_GHGABATE_R)), F_GHGABATE=F_GHGABATE, MIU_R=collect(value.(MIU_R)), MIU=MIU, C_R=collect(value.(C_R)), C=C, K_R=collect(value.(K_R)), K=K, CPC_R=collect(value.(CPC_R)), CPC=CPC, I_R=collect(value.(I_R)), I=I, S_R=collect(value.(S_R)), S=S, Y_R=collect(value.(Y_R)), Y=Y, YGROSS_R=collect(value.(YGROSS_R)), YGROSS=YGROSS, YNET_R=collect(value.(YNET_R)), YNET=YNET, DAMAGES_R=collect(value.(DAMAGES_R)), DAMAGES=DAMAGES, DAMFRAC_R=collect(value.(DAMFRAC_R)), DAMFRAC=DAMFRAC, ABATECOST_R=collect(value.(ABATECOST_R)), ABATECOST=ABATECOST, CCATOT=collect(value.(CCATOT)), PERIODU_R=collect(value.(PERIODU_R)), PERIODU=PERIODU, CPRICE_R=value.(CPRICE_R), TOTPERIODU=collect(value.(TOTPERIODU)), UTILITY=value(UTILITY), FORC=collect(value.(FORC)), TATM=collect(value.(TATM)), TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)), RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)), MAT=collect(value.(MAT)), CACC=collect(value.(CACC)), IRFT=collect(value.(IRFT)), ALPHA=collect(value.(ALPHA)),pars=p, model=m)
+    return (solved=true, status=status, times=times, tidx=tidx, rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2,
+      EIND_R=collect(value.(EIND_R)),EIND=collect(value.(EIND)),
+      ECO2_R=collect(value.(ECO2_R)),ECO2=collect(value.(ECO2)),
+      ECO2E_R=collect(value.(ECO2E_R)),ECO2E=collect(value.(ECO2E)),
+      F_GHGABATE_R=collect(value.(F_GHGABATE_R)),F_GHGABATE=collect(value.(F_GHGABATE)),
+      MIU_R=collect(value.(MIU_R)), MIU=collect(value.(MIU)),
+      C=collect(value.(C)),C_R=collect(value.(C_R)),
+      K=collect(value.(K)),K_R=collect(value.(K_R)),
+      CPC_R=collect(value.(CPC_R)), CPC=collect(value.(CPC)),
+      I_R=collect(value.(I_R)), I=collect(value.(I)),
+      S_R=collect(value.(S_R)), S=collect(value.(S)),
+      Y_R=collect(value.(Y_R)), Y=collect(value.(Y)),
+      YGROSS_R=collect(value.(YGROSS_R)), YGROSS=collect(value.(YGROSS)),
+      YNET_R=collect(value.(YNET_R)), YNET=collect(value.(YNET)),
+      DAMAGES_R=collect(value.(DAMAGES_R)), DAMAGES=collect(value.(DAMAGES)),
+      DAMFRAC_R=collect(value.(DAMFRAC_R)), DAMFRAC=collect(value.(DAMFRAC)),
+      ABATECOST_R=collect(value.(ABATECOST_R)), ABATECOST=collect(value.(ABATECOST)),
+      CCATOT=collect(value.(CCATOT)),
+      PERIODU_R=collect(value.(PERIODU_R)), PERIODU=collect(value.(PERIODU)),
+      CPRICE_R=value.(CPRICE_R),
+      TOTPERIODU=collect(value.(TOTPERIODU)),
+      UTILITY=value(UTILITY),
+      FORC=collect(value.(FORC)),
+      TATM=collect(value.(TATM)),
+      TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)),
+      RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)),
+      MAT=collect(value.(MAT)),
+      CACC=collect(value.(CACC)),
+      IRFT=collect(value.(IRFT)),
+      ALPHA=collect(value.(ALPHA)),
+      pars=p, model=m)
+
 
 end
 

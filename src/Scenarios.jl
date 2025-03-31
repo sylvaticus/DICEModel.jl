@@ -50,7 +50,7 @@ function run_dice_scenario(scenario::String)
         cpricebase  = @. cprice1*(1+gcprice)^times
         cpriceub    = [cpricebase[1:46]; fill(floatmax(Float64),81-46)]
         miulb = [fill(0.0,57);fill(1.0,81-57)]
-        bounds = Dict("CPRICE"=>("<=",cpriceub),"MIU"=>(">=",miulb))
+        bounds = Dict("CPRICE_R"=>("<=",cpriceub),"MIU_R"=>(">=",miulb))
         return run_dice(miuup = miuup, bounds = bounds)
     elseif scenario == "r5"
         prstp     = 0.05
@@ -77,7 +77,7 @@ function run_dice_scenario(scenario::String)
         rr        = rr1
         optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
         k0        = 326
-        return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav,bounds=Dict("CPRICE"=>("<=",1000)))
+        return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav,bounds=Dict("CPRICE_R"=>("<=",1000)))
     elseif scenario == "r3"
         prstp     = 0.03
         elasmu    = 0.001
