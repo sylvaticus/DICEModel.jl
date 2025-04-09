@@ -62,7 +62,7 @@ function run_dice_scenario(scenario::String)
         rr1       = @. 1/(1+prstp)^times
         [rr1[tid] = 1/(1+prstp)^(5*51) for tid in tidx[52:end]]
         rr        = rr1
-        optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
+        optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
         k0        = 290
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     elseif scenario == "r4"
@@ -75,7 +75,7 @@ function run_dice_scenario(scenario::String)
         rr1       = @. 1/(1+prstp)^times
         [rr1[tid] = 1/(1+prstp)^(5*80) for tid in tidx[82:end]]
         rr        = rr1
-        optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
+        optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
         k0        = 326
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav,bounds=Dict("CPRICE_R"=>("<=",1000)))
     elseif scenario == "r3"
@@ -87,7 +87,7 @@ function run_dice_scenario(scenario::String)
         gama      = 0.3 
         rr1       = @. 1/(1+prstp)^times
         rr        = rr1
-        optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
+        optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
         k0        = 370
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     elseif scenario == "r2"
@@ -99,7 +99,7 @@ function run_dice_scenario(scenario::String)
         gama      = 0.3 
         rr1       = @. 1/(1+prstp)^times
         rr        = rr1
-        optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
+        optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
         k0        = 409
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     elseif scenario == "r1"
@@ -111,7 +111,7 @@ function run_dice_scenario(scenario::String)
         gama      = 0.3 
         rr1       = @. 1/(1+prstp)^times
         rr        = rr1
-        optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
+        optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
         k0        = 420
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     end

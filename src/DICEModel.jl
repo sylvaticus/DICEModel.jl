@@ -61,21 +61,24 @@ Base.@kwdef struct Parameters
     "Name of the regions"
     regions = ["World"]
 
+    "Weights"
+    weights = [1.0]
+
     # --------------------------------------------------------------------
     # Population and technology
 
     "Capital elasticity in production function"
-    gama    = 0.3    
+    gama    = [0.3]    
     "Initial world population 2020 (millions)"  
-    pop1    = 7752.9
+    pop1    = [7752.9]
     "Growth rate to calibrate to 2050 population projection"
-    popadj  =   0.145
+    popadj  =   [0.145]
     "Asymptotic population (millions)"
-    popasym =  10825
+    popasym =  [10825]
     "Depreciation rate on capital (per year)"
-    dk      = 0.1     
+    dk      = [0.1]     
     "Initial world output 2020 (trill 2019 USD)"
-    q1      = 135.7   
+    q1      = [135.7]   
     "Initial level of total factor productivity"
     al1     = 5.84    
     "Initial growth rate for TFP per 5 years"
@@ -96,8 +99,6 @@ Base.@kwdef struct Parameters
     e1        = 37.56 
     "Emissions control rate historical 2020"
     miu1      = 0.05 
-    "Maximum cumulative extraction fossil fuels (GtC)"
-    fosslim   = 6000 
     "Cumulative emissions 2020 (GtC)"
     cumemiss0 = 633.5
 
@@ -114,9 +115,9 @@ Base.@kwdef struct Parameters
     # --------------------------------------------------------------------
     # Abatement cost
     "Exponent of control cost function"
-    expcost2  = 2.6   
+    expcost2  = [2.6]   
     "Cost of backstop in 2019\$ per tCO2 (2050)"
-    pback2050 = 515   
+    pback2050 = [515]   
     "Initial cost decline of backstop cost per year"
     gback     = -0.012
     "Carbon price in 2020 (2019\$ per tCO2)"
@@ -185,9 +186,9 @@ Base.@kwdef struct Parameters
     "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"
     eco2eghgb2100  = 15.5   
     "Ratio of CO2e to industrial CO2 in 2020"
-    emissrat2020   = 1.4    
+    emissrat2020   = [1.4]    
     "Ratio of CO2e to industrial CO2 in 2100"
-    emissrat2100   = 1.21   
+    emissrat2100   = [1.21]   
     "Coefficient of non-CO2 abateable emissions"
     fcoef1         = 0.00955
     "Coefficient of non-CO2 abateable emissions"
@@ -315,15 +316,15 @@ Base.@kwdef struct Parameters
     "STP with precautionary factor"
     rr        = @. rr1 * (1+rprecaut) ^ -times
     "Optimal long-run savings rate used for transversality"
-    optlrsav  = (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
+    optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
 
     # --------------------------------------------------------------------
     # Dynamic parameters
 
     "Level of population and labor (temp, used only for its first value)"
-    l_temp     = fill(pop1, ntsteps)
+    l_temp     = fill(0.0, ntsteps,nreg)
     "Level of population and labor"
-    l          = [l_temp[ti] = (ti == 1) ? pop1 : l_temp[ti-1] * (popasym / l_temp[ti-1])^popadj for ti in tidx]
+    l          = [l_temp[ti,ri] = (ti == 1) ? pop1[ri] : l_temp[ti-1,ri] * (popasym[ri] / l_temp[ti-1,ri])^popadj[ri] for ti in tidx, ri in ridx]
     "Growth rate of Total Factor Productivity"
     ga         = @. ga1*exp(-dela*times)
     "Level of total factor productivity (temp, used only for its first value)"
@@ -334,18 +335,18 @@ Base.@kwdef struct Parameters
     "Carbon price in base case"
     cpricebase = @. cprice1*(1+gcprice)^times
     "Backstop price 2019\$ per ton CO2"
-    pbacktime  = vcat(pback2050 .* exp.(-tstep .* 0.01 .* (tidx[1:7] .- 7)), pback2050 .* exp.(-tstep .* 0.001 .*(tidx[8:end] .-7 )) )
+    pbacktime  = hcat([vcat(pback2050[ri] .* exp.(-tstep .* 0.01 .* (tidx[1:7] .- 7)), pback2050[ri] .* exp.(-tstep .* 0.001 .*(tidx[8:end] .-7 )) ) for ri in ridx]...)
 
     "Carbon intensity 2020 kgCO2-output 2020"
-    sig1       = e1/(q1*(1-miu1))
+    sig1       = @. e1/(q1*(1-miu1))
 
     "Change in sigma (rate of decarbonization)"
     gsig       = @. min(gsigma1*delgsig ^(tidx-1),asymgsig)
 
     "CO2-emissions output ratio (temp, used only for its first value)"
-    sigma_temp = fill(sig1,ntsteps)
+    sigma_temp = fill(0.0,ntsteps, nreg)
     "CO2-emissions output ratio"
-    sigma      = [sigma_temp[ti] = (ti==1) ? sig1 : sigma_temp[ti-1] * exp(tstep*gsig[ti-1]) for ti in tidx]
+    sigma      = [sigma_temp[ti,ri] = (ti==1) ? sig1[ri] : sigma_temp[ti-1,ri] * exp(tstep*gsig[ti-1]) for ti in tidx, ri in ridx]
 
     # ------------------------------------------------------------------------------
     # Parameters emissions and non-CO2 
@@ -353,9 +354,9 @@ Base.@kwdef struct Parameters
     eland          = @. eland0*(1-deland)^t0idx      
     co2e_ghgabateb = eco2eghgb2020 .+ [(eco2eghgb2100-eco2eghgb2020) * min(1,ti/16) for ti in t0idx]
     f_misc         = f_misc2020    .+ [(f_misc2100-f_misc2020) * min(1,ti/16) for ti in t0idx]
-    emissrat       = emissrat2020  .+ [(emissrat2100-emissrat2020) * min(1,ti/16) for ti in t0idx]
+    emissrat       = [emissrat2020[ri] + (emissrat2100[ri]-emissrat2020[ri]) * min(1,ti/16) for ti in t0idx, ri in ridx]
     sigmatot       = @. sigma * emissrat
-    cost1tot       = @. pbacktime * sigmatot / expcost2/1000
+    cost1tot       = [pbacktime[ti,ri] * sigmatot[ti,ri] / expcost2[ri] / 1000 for ti in tidx, ri in ridx]
 
 end
 
@@ -408,7 +409,7 @@ res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_
 - The `bounds` add constraints to the problem, but do not replace hard written bounds in the model. In particular, the `miuup` parameter should be used instead for the upper limit of emission controls.
 - Bounds are always intended for the full time steps. If you need a bound for a subset of time steps (e.g. the first time step), you still need to assemble your full time array of the bound using `floatmin(Float64)` or `floatmax(Float64)` as appropriate.
 """
-function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
+function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
 
     issubset(keys(kwargs), fieldnames(Parameters)) || error("Not all keywords are valid parameters.")
     p = Parameters(;kwargs...)   # Override the default parameter values with the keyword arguments
@@ -532,18 +533,18 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Emissions and Damages
 
     # Industrial CO2 equation, regional
-    @constraint(m, eindeq_r[ti in tidx, ri in ridx], EIND_R[ti,ri] == (sigma[ti]*YGROSS_R[ti,ri])*(1-MIU_R[ti,ri]))
+    @constraint(m, eindeq_r[ti in tidx, ri in ridx], EIND_R[ti,ri] == (sigma[ti,ri]*YGROSS_R[ti,ri])*(1-MIU_R[ti,ri]))
     # Industrial CO2 equation, total
     @constraint(m, eindeq[ti in tidx], EIND[ti] == sum(EIND_R[ti,ri] for ri in ridx))
 
 
     # CO2 Emissions equation, regional
-    @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((sigma[ti]*YGROSS_R[ti,ri]) + eland[ti]) *(1-MIU_R[ti,ri]))
+    @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti]) *(1-MIU_R[ti,ri]))
     # CO2 Emissions equation
     @constraint(m, eco2eq[ti in tidx], ECO2[ti] == sum(ECO2_R[ti,ri] for ri in ridx))
 
     # CO2E Emissions equation, regional
-    @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((sigma[ti]*YGROSS_R[ti,ri]) + eland[ti] + co2e_ghgabateb[ti])*(1-MIU_R[ti,ri]))
+    @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti] + co2e_ghgabateb[ti])*(1-MIU_R[ti,ri]))
     # CO2E Emissions equation
     @constraint(m, eco2eeq[ti in tidx], ECO2E[ti] == sum(ECO2E_R[ti,ri] for ri in ridx))
 
@@ -565,17 +566,17 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @constraint(m, dameq[ti in tidx], DAMAGES[ti] == sum(DAMAGES_R[ti,ri] for ri in ridx))
 
     # Cost of emissions reductions equation
-    @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * cost1tot[ti] * (MIU_R[ti,ri]^expcost2))
+    @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * cost1tot[ti,ri] * (MIU_R[ti,ri]^expcost2[ri]))
     @constraint(m, abateeq[ti in tidx], ABATECOST[ti] == sum(ABATECOST_R[ti,ri] for ri in ridx))
 
     # Carbon price equation from abatement
-    @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == pbacktime[ti] * MIU_R[ti,ri]^(expcost2-1))
+    @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == pbacktime[ti,ri] * MIU_R[ti,ri]^(expcost2[ri]-1))
 
     # --------------------------------------------------------------------
     # Economic variables
 
     # Output gross equation
-    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti]*(l[ti]/1000)^(1-gama))*(K[ti]^gama))
+    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti]*(l[ti,ri]/1000)^(1-gama[ri]))*(K[ti]^gama[ri]))
     @constraint(m, ygrosseq[ti in tidx], YGROSS[ti] ==  sum(YGROSS_R[ti,ri] for ri in ridx))
 
     # Output net of damage equation
@@ -592,8 +593,8 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     
 
     # Per capita consumption definition
-    @constraint(m, cpce_r[ti in tidx, ri in ridx], CPC_R[ti,ri] == 1000 * C_R[ti,ri] / l[ti])
-    @constraint(m, cpce[ti in tidx], CPC[ti] == 1000 * C[ti] / l[ti])
+    @constraint(m, cpce_r[ti in tidx, ri in ridx], CPC_R[ti,ri] == 1000 * C_R[ti,ri] / l[ti,ri])
+    @constraint(m, cpce[ti in tidx], CPC[ti] == 1000 * C[ti]  / sum(l[ti,ri] for ri in ridx))
     
 
     # Savings rate equation
@@ -603,7 +604,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     # Capital balance equation
     @constraint(m, kk0_r[ri in ridx], K_R[1,ri] == k0)
-    @constraint(m, kk_r[ti in tidx[2:end],ri in ridx],  K_R[ti,ri] <= (1-dk)^tstep * K_R[ti-1,ri] + tstep * I_R[ti-1,ri])
+    @constraint(m, kk_r[ti in tidx[2:end],ri in ridx],  K_R[ti,ri] <= (1-dk[ri])^tstep * K_R[ti-1,ri] + tstep * I_R[ti-1,ri])
     @constraint(m, kk[ti in tidx],  K[ti] == sum(K_R[ti,ri] for ri in ridx))
     @constraint(m, klb_r[ti in tidx, ri in ridx],  K_R[ti,ri] >= 1)
 
@@ -611,11 +612,11 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Utility
 
     # Instantaneous utility function equation
-    @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/l[ti])^(1-elasmu)-1)/(1-elasmu)-1)
+    @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/l[ti,ri])^(1-elasmu)-1)/(1-elasmu)-1)
     @constraint(m, periodueq[ti in tidx], PERIODU[ti] == sum(PERIODU_R[ti,ri] for ri in ridx))
 
     # Period utility
-    @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * l[ti] * rr[ti] for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
+    @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * l[ti,ri] * rr[ti] * weights[ri] / sum(weights) for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
 
     # Total utility
     @constraint(m, utileq, UTILITY == tstep * scale1 * sum(TOTPERIODU[ti] for ti in tidx) + scale2)
@@ -736,5 +737,7 @@ end
 
 include("Scenarios.jl")       # Implementation of `run_dice_scenario`` with the "official" scenarios
 include("Precompilation.jl")  # Precompilation stuff for performances
+
+
 
 end # module DICEModel
