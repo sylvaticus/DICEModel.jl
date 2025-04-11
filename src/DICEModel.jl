@@ -34,7 +34,7 @@ end
 """
     Parameters
 
-This structure contains the "default" parameters, which can eventually be modified using keyword arguments in the `run_dice(pars)` function (e.g. `run_dice(a2base = 0.01)`).
+This structure contains the "default" parameters, which can eventually be modified using keyword arguments in the `run_dice(pars)` function (e.g. `run_dice(a2base = [0.01])`).
 
 The structure first defines some "raw" parameters, and then some "computed" parameters (mostly arrays of ntsteps length).
 Both can be overridden with keyword arguments in the `run_dice(pars)` function. In particular, "computed" parameters can be overridden in two ways: either by overriding the raw parameters from which they are computed, or by computing the parameter in a different way (outside the model) and overriding the computed parameter.
@@ -80,25 +80,25 @@ Base.@kwdef struct Parameters
     "Initial world output 2020 (trill 2019 USD)"
     q1      = [135.7]   
     "Initial level of total factor productivity"
-    al1     = 5.84    
+    al1     = [5.84]    
     "Initial growth rate for TFP per 5 years"
-    ga1     = 0.066   
+    ga1     = [0.066]   
     "Decline rate of TFP per 5 years"
-    dela    = 0.0015  
+    dela    = [0.0015]  
 
     # --------------------------------------------------------------------
     # Emissions parameters and Non-CO2 GHG with sigma = emissions/output
 
     "Initial growth of sigma (per year)"
-    gsigma1   = -0.015
+    gsigma1   = [-0.015]
     "Decline rate of gsigma per period"
-    delgsig   = 0.96
+    delgsig   = [0.96]
     "Asymptotic sigma"
-    asymgsig  = -0.005 
+    asymgsig  = [-0.005] 
     "Industrial emissions 2020 (GtCO2 per year)"
-    e1        = 37.56 
+    e1        = [37.56] 
     "Emissions control rate historical 2020"
-    miu1      = 0.05 
+    miu1      = [0.05] 
     "Cumulative emissions 2020 (GtC)"
     cumemiss0 = 633.5
 
@@ -106,11 +106,11 @@ Base.@kwdef struct Parameters
     # Climate damage parameters
 
     "Damage intercept"
-    a1     = 0       
+    a1     = [0]       
     "Damage quadratic term"
-    a2base = 0.003467
+    a2base = [0.003467]
     "Damage exponent"
-    a3     = 2
+    a3     = [2]
 
     # --------------------------------------------------------------------
     # Abatement cost
@@ -118,48 +118,42 @@ Base.@kwdef struct Parameters
     expcost2  = [2.6]   
     "Cost of backstop in 2019\$ per tCO2 (2050)"
     pback2050 = [515]   
-    "Initial cost decline of backstop cost per year"
-    gback     = -0.012
-    "Carbon price in 2020 (2019\$ per tCO2)"
-    cprice1   = 6     
-    "Growth rate of base carbon price per year"
-    gcprice   = 0.025 
 
     # --------------------------------------------------------------------
     # Limits on emissions controls
 
     "Emission control limit from 2070"
-    limmiu2070        = 1.0 
+    limmiu2070        = [1.0] 
     "Emission control limit from 2120"
-    limmiu2120        = 1.1 
+    limmiu2120        = [1.1] 
     "Emission control limit from 2220"
-    limmiu2200        = 1.05
+    limmiu2200        = [1.05]
     "Emission control limit from 2300"
-    limmiu2300        = 1.0 
+    limmiu2300        = [1.0] 
     "Emission control delta limit per period"
-    delmiumax         = 0.12
+    delmiumax         = [0.12]
 
     # --------------------------------------------------------------------
     # Preferences, growth uncertainty, and timing
 
     "Climate beta"
-    betaclim = 0.5  
+    betaclim = [0.5]  
     "Elasticity of marginal utility of consumption"
-    elasmu   = 0.95 
+    elasmu   = [0.95] 
     "Pure rate of social time preference"
-    prstp    = 0.001
+    prstp    = [0.001]
     "Capital risk premium (renamed to avoid conflict with Julia's pi)"
-    pi_val   = 0.05 
+    pi_val   = [0.05] 
     "Initial capital stock (10^12 2019 USD)"
-    k0       = 295  
+    k0       = [295]  
     "Annual standard deviation of consumption growth"
-    siggc1   = 0.01 
+    siggc1   = [0.01] 
 
     # --------------------------------------------------------------------
     # Scaling so that MU(C(1)) = 1 and objective function = PV consumption
 
     "Scaling factor for discounting"
-    srf    = 1000000   
+    srf    = [1000000]   
     "Multiplicative scaling coefficient"
     scale1 = 0.00891061
     "Additive scaling coefficient"
@@ -169,22 +163,20 @@ Base.@kwdef struct Parameters
     # Parameters for non-industrial emissions
 
     "Carbon emissions from land 2015 (GtCO2 per year)"
-    eland0         = 5.9    
+    eland0         = [5.9]    
     "Decline rate of land emissions (per period)"
-    deland         = 0.1    
+    deland         = [0.1]    
     "Non-abatable forcings 2020"
     f_misc2020     = -0.054 
     "Non-abatable forcings 2100"
     f_misc2100     = 0.265  
     "Forcings of abatable non-CO2 GHG in 2020"
-    f_ghgabate2020 = 0.518  
-    "Forcings of abatable non-CO2 GHG in 2100"
-    f_ghgabate2100 = 0.957  
+    f_ghgabate2020 = [0.518]  
 
     "Emissions of abatable non-CO2 GHG (GtCO2e) in 2020"
-    eco2eghgb2020  = 9.96   
+    eco2eghgb2020  = [9.96]   
     "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"
-    eco2eghgb2100  = 15.5   
+    eco2eghgb2100  = [15.5]   
     "Ratio of CO2e to industrial CO2 in 2020"
     emissrat2020   = [1.4]    
     "Ratio of CO2e to industrial CO2 in 2100"
@@ -277,44 +269,44 @@ Base.@kwdef struct Parameters
     ridx = 1:nreg
 
     "Risk-adjusted rate of time preference"
-    rartp = exp(prstp + betaclim*pi_val)-1  
+    rartp = @. exp(prstp + betaclim*pi_val)-1  
 
     # --------------------------------------------------------------------
     # Limits on emissions controls (computed)
 
     "Upper bounds on miu"
-    miuup = map(tid -> 
-        if tid == 1
+    miuup = [
+        if ti == 1
             0.05
-        elseif tid == 2
+        elseif ti == 2
             0.10
-        elseif tid < 9
-            delmiumax*(tid - 1)
-        elseif tid < 12
-            0.85+.05*(tid-8)
-        elseif tid < 21
-            limmiu2070
-        elseif tid < 38
-            limmiu2120
-        elseif tid < 58
-            limmiu2200
+        elseif ti < 9
+            delmiumax[ri]*(ti - 1)
+        elseif ti < 12
+            0.85+.05*(ti-8)
+        elseif ti < 21
+            limmiu2070[ri]
+        elseif ti < 38
+            limmiu2120[ri]
+        elseif ti < 58
+            limmiu2200[ri]
         else
-            limmiu2300       
+            limmiu2300[ri]       
         end
-        , 1:ntsteps
-    )
+        for ti in tidx, ri in ridx
+    ]
 
     # --------------------------------------------------------------------
     # Precautionary parameters
 
     "Variance of per capita consumption"
-    varpcc    = [min((siggc1^2)*t,(siggc1^2)*tstep*47) for t in times]
+    varpcc    = [min((siggc1[ri]^2)*t,(siggc1[ri]^2)*tstep*47) for t in times, ri in ridx]
     "Precautionary rate of return" 
-    rprecaut  = @. -0.5 * varpcc * elasmu^2
+    rprecaut  = [-0.5 * varpcc[ti,ri] * elasmu[ri]^2 for ti in tidx, ri in ridx]
     "STP factor without precautionary factor"
-    rr1       = @. 1 / ((1+rartp)^times)
+    rr1       = [1 / ((1+rartp[ri])^times[ti]) for ti in tidx, ri in ridx]
     "STP with precautionary factor"
-    rr        = @. rr1 * (1+rprecaut) ^ -times
+    rr        = [rr1[ti,ri] * (1+rprecaut[ti,ri]) ^ -times[ti] for ti in tidx, ri in ridx]
     "Optimal long-run savings rate used for transversality"
     optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + rartp)*gama
 
@@ -326,14 +318,12 @@ Base.@kwdef struct Parameters
     "Level of population and labor"
     l          = [l_temp[ti,ri] = (ti == 1) ? pop1[ri] : l_temp[ti-1,ri] * (popasym[ri] / l_temp[ti-1,ri])^popadj[ri] for ti in tidx, ri in ridx]
     "Growth rate of Total Factor Productivity"
-    ga         = @. ga1*exp(-dela*times)
+    ga         = [ga1[ri]*exp(-dela[ri]*times[ti]) for ti in tidx, ri in ridx]
     "Level of total factor productivity (temp, used only for its first value)"
-    al_temp    = fill(al1,ntsteps)
+    al_temp    = fill(0.0,ntsteps,nreg)
     "Level of total factor productivity"
-    al         = [al_temp[ti] = (ti == 1) ? al1 :  al_temp[ti-1] / (1 - ga[ti-1]) for ti in tidx]
+    al         = [al_temp[ti,ri] = (ti == 1) ? al1[ri] :  al_temp[ti-1,ri] / (1 - ga[ti-1,ri]) for ti in tidx,ri in ridx]
 
-    "Carbon price in base case"
-    cpricebase = @. cprice1*(1+gcprice)^times
     "Backstop price 2019\$ per ton CO2"
     pbacktime  = hcat([vcat(pback2050[ri] .* exp.(-tstep .* 0.01 .* (tidx[1:7] .- 7)), pback2050[ri] .* exp.(-tstep .* 0.001 .*(tidx[8:end] .-7 )) ) for ri in ridx]...)
 
@@ -341,18 +331,18 @@ Base.@kwdef struct Parameters
     sig1       = @. e1/(q1*(1-miu1))
 
     "Change in sigma (rate of decarbonization)"
-    gsig       = @. min(gsigma1*delgsig ^(tidx-1),asymgsig)
+    gsig       = [min(gsigma1[ri]*delgsig[ri] ^(ti-1),asymgsig[ri]) for ti in tidx, ri in ridx]
 
     "CO2-emissions output ratio (temp, used only for its first value)"
     sigma_temp = fill(0.0,ntsteps, nreg)
     "CO2-emissions output ratio"
-    sigma      = [sigma_temp[ti,ri] = (ti==1) ? sig1[ri] : sigma_temp[ti-1,ri] * exp(tstep*gsig[ti-1]) for ti in tidx, ri in ridx]
+    sigma      = [sigma_temp[ti,ri] = (ti==1) ? sig1[ri] : sigma_temp[ti-1,ri] * exp(tstep*gsig[ti-1,ri]) for ti in tidx, ri in ridx]
 
     # ------------------------------------------------------------------------------
     # Parameters emissions and non-CO2 
     
-    eland          = @. eland0*(1-deland)^t0idx      
-    co2e_ghgabateb = eco2eghgb2020 .+ [(eco2eghgb2100-eco2eghgb2020) * min(1,ti/16) for ti in t0idx]
+    eland          = [eland0[ri]*(1-deland[ri])^ti for ti in t0idx, ri in ridx]      
+    co2e_ghgabateb = [eco2eghgb2020[ri] + (eco2eghgb2100[ri]-eco2eghgb2020[ri]) * min(1,ti/16) for ti in t0idx, ri in ridx]
     f_misc         = f_misc2020    .+ [(f_misc2100-f_misc2020) * min(1,ti/16) for ti in t0idx]
     emissrat       = [emissrat2020[ri] + (emissrat2100[ri]-emissrat2020[ri]) * min(1,ti/16) for ti in t0idx, ri in ridx]
     sigmatot       = @. sigma * emissrat
@@ -510,7 +500,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @constraint(m, cacceq[ti in tidx], CACC[ti] == CCATOT[ti]-(MAT[ti]-mateq))
 
     # Radiative forcing equation
-    @constraint(m, force[ti in tidx, ri in ridx], FORC[ti] == fco22x*(log(MAT[ti]/mateq)/log(2)) + f_misc[ti]+sum(F_GHGABATE_R[ti,ri] for ri in ridx))
+    @constraint(m, force[ti in tidx], FORC[ti] == fco22x*(log(MAT[ti]/mateq)/log(2)) + f_misc[ti]+sum(F_GHGABATE_R[ti,ri] for ri in ridx))
 
     # Temperature box 1 law of motion
     @constraint(m, tbox1eq[ti in tidx], TBOX1[ti] ==  ((ti == 1) ? tbox10 : TBOX1[ti-1]*exp(-tstep/d1)+teq1*FORC[ti]*(1-exp(-tstep/d1))))
@@ -539,17 +529,17 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
 
     # CO2 Emissions equation, regional
-    @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti]) *(1-MIU_R[ti,ri]))
+    @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti,ri]) *(1-MIU_R[ti,ri]))
     # CO2 Emissions equation
     @constraint(m, eco2eq[ti in tidx], ECO2[ti] == sum(ECO2_R[ti,ri] for ri in ridx))
 
     # CO2E Emissions equation, regional
-    @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti] + co2e_ghgabateb[ti])*(1-MIU_R[ti,ri]))
+    @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti,ri] + co2e_ghgabateb[ti,ri])*(1-MIU_R[ti,ri]))
     # CO2E Emissions equation
     @constraint(m, eco2eeq[ti in tidx], ECO2E[ti] == sum(ECO2E_R[ti,ri] for ri in ridx))
 
     # Forcings abateable nonCO2 GHG equation, regional 
-    @constraint(m, f_ghgabateeq_r[ti in tidx, ri in ridx], F_GHGABATE_R[ti,ri] == ((ti == 1) ? f_ghgabate2020 : fcoef2*F_GHGABATE_R[ti-1,ri]+ fcoef1*co2e_ghgabateb[ti-1]*(1-MIU_R[ti-1,ri])))
+    @constraint(m, f_ghgabateeq_r[ti in tidx, ri in ridx], F_GHGABATE_R[ti,ri] == ((ti == 1) ? f_ghgabate2020[ri] : fcoef2*F_GHGABATE_R[ti-1,ri]+ fcoef1*co2e_ghgabateb[ti-1,ri]*(1-MIU_R[ti-1,ri])))
 
 
     # --------------------------------------------------------------------
@@ -559,7 +549,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @constraint(m, ccatoteq[ti in tidx], CCATOT[ti] == ((ti==1) ? cumemiss0 : CCATOT[ti-1] +  ECO2[ti-1]*(tstep/3.666)))
 
     # Equation for damage fraction
-    @constraint(m, damfraceq_r[ti in tidx, ri in ridx], DAMFRAC_R[ti,ri] == (a1*TATM[ti])+(a2base*TATM[ti]^a3))
+    @constraint(m, damfraceq_r[ti in tidx, ri in ridx], DAMFRAC_R[ti,ri] == (a1[ri]*TATM[ti])+(a2base[ri]*TATM[ti]^a3[ri]))
 
     # Damage equation
     @constraint(m, dameq_r[ti in tidx, ri in ridx], DAMAGES_R[ti,ri] == YGROSS_R[ti,ri] * DAMFRAC_R[ti,ri])
@@ -576,7 +566,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Economic variables
 
     # Output gross equation
-    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti]*(l[ti,ri]/1000)^(1-gama[ri]))*(K[ti]^gama[ri]))
+    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti,ri]*(l[ti,ri]/1000)^(1-gama[ri]))*(K[ti]^gama[ri]))
     @constraint(m, ygrosseq[ti in tidx], YGROSS[ti] ==  sum(YGROSS_R[ti,ri] for ri in ridx))
 
     # Output net of damage equation
@@ -603,7 +593,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     @constraint(m, seq[ti in tidx], S[ti] == I[ti] / Y[ti]) 
 
     # Capital balance equation
-    @constraint(m, kk0_r[ri in ridx], K_R[1,ri] == k0)
+    @constraint(m, kk0_r[ri in ridx], K_R[1,ri] == k0[ri])
     @constraint(m, kk_r[ti in tidx[2:end],ri in ridx],  K_R[ti,ri] <= (1-dk[ri])^tstep * K_R[ti-1,ri] + tstep * I_R[ti-1,ri])
     @constraint(m, kk[ti in tidx],  K[ti] == sum(K_R[ti,ri] for ri in ridx))
     @constraint(m, klb_r[ti in tidx, ri in ridx],  K_R[ti,ri] >= 1)
@@ -612,11 +602,11 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     # Utility
 
     # Instantaneous utility function equation
-    @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/l[ti,ri])^(1-elasmu)-1)/(1-elasmu)-1)
+    @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/l[ti,ri])^(1-elasmu[ri])-1)/(1-elasmu[ri])-1)
     @constraint(m, periodueq[ti in tidx], PERIODU[ti] == sum(PERIODU_R[ti,ri] for ri in ridx))
 
     # Period utility
-    @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * l[ti,ri] * rr[ti] * weights[ri] / sum(weights) for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
+    @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * l[ti,ri] * rr[ti,ri] * weights[ri] / sum(weights) for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
 
     # Total utility
     @constraint(m, utileq, UTILITY == tstep * scale1 * sum(TOTPERIODU[ti] for ti in tidx) + scale2)
@@ -627,7 +617,7 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
 
     @constraint(m, alphalb[ti in tidx] , ALPHA[ti] >= 0.1)
     @constraint(m, alphaub[ti in tidx] , ALPHA[ti] <= 100.0)
-    @constraint(m, miuub[ti in tidx, ri in ridx] , MIU_R[ti,ri] <= miuup[ti])
+    @constraint(m, miuub[ti in tidx, ri in ridx] , MIU_R[ti,ri] <= miuup[ti,ri])
     @constraint(m, sfix[ti in tidx[38:end]] , S[ti] == 0.28)
     @constraint(m, clb[ti in tidx,ri in ridx],  C_R[ti,ri] >= 2.0)
     @constraint(m, cpclb[ti in tidx, ri in ridx],  CPC_R[ti,ri] >= 0.01)
@@ -686,9 +676,9 @@ function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_le
     DAMFRAC    = [ sum(value.(DAMFRAC_R)[ti,ri] for ri in ridx) / sum(value.(YGROSS_R)[ti,ri] for ri in ridx) for ti in tidx]
 
     # Other post-optimization computaitons
-    rfactlong  =  collect(@. srf *(value(CPC)/value(CPC[1]))^(-elasmu)*rr)
-    rlong      =  [-log(rfactlong[ti]/srf)/(tstep*ti) for ti in tidx]
-    rshort     =  vcat(missing,[-log(rfactlong[ti]/rfactlong[ti-1])/tstep for ti in tidx[2:end]])
+    rfactlong  =  collect([srf[ri] *(value.(CPC_R)[ti,ri]/value.(CPC_R[1,ri]))^(-elasmu[ri])*rr[ti,ri] for ti in tidx for ri in ridx])
+    rlong      =  [-log(rfactlong[ti,ri]/srf[ri])/(tstep*ti) for ti in tidx,ri in ridx]
+    rshort     =  [ ti == 1 ? missing : -log(rfactlong[ti,ri]/rfactlong[ti-1,ri])/tstep for ti in tidx, ri in ridx]
 
     scc        = collect(@. -1000*dual(eco2eq_r) /(0.00001+dual(cc_r)))
     ppm        = collect(value.(MAT) ./ 2.13)

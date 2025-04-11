@@ -35,7 +35,7 @@ function run_dice_scenario(scenario::String)
     elseif scenario == "t15c"
         return run_dice(bounds = Dict("TATM"=>("<=",1.5)))
     elseif scenario == "altdam"
-        return run_dice(a2base = 0.01)
+        return run_dice(a2base = [0.01])
     elseif scenario == "parisext"
         tidx = 1:81
         miuup = @. min( 0.05 + 0.04*(tidx-1) - 0.01*max(0,tidx-5)  ,1.00)
@@ -63,7 +63,7 @@ function run_dice_scenario(scenario::String)
         [rr1[tid] = 1/(1+prstp)^(5*51) for tid in tidx[52:end]]
         rr        = rr1
         optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
-        k0        = 290
+        k0        = [290]
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     elseif scenario == "r4"
         prstp     = 0.04
@@ -76,7 +76,7 @@ function run_dice_scenario(scenario::String)
         [rr1[tid] = 1/(1+prstp)^(5*80) for tid in tidx[82:end]]
         rr        = rr1
         optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
-        k0        = 326
+        k0        = [326]
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav,bounds=Dict("CPRICE_R"=>("<=",1000)))
     elseif scenario == "r3"
         prstp     = 0.03
@@ -88,7 +88,7 @@ function run_dice_scenario(scenario::String)
         rr1       = @. 1/(1+prstp)^times
         rr        = rr1
         optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
-        k0        = 370
+        k0        = [370]
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     elseif scenario == "r2"
         prstp     = 0.02
@@ -100,7 +100,7 @@ function run_dice_scenario(scenario::String)
         rr1       = @. 1/(1+prstp)^times
         rr        = rr1
         optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
-        k0        = 409
+        k0        = [409]
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     elseif scenario == "r1"
         prstp     = 0.01
@@ -112,7 +112,7 @@ function run_dice_scenario(scenario::String)
         rr1       = @. 1/(1+prstp)^times
         rr        = rr1
         optlrsav  = @. (dk + 0.004)/(dk + 0.004*elasmu + prstp)*gama
-        k0        = 420
+        k0        = [420]
         return run_dice(prstp = prstp, elasmu = elasmu,rr1=rr1,rr=rr,k0=k0,optlrsav = optlrsav)
     end
 end
