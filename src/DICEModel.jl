@@ -11,6 +11,7 @@ module DICEModel
 
 export run_dice, run_dice_scenario, DICEParameters, DICE2023, DICE2023_2REG,RICE2023
 using PrecompileTools, DocStringExtensions # just for precompilation and documentation 
+import Random
 using JuMP, Ipopt
 
 include("Parameters.jl")
@@ -56,8 +57,10 @@ res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_
 #    issubset(keys(kwargs), fieldnames(Dice2023)) || error("Not all keywords are valid parameters.")
 #    p = Dice2023(;kwargs...)   # Override the default parameter values with the keyword arguments
 
-function run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}()) 
+function run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}()) 
 
+    Random.seed!(123)
+    
     @fields_to_vars DICEParameters pars # Copy of the RowParameters fields to local variables (for readibility)
 
     ######################################################################
@@ -380,7 +383,7 @@ function run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt
 
 end
 
-function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
+function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
 
     issubset(keys(kwargs), fieldnames(DICEParameters)) || error("Not all keywords are valid parameters.")
     pars = DICE2023(;kwargs...)   # Override the default parameter values with the keyword arguments
