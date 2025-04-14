@@ -4,10 +4,13 @@ using JuMP, Ipopt
 
 println("Testing DICEModel...")
 
-res_cbopt    = run_dice_scenario("cbopt")
+res_cbopt    = run_dice()
+res_cbopt2   = run_dice(DICE2023())
+res_cbopt3   = run_dice_scenario("cbopt")
 res_t2c      = run_dice_scenario("t2c")
 res_t15c     = run_dice_scenario("t15c")
 res_altdam   = run_dice_scenario("altdam")
+res_altdam2  = run_dice(DICE2023(a2base = [0.01]))
 res_parisext = run_dice_scenario("parisext")
 res_base     = run_dice_scenario("base")
 res_r5       = run_dice_scenario("r5")
@@ -15,6 +18,16 @@ res_r4       = run_dice_scenario("r4")
 res_r3       = run_dice_scenario("r3")
 res_r2       = run_dice_scenario("r2")
 res_r1       = run_dice_scenario("r1")
+
+@testset "Test API equivalence" begin
+    @test res_cbopt.ECO2 == res_cbopt2.ECO2 == res_cbopt3.ECO2
+    @test res_altdam.TATM == res_altdam2.TATM
+end
+
+#for (k) in keys(res_cbopt)
+#    isequal(res_cbopt[k],res_cbopt2[k]) || println(k)
+#end
+
 
 @testset "Test CB Optimal" begin
     @test res_cbopt.solved == true
@@ -75,4 +88,13 @@ end
     @test isapprox(res_r2.scc[7,1], 302, atol=0.51)
     #@test isapprox(res_r1.scc[1], 485, atol=0.51)
     @test isapprox(res_r1.scc[7,1], 695, atol=0.51)
+end
+
+# -----------------------------------------------------------------------------
+# Multiple regions test
+res_cbopt_2r = run_dice(DICE2023_2REG())
+
+@testset "DICE2023 with 2 equal regions" begin
+    @test res_cbopt_2r.solved == true
+    @test res_cbopt_2r.ECO2_R[:,1] ≈ res_cbopt_2r.ECO2_R[:,2]
 end
