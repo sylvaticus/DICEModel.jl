@@ -9,15 +9,16 @@ Implementation of the DICE 2023 model
 """
 module DICEModel
 
-export run_dice, run_dice_scenario, DICEParameters, DICE2023, DICE2023_2REG,RICE2023
+export run_dice, run_dice_scenario, DICEParameters, DICE2023, DICE2023_2REG,RICE2020, RICE2023
 using PrecompileTools, DocStringExtensions # just for precompilation and documentation 
 import Random
 using JuMP, Ipopt
 
+include("Utilities.jl")
 include("Parameters.jl")
 
 """
-    run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0), bounds=Dict{String,Tuple{String,String}}(),kwargs...)
+    run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0), bounds=Dict{String,Tuple{String,String}}())
 
 Run the DICE model (currently v 2023), possibly with custom optimiser, bounds or parameters.
 
@@ -52,16 +53,15 @@ res_crazy = run_dice(optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_
 - The `bounds` add constraints to the problem, but do not replace hard written bounds in the model. In particular, the `miuup` parameter should be used instead for the upper limit of emission controls.
 - Bounds are always intended for the full time steps. If you need a bound for a subset of time steps (e.g. the first time step), you still need to assemble your full time array of the bound using `floatmin(Float64)` or `floatmax(Float64)` as appropriate.
 """
-#function run_dice(;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}(),kwargs...) 
-
-#    issubset(keys(kwargs), fieldnames(Dice2023)) || error("Not all keywords are valid parameters.")
-#    p = Dice2023(;kwargs...)   # Override the default parameter values with the keyword arguments
-
-function run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_iter" => 3000, ), bounds=Dict{String,Tuple{String,String}}()) 
+function run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, 
+    "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20, 
+    ), bounds=Dict{String,Tuple{String,String}}()) 
 
     Random.seed!(123)
     
     @fields_to_vars DICEParameters pars # Copy of the RowParameters fields to local variables (for readibility)
+
+    weights = scaleweights(weights)
 
     ######################################################################
     # Optimization model & computation options
@@ -224,7 +224,7 @@ function run_dice(pars::DICEParameters;optimizer=optimizer_with_attributes(Ipopt
     # Economic variables
 
     # Output gross equation
-    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti,ri]*(l[ti,ri]/1000)^(1-gama[ri]))*(K[ti]^gama[ri]))
+    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti,ri]*(l[ti,ri]/1000)^(1-gamma[ri]))*(K[ti]^gamma[ri]))
     @constraint(m, ygrosseq[ti in tidx], YGROSS[ti] ==  sum(YGROSS_R[ti,ri] for ri in ridx))
 
     # Output net of damage equation

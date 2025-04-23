@@ -91,6 +91,18 @@ end
 end
 
 # -----------------------------------------------------------------------------
+# Scaling weigth test
+@testset "Scaling weights test" begin
+    w1  = [0.98,0.01,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001]
+    w2  = [10,20,70]
+    w1b = DICEModel.scaleweights(w1)
+    w2b = DICEModel.scaleweights(w2)
+    @test w1b == w1
+    @test sum(w2b)    == 1
+    @test length(w2b) == 3
+end
+
+# -----------------------------------------------------------------------------
 # Multiple regions test
 res_cbopt_2r = run_dice(DICE2023_2REG())
 
@@ -98,3 +110,38 @@ res_cbopt_2r = run_dice(DICE2023_2REG())
     @test res_cbopt_2r.solved == true
     @test res_cbopt_2r.ECO2_R[:,1] ≈ res_cbopt_2r.ECO2_R[:,2]
 end
+
+
+w_rich  = [5,4,3,3,1,1,3,2,2,1,1.5,1]
+w_equal = fill(1,12)
+w_poor  = [1,1,1,1.5,2,2,3,3,2,5,5,5]
+pars = RICE2023(;weights=w_poor)
+res_cbopt_12r = run_dice(pars;optimizer=optimizer_with_attributes(Ipopt.Optimizer,
+"print_level" => 5, "max_iter" => 1000, "acceptable_tol" =>10^-4, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^8, "acceptable_constr_viol_tol" => 0.1, "acceptable_compl_inf_tol" =>0.1, "acceptable_obj_change_tol" =>10.0^10, 
+    ))
+
+res_cbopt_12r.ECO2_R[:,1] ≈ res_cbopt_12r.ECO2_R[:,2]
+
+
+
+
+e1 = [0, 0, 0, 0, 0, 0, 0.04, 0, 0, 0, 0, 0.56]
+e1s = sum(e1)
+
+eland0 = e1 .* 5.9/e1s 
+
+res_cbopt_12r = run_dice(pars;optimizer=optimizer_with_attributes(Ipopt.Optimizer,
+  "print_level" => 5,
+  "max_iter" => 300, 
+  "tol" =>1000.0,
+  "dual_inf_tol" => 1000000.0,
+  "constr_viol_tol" => 1000.0,
+  "compl_inf_tol" => 1000.0
+))
+
+
+
+
+
+res_cbopt_12r.ECO2
+res_cbopt.ECO2
