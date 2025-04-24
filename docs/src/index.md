@@ -23,6 +23,8 @@ In both cases the output (results) is a named tuple. Use `keys(results)` to find
 
 A summary of the main results, and a comparision with the official Barrage/Nordhaus DICE2023 version, is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
 
+Som()e results of the multi-regional implementations are [here](https://sylvaticus.github.io/DICEModel.jl/dev/rice_results.html).
+
 An Excel version of all the results for DICE2023 is available [here](DICEModelDetailedResults.xlsx).
 
 ### Example

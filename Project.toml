@@ -1,7 +1,3 @@
-# Part of [DICEModel](https://github.com/sylvaticus/DICEModel.jl). Licence is MIT.
-
-# This file contains the metadata about the package, the list of direct dependencies and their know-to-work ranges (while your local `Manifest.toml` file contains the exact version of all the dependencies)
-
 name = "DICEModel"
 uuid = "a78ebace-d296-4f52-9067-75f12fe9a0bd"
 authors = ["Antonello Lobianco <antonello@lobianco.org>"]
