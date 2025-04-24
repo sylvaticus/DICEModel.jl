@@ -16,11 +16,10 @@ import Random
 using DocStringExtensions # just for precompilation and documentation 
 using JuMP, Ipopt
 
-include("Utilities.jl")       # Utility functions such `fields_to_vars` and `scaleweights`
 include("Parameters.jl")      # Contain the definition of the parameters struct and several functions with predefined "defaults" (DICE2023, RICE2023...)
 include("CoreModel.jl")       # Contains `run_dice`, the low level function that runs the optimizations 
 include("Scenarios.jl")       # Implementation of `run_dice_scenario` with the "official" DICE2023 named scenarios
-include("Precompilation.jl")  # Precompilation stuff needed for performances
+#include("Precompilation.jl")  # Precompilation stuff needed for performances
 
 
 

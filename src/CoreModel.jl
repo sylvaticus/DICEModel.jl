@@ -5,7 +5,7 @@ This file contains `run_dice`, the low-level function that runs the optimization
 """
 
 """
-    run_dice(pars;optimizer,bounds)
+    run_dice(parameters;optimizer,bounds)
     run_dice(;optimizer,bounds,kwargs...)
 
 Run the D(R)ICE models (currently with the structure and, by default, the data of DICE2023), possibly with custom optimiser, bounds or parameters.
@@ -15,7 +15,7 @@ This function runs the DICE model and returns the results as a named tuple. Note
 # Function arguments
 
 ## Positional:
-- `pars`: An istance of the [`DICEModel`](@ref) struct containing the needed parameters
+- `parameters`: An istance of the [`DICEModel`](@ref) struct containing the needed parameters
 
 ## Keyword arguments:
 - `optimizer': The optimiser to use and possibly its options. Defaults to: [`optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20)`]. All, except the print levels, are the Ipopt defaults.
@@ -52,16 +52,17 @@ res_12regions_devprior = run_dice(RICE2023(;weights=w_dev_country_priority))
 - The weights used in the [`DICEParameters`](@ref) struct are exogenous, are NOT the Negishi weights. The `run_dice` function can eventually be used iteractively to look for these weights.
 """
 function run_dice(
-      pars::DICEParameters;
+      p::DICEParameters;
       optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20),
       bounds = Dict{String,Tuple{String,String}}()
     ) 
 
     Random.seed!(123)
     
-    @fields_to_vars DICEParameters pars # Copy of the RowParameters fields to local variables (for readibility)
+    # Some indexes (parameters) renamed for readibility
+    tidx = p.tidx
+    ridx = p.ridx
 
-    weights = scaleweights(weights)
 
     ######################################################################
     # Optimization model & computation options
@@ -139,92 +140,92 @@ function run_dice(
     # Note: initial conditionsand stability bounds are set here as contraints, we can also try as fixed value
 
     # Reservoir 0 law of motion
-    @constraint(m, res0lom[ti in tidx], RES0[ti] ==  ((ti == 1) ? res00 : (emshare0*tau0*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-tstep/(tau0*ALPHA[ti])))+RES0[ti-1]*exp(-tstep/(tau0*ALPHA[ti]))))
+    @constraint(m, res0lom[ti in tidx], RES0[ti] ==  ((ti == 1) ? p.res00 : (p.emshare0*p.tau0*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-p.tstep/(p.tau0*ALPHA[ti])))+RES0[ti-1]*exp(-p.tstep/(p.tau0*ALPHA[ti]))))
 
     #Reservoir 1 law of motion
-    @constraint(m, res1lom[ti in tidx], RES1[ti] == ((ti == 1) ? res10 :  (emshare1*tau1*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-tstep/(tau1*ALPHA[ti])))+RES1[ti-1]*exp(-tstep/(tau1*ALPHA[ti]))))
+    @constraint(m, res1lom[ti in tidx], RES1[ti] == ((ti == 1) ? p.res10 :  (p.emshare1*p.tau1*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-p.tstep/(p.tau1*ALPHA[ti])))+RES1[ti-1]*exp(-p.tstep/(p.tau1*ALPHA[ti]))))
 
     # Reservoir 2 law of motion
-    @constraint(m, res2lom[ti in tidx], RES2[ti] ==  ((ti == 1) ? res20 : (emshare2*tau2*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-tstep/(tau2*ALPHA[ti])))+RES2[ti-1]*exp(-tstep/(tau2*ALPHA[ti]))))
+    @constraint(m, res2lom[ti in tidx], RES2[ti] ==  ((ti == 1) ? p.res20 : (p.emshare2*p.tau2*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-p.tstep/(p.tau2*ALPHA[ti])))+RES2[ti-1]*exp(-p.tstep/(p.tau2*ALPHA[ti]))))
 
     # Reservoir 3 law of motion 
-    @constraint(m, res3lom[ti in tidx], RES3[ti] ==  ((ti == 1) ? res30 : (emshare3*tau3*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-tstep/(tau3*ALPHA[ti])))+RES3[ti-1]*exp(-tstep/(tau3*ALPHA[ti]))))
+    @constraint(m, res3lom[ti in tidx], RES3[ti] ==  ((ti == 1) ? p.res30 : (p.emshare3*p.tau3*ALPHA[ti]*(ECO2[ti]/3.667))*(1-exp(-p.tstep/(p.tau3*ALPHA[ti])))+RES3[ti-1]*exp(-p.tstep/(p.tau3*ALPHA[ti]))))
 
     # Atmospheric concentration equation
     @constraint(m, matlb[ti in tidx], MAT[ti] >= 10.0)
-    @constraint(m, mmat[ti in tidx], MAT[ti] == ((ti == 1) ? mat0 : mateq + RES0[ti] + RES1[ti] + RES2[ti] + RES3[ti]))
+    @constraint(m, mmat[ti in tidx], MAT[ti] == ((ti == 1) ? p.mat0 : p.mateq + RES0[ti] + RES1[ti] + RES2[ti] + RES3[ti]))
 
     # Accumulated carbon in sinks equation
-    @constraint(m, cacceq[ti in tidx], CACC[ti] == CCATOT[ti]-(MAT[ti]-mateq))
+    @constraint(m, cacceq[ti in tidx], CACC[ti] == CCATOT[ti]-(MAT[ti]-p.mateq))
 
     # Radiative forcing equation
-    @constraint(m, force[ti in tidx], FORC[ti] == fco22x*(log(MAT[ti]/mateq)/log(2)) + f_misc[ti]+sum(F_GHGABATE_R[ti,ri] for ri in ridx))
+    @constraint(m, force[ti in tidx], FORC[ti] == p.fco22x*(log(MAT[ti]/p.mateq)/log(2)) + p.f_misc[ti]+sum(F_GHGABATE_R[ti,ri] for ri in ridx))
 
     # Temperature box 1 law of motion
-    @constraint(m, tbox1eq[ti in tidx], TBOX1[ti] ==  ((ti == 1) ? tbox10 : TBOX1[ti-1]*exp(-tstep/d1)+teq1*FORC[ti]*(1-exp(-tstep/d1))))
+    @constraint(m, tbox1eq[ti in tidx], TBOX1[ti] ==  ((ti == 1) ? p.tbox10 : TBOX1[ti-1]*exp(-p.tstep/p.d1)+p.teq1*FORC[ti]*(1-exp(-p.tstep/p.d1))))
 
     # Temperature box 2 law of motion
-    @constraint(m, tbox2eq[ti in tidx], TBOX2[ti] ==  ((ti == 1) ? tbox20 : TBOX2[ti-1]*exp(-tstep/d2)+teq2*FORC[ti]*(1-exp(-tstep/d2))))
+    @constraint(m, tbox2eq[ti in tidx], TBOX2[ti] ==  ((ti == 1) ? p.tbox20 : TBOX2[ti-1]*exp(-p.tstep/p.d2)+p.teq2*FORC[ti]*(1-exp(-p.tstep/p.d2))))
 
     # Temperature-climate equation for atmosphere
     @constraint(m, tatmlb[ti in tidx], TATM[ti] >= 0.5)
     @constraint(m, tatmub[ti in tidx], TATM[ti] <= 20.0)
-    @constraint(m, tatmeq[ti in tidx], TATM[ti] ==  ((ti == 1) ? tatm0 : TBOX1[ti]+TBOX2[ti]))
+    @constraint(m, tatmeq[ti in tidx], TATM[ti] ==  ((ti == 1) ? p.tatm0 : TBOX1[ti]+TBOX2[ti]))
 
     # Left-hand side of IRF100 equation
-    @constraint(m, irfeqlhs[ti in tidx],  IRFT[ti] == (ALPHA[ti]*emshare0*tau0*(1-exp(-100/(ALPHA[ti]*tau0))))+(ALPHA[ti]*emshare1*tau1*(1-exp(-100/(ALPHA[ti]*tau1))))+(ALPHA[ti]*emshare2*tau2*(1-exp(-100/(ALPHA[ti]*tau2))))+(ALPHA[ti]*emshare3*tau3*(1-exp(-100/(ALPHA[ti]*tau3)))))
+    @constraint(m, irfeqlhs[ti in tidx],  IRFT[ti] == (ALPHA[ti]*p.emshare0*p.tau0*(1-exp(-100/(ALPHA[ti]*p.tau0))))+(ALPHA[ti]*p.emshare1*p.tau1*(1-exp(-100/(ALPHA[ti]*p.tau1))))+(ALPHA[ti]*p.emshare2*p.tau2*(1-exp(-100/(ALPHA[ti]*p.tau2))))+(ALPHA[ti]*p.emshare3*p.tau3*(1-exp(-100/(ALPHA[ti]*p.tau3)))))
 
     # Right-hand side of IRF100 equation
-    @constraint(m, irfeqrhs[ti in tidx],  IRFT[ti] == irf0+irc*CACC[ti]+irt*TATM[ti])
+    @constraint(m, irfeqrhs[ti in tidx],  IRFT[ti] == p.irf0+p.irc*CACC[ti]+p.irt*TATM[ti])
 
     # --------------------------------------------------------------------
     # Emissions and Damages
 
     # Industrial CO2 equation, regional
-    @constraint(m, eindeq_r[ti in tidx, ri in ridx], EIND_R[ti,ri] == (sigma[ti,ri]*YGROSS_R[ti,ri])*(1-MIU_R[ti,ri]))
+    @constraint(m, eindeq_r[ti in tidx, ri in ridx], EIND_R[ti,ri] == (p.sigma[ti,ri]*YGROSS_R[ti,ri])*(1-MIU_R[ti,ri]))
     # Industrial CO2 equation, total
     @constraint(m, eindeq[ti in tidx], EIND[ti] == sum(EIND_R[ti,ri] for ri in ridx))
 
 
     # CO2 Emissions equation, regional
-    @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti,ri]) *(1-MIU_R[ti,ri]))
+    @constraint(m, eco2eq_r[ti in tidx, ri in ridx], ECO2_R[ti,ri] == ((p.sigma[ti,ri]*YGROSS_R[ti,ri]) + p.eland[ti,ri]) *(1-MIU_R[ti,ri]))
     # CO2 Emissions equation
     @constraint(m, eco2eq[ti in tidx], ECO2[ti] == sum(ECO2_R[ti,ri] for ri in ridx))
 
     # CO2E Emissions equation, regional
-    @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((sigma[ti,ri]*YGROSS_R[ti,ri]) + eland[ti,ri] + co2e_ghgabateb[ti,ri])*(1-MIU_R[ti,ri]))
+    @constraint(m, eco2eeq_r[ti in tidx, ri in ridx], ECO2E_R[ti,ri] == ((p.sigma[ti,ri]*YGROSS_R[ti,ri]) + p.eland[ti,ri] + p.co2e_ghgabateb[ti,ri])*(1-MIU_R[ti,ri]))
     # CO2E Emissions equation
     @constraint(m, eco2eeq[ti in tidx], ECO2E[ti] == sum(ECO2E_R[ti,ri] for ri in ridx))
 
     # Forcings abateable nonCO2 GHG equation, regional 
-    @constraint(m, f_ghgabateeq_r[ti in tidx, ri in ridx], F_GHGABATE_R[ti,ri] == ((ti == 1) ? f_ghgabate2020[ri] : fcoef2*F_GHGABATE_R[ti-1,ri]+ fcoef1*co2e_ghgabateb[ti-1,ri]*(1-MIU_R[ti-1,ri])))
+    @constraint(m, f_ghgabateeq_r[ti in tidx, ri in ridx], F_GHGABATE_R[ti,ri] == ((ti == 1) ? p.f_ghgabate2020[ri] : p.fcoef2*F_GHGABATE_R[ti-1,ri]+ p.fcoef1*p.co2e_ghgabateb[ti-1,ri]*(1-MIU_R[ti-1,ri])))
 
 
     # --------------------------------------------------------------------
     # Emissions and damage
 
     # Cumulative total carbon emissions
-    @constraint(m, ccatoteq[ti in tidx], CCATOT[ti] == ((ti==1) ? cumemiss0 : CCATOT[ti-1] +  ECO2[ti-1]*(tstep/3.666)))
+    @constraint(m, ccatoteq[ti in tidx], CCATOT[ti] == ((ti==1) ? p.cumemiss0 : CCATOT[ti-1] +  ECO2[ti-1]*(p.tstep/3.666)))
 
     # Equation for damage fraction
-    @constraint(m, damfraceq_r[ti in tidx, ri in ridx], DAMFRAC_R[ti,ri] == (a1[ri]*TATM[ti])+(a2base[ri]*TATM[ti]^a3[ri]))
+    @constraint(m, damfraceq_r[ti in tidx, ri in ridx], DAMFRAC_R[ti,ri] == (p.a1[ri]*TATM[ti])+(p.a2base[ri]*TATM[ti]^p.a3[ri]))
 
     # Damage equation
     @constraint(m, dameq_r[ti in tidx, ri in ridx], DAMAGES_R[ti,ri] == YGROSS_R[ti,ri] * DAMFRAC_R[ti,ri])
     @constraint(m, dameq[ti in tidx], DAMAGES[ti] == sum(DAMAGES_R[ti,ri] for ri in ridx))
 
     # Cost of emissions reductions equation
-    @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * cost1tot[ti,ri] * (MIU_R[ti,ri]^expcost2[ri]))
+    @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * p.cost1tot[ti,ri] * (MIU_R[ti,ri]^p.expcost2[ri]))
     @constraint(m, abateeq[ti in tidx], ABATECOST[ti] == sum(ABATECOST_R[ti,ri] for ri in ridx))
 
     # Carbon price equation from abatement
-    @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == pbacktime[ti,ri] * MIU_R[ti,ri]^(expcost2[ri]-1))
+    @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == p.pbacktime[ti,ri] * MIU_R[ti,ri]^(p.expcost2[ri]-1))
 
     # --------------------------------------------------------------------
     # Economic variables
 
     # Output gross equation
-    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti,ri]*(l[ti,ri]/1000)^(1-gamma[ri]))*(K[ti]^gamma[ri]))
+    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (p.al[ti,ri]*(p.l[ti,ri]/1000)^(1-p.gamma[ri]))*(K[ti]^p.gamma[ri]))
     @constraint(m, ygrosseq[ti in tidx], YGROSS[ti] ==  sum(YGROSS_R[ti,ri] for ri in ridx))
 
     # Output net of damage equation
@@ -241,8 +242,8 @@ function run_dice(
     
 
     # Per capita consumption definition
-    @constraint(m, cpce_r[ti in tidx, ri in ridx], CPC_R[ti,ri] == 1000 * C_R[ti,ri] / l[ti,ri])
-    @constraint(m, cpce[ti in tidx], CPC[ti] == 1000 * C[ti]  / sum(l[ti,ri] for ri in ridx))
+    @constraint(m, cpce_r[ti in tidx, ri in ridx], CPC_R[ti,ri] == 1000 * C_R[ti,ri] / p.l[ti,ri])
+    @constraint(m, cpce[ti in tidx], CPC[ti] == 1000 * C[ti]  / sum(p.l[ti,ri] for ri in ridx))
     
 
     # Savings rate equation
@@ -251,8 +252,8 @@ function run_dice(
     @constraint(m, seq[ti in tidx], S[ti] == I[ti] / Y[ti]) 
 
     # Capital balance equation
-    @constraint(m, kk0_r[ri in ridx], K_R[1,ri] == k0[ri])
-    @constraint(m, kk_r[ti in tidx[2:end],ri in ridx],  K_R[ti,ri] <= (1-dk[ri])^tstep * K_R[ti-1,ri] + tstep * I_R[ti-1,ri])
+    @constraint(m, kk0_r[ri in ridx], K_R[1,ri] == p.k0[ri])
+    @constraint(m, kk_r[ti in tidx[2:end],ri in ridx],  K_R[ti,ri] <= (1-p.dk[ri])^p.tstep * K_R[ti-1,ri] + p.tstep * I_R[ti-1,ri])
     @constraint(m, kk[ti in tidx],  K[ti] == sum(K_R[ti,ri] for ri in ridx))
     @constraint(m, klb_r[ti in tidx, ri in ridx],  K_R[ti,ri] >= 1)
 
@@ -260,14 +261,14 @@ function run_dice(
     # Utility
 
     # Instantaneous utility function equation
-    @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/l[ti,ri])^(1-elasmu[ri])-1)/(1-elasmu[ri])-1)
+    @constraint(m, periodueq_r[ti in tidx, ri in ridx], PERIODU_R[ti,ri] == ((C_R[ti,ri]*1000/p.l[ti,ri])^(1-p.elasmu[ri])-1)/(1-p.elasmu[ri])-1)
     @constraint(m, periodueq[ti in tidx], PERIODU[ti] == sum(PERIODU_R[ti,ri] for ri in ridx))
 
     # Period utility
-    @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * l[ti,ri] * rr[ti,ri] * weights[ri] / sum(weights) for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
+    @constraint(m, totperiodueq[ti in tidx], TOTPERIODU[ti] == sum(PERIODU_R[ti,ri] * p.l[ti,ri] * p.rr[ti,ri] * p.weights[ri] / sum(p.weights) for ri in ridx)) # note: here rr will be rr[ti,ri] to consider the regional weigths
 
     # Total utility
-    @constraint(m, utileq, UTILITY == tstep * scale1 * sum(TOTPERIODU[ti] for ti in tidx) + scale2)
+    @constraint(m, utileq, UTILITY == p.tstep * p.scale1 * sum(TOTPERIODU[ti] for ti in tidx) + p.scale2)
 
 
     # -------------------------------------------------------------------- 
@@ -275,7 +276,7 @@ function run_dice(
 
     @constraint(m, alphalb[ti in tidx] , ALPHA[ti] >= 0.1)
     @constraint(m, alphaub[ti in tidx] , ALPHA[ti] <= 100.0)
-    @constraint(m, miuub[ti in tidx, ri in ridx] , MIU_R[ti,ri] <= miuup[ti,ri])
+    @constraint(m, miuub[ti in tidx, ri in ridx] , MIU_R[ti,ri] <= p.miuup[ti,ri])
     @constraint(m, sfix[ti in tidx[38:end]] , S[ti] == 0.28)
     @constraint(m, clb[ti in tidx,ri in ridx],  C_R[ti,ri] >= 2.0)
     @constraint(m, cpclb[ti in tidx, ri in ridx],  CPC_R[ti,ri] >= 0.01)
@@ -286,11 +287,11 @@ function run_dice(
     mvars  = object_dictionary(m)
     for (k,v) in bounds
         # Getting the bound value always as a t x r matrix, even if it has been expressed as a scalar or as a (temporal) vector
-        v_matrix = Array{Float64}(undef,ntsteps,nreg)
+        v_matrix = Array{Float64}(undef,p.ntsteps,p.nreg)
         if (ndims(v[2]) == 0)
             v_matrix .= v[2]
         elseif (ndims(v[2]) == 1)
-            [v_matrix[:,c] .= v[2] for c in 1:nreg]
+            [v_matrix[:,c] .= v[2] for c in 1:p.nreg]
         elseif (ndims(v[2]) == 2)
             v_matrix .= v[2]
         else
@@ -330,25 +331,25 @@ function run_dice(
 
     # Ex-post computation of global variables
     F_GHGABATE = [sum(value.(F_GHGABATE_R)[ti,ri] for ri in ridx) for ti in tidx]
-    MIU        = [(1 - sum(value.(EIND_R)[ti,ri] for ri in ridx)/sum(sigma[ti,ri] * value.(YGROSS_R)[ti,ri] for ri in ridx)) for ti in tidx]
+    MIU        = [(1 - sum(value.(EIND_R)[ti,ri] for ri in ridx)/sum(p.sigma[ti,ri] * value.(YGROSS_R)[ti,ri] for ri in ridx)) for ti in tidx]
     DAMFRAC    = [ sum(value.(DAMFRAC_R)[ti,ri] for ri in ridx) / sum(value.(YGROSS_R)[ti,ri] for ri in ridx) for ti in tidx]
 
     # Other post-optimization computaitons
-    rfactlong  =  collect([srf[ri] *(value.(CPC_R)[ti,ri]/value.(CPC_R[1,ri]))^(-elasmu[ri])*rr[ti,ri] for ti in tidx, ri in ridx])
-    rlong      =  [-log(rfactlong[ti,ri]/srf[ri])/(tstep*ti) for ti in tidx,ri in ridx]
-    rshort     =  [ ti == 1 ? missing : -log(rfactlong[ti,ri]/rfactlong[ti-1,ri])/tstep for ti in tidx, ri in ridx]
+    rfactlong  =  collect([p.srf[ri] *(value.(CPC_R)[ti,ri]/value.(CPC_R[1,ri]))^(-p.elasmu[ri])*p.rr[ti,ri] for ti in tidx, ri in ridx])
+    rlong      =  [-log(rfactlong[ti,ri]/p.srf[ri])/(p.tstep*ti) for ti in tidx,ri in ridx]
+    rshort     =  [ ti == 1 ? missing : -log(rfactlong[ti,ri]/rfactlong[ti-1,ri])/p.tstep for ti in tidx, ri in ridx]
 
     scc        = collect(@. -1000*dual(eco2eq_r) /(0.00001+dual(cc_r)))
     ppm        = collect(value.(MAT) ./ 2.13)
     abaterat   = collect(@. value(ABATECOST)/value(Y))
-    atfrac2020 = collect(@. (value(MAT)-mat0)/(value(CCATOT)+0.00001-cumemiss0))
-    atfrac1765 = collect(@. (value(MAT)-mateq)/(value(CCATOT)+0.00001))
-    forc_co2   = collect(@. fco22x*log(value(MAT)/mateq)/log(2))
+    atfrac2020 = collect(@. (value(MAT)-p.mat0)/(value(CCATOT)+0.00001-p.cumemiss0))
+    atfrac1765 = collect(@. (value(MAT)-p.mateq)/(value(CCATOT)+0.00001))
+    forc_co2   = collect(@. p.fco22x*log(value(MAT)/p.mateq)/log(2))
 
     
 
     # Return results as named tuple
-    return (solved=true, status=status, times=times, tidx=tidx, rfactlong=rfactlong,rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2,
+    return (solved=true, status=status, times=p.times, tidx=tidx, rfactlong=rfactlong,rlong=rlong, rshort=rshort, scc=scc, ppm=ppm, abaterat=abaterat, atfrac2020=atfrac2020, atfrac1765=atfrac1765, forc_co2=forc_co2,
       EIND_R=collect(value.(EIND_R)),EIND=collect(value.(EIND)),
       ECO2_R=collect(value.(ECO2_R)),ECO2=collect(value.(ECO2)),
       ECO2E_R=collect(value.(ECO2E_R)),ECO2E=collect(value.(ECO2E)),
@@ -378,7 +379,7 @@ function run_dice(
       CACC=collect(value.(CACC)),
       IRFT=collect(value.(IRFT)),
       ALPHA=collect(value.(ALPHA)),
-      pars=pars, model=m)
+      pars=p, model=m)
 
 
 end
