@@ -11,8 +11,9 @@ Implementation of the DICE/RICE models
 module DICEModel
 
 export run_dice, run_dice_scenario, DICEParameters, DICE2023, DICE2023_NREG, RICE2023
-using PrecompileTools, DocStringExtensions # just for precompilation and documentation 
 import Random
+#using PrecompileTools
+using DocStringExtensions # just for precompilation and documentation 
 using JuMP, Ipopt
 
 include("Utilities.jl")       # Utility functions such `fields_to_vars` and `scaleweights`
