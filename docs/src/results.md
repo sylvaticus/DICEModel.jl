@@ -1,4 +1,4 @@
-# DICE Results
+# Results
 
 In this page we report the results from running the package with the official scenarios and compare the output of `DICEModel.jl` with the official GAMS output as given in the _DICE 2023 Introduction and User's Manual_ (v3.1.2, May 15, 2024)
 

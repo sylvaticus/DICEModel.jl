@@ -3,8 +3,7 @@
     # precompile file and potentially make loading faster.
     @compile_workload begin
         # all calls in this block will be precompiled, regardless of whether
-        # they belong to the DICEModel package or not (on Julia 1.8 and higher)
+        # they belong to your package or not (on Julia 1.8 and higher)
         run_dice()
     end
 end
-

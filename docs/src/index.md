@@ -1,8 +1,9 @@
 # DICEModel.jl
 
-Documentation for [`DICEModel.jl`](https://github.com/sylvaticus/DICEModel.jl), a Julia/JuMP port of the Nordhaus' DICE (Dynamic Integrated Climate-Economy model) and Nordhaus/Yang RICE (Regional Integrated Climate-Economy model) models.
+Documentation for [`DICEModel.jl`](https://github.com/sylvaticus/DICEModel.jl), a Julia/JuMP port of the Nordhaus' DICE (Dynamic Integrated Climate-Economy model) model.
 
-This package currently implements "exactly" (in structure, data and hence output) the DICE2023-b-4-3-10.gms gams version and generalize it introducing a regional dimension that can be used to implement RICE-like models.
+
+This package currently implements the DICE2023-b-4-3-10.gms gams version.
 
 **This program and output is not the original Barrage/Nordhaus version, which is currently only [available in GAMS](https://bit.ly/3TwJ5nO).**
 
@@ -11,21 +12,16 @@ While `DICEModel.jl` is _implemented_ in Julia it can easily be used in Python o
 
 ### Available documentation
 - [`run_dice_scenario(scenario_name)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice_scenario-Tuple{String}): run one of the "official" 10 scenarios ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/Scenarios.jl));
-- [`run_dice(;optimizer,bounds,kwargs...)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice-Tuple{}): run DICE with custom solver engine (and eventually options), custom variable constraints (bounds) or custom parameters ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/CoreModel.jl));
-- [`DICEParameters`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.DICEParameters): Available parameters to use with the `run_dice` function
-- [`DICE2023(;kwargs...)`](): Instantiate a `DICEParameters` struct with defaults parameters to DICE2023 (single region)
-- [`DICE2023_NREG(n;kwargs...)`](): Build parameters for a DICE2023 world partitioned in _n_ equal regions (unless parameters are overrided)
-- [`RICE2023(;kwargs...)`](): Build parameters calibrated to have the DICE2023 world totals and the 12-regions RICE2020 regional distribution.
+- [`run_dice(;optimizer,bounds,kwargs...)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice-Tuple{}): run DICE with custom solver engine (and eventually options), custom variable constraints (bounds) or custom parameters ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl));
+- [`Parameters`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.RawParameters): Available parameters to use with the `run_dice` function ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl))
 
 ### Results
 
 In both cases the output (results) is a named tuple. Use `keys(results)` to find the available information (or just look at the source code) and `results.VARIABLEX` to obtain the values.
 
-A summary of the main results, and a comparision with the official Barrage/Nordhaus DICE2023 version, is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
+A summary of the main results, and a comparision with the official Barrage/Nordhaus version, is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
 
-Som()e results of the multi-regional implementations are [here](https://sylvaticus.github.io/DICEModel.jl/dev/rice_results.html).
-
-An Excel version of all the results for DICE2023 is available [here](DICEModelDetailedResults.xlsx).
+An Excel version of all the results is available [here](DICEModelDetailedResults.xlsx).
 
 ### Example
 

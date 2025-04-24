@@ -1,7 +1,7 @@
 name = "DICEModel"
 uuid = "a78ebace-d296-4f52-9067-75f12fe9a0bd"
 authors = ["Antonello Lobianco <antonello@lobianco.org>"]
-version = "0.2.0"
+version = "0.1.1"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
@@ -16,6 +16,6 @@ DocStringExtensions = "0.9.3"
 Ipopt = "1.4"
 JuMP = "1.20"
 NamedTupleTools = "0.14.3"
-PrecompileTools = "1.2.1"
+PrecompileTools = "1"
 Random = "1.7"
-julia = "1.10"
+julia = "1.7"
