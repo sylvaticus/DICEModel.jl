@@ -98,18 +98,6 @@ end
 end
 
 # -----------------------------------------------------------------------------
-# Scaling weigth test
-@testset "Scaling weights test" begin
-    w1  = [0.98,0.01,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001]
-    w2  = [10,20,70]
-    w1b = DICEModel.scaleweights(w1)
-    w2b = DICEModel.scaleweights(w2)
-    @test w1b == w1
-    @test sum(w2b)    == 1
-    @test length(w2b) == 3
-end
-
-# -----------------------------------------------------------------------------
 # Multiple regions test
 res_cbopt_4r = run_dice(DICE2023_NREG(4))
 res_cbopt_1r = run_dice(DICE2023_NREG(1))

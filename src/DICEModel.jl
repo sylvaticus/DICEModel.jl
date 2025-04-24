@@ -12,14 +12,14 @@ module DICEModel
 
 export run_dice, run_dice_scenario, DICEParameters, DICE2023, DICE2023_NREG, RICE2023
 import Random
-#using PrecompileTools
+using PrecompileTools
 using DocStringExtensions # just for precompilation and documentation 
 using JuMP, Ipopt
 
 include("Parameters.jl")      # Contain the definition of the parameters struct and several functions with predefined "defaults" (DICE2023, RICE2023...)
 include("CoreModel.jl")       # Contains `run_dice`, the low level function that runs the optimizations 
 include("Scenarios.jl")       # Implementation of `run_dice_scenario` with the "official" DICE2023 named scenarios
-#include("Precompilation.jl")  # Precompilation stuff needed for performances
+include("Precompilation.jl")  # Precompilation stuff needed for performances
 
 
 
