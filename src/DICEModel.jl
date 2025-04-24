@@ -12,7 +12,7 @@ module DICEModel
 
 export run_dice, run_dice_scenario, DICEParameters, DICE2023, DICE2023_NREG, RICE2023
 import Random
-using PrecompileTools
+using PrecompileTools: @setup_workload, @compile_workload  
 using DocStringExtensions # just for precompilation and documentation 
 using JuMP, Ipopt
 
