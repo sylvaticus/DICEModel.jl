@@ -1,3 +1,10 @@
+"""
+Part of [DICEModel](https://github.com/sylvaticus/DICEModel.jl). Licence is MIT.
+
+This file contains the test suit that is ran by GitHub actions on each pull.
+"""
+
+
 using Test, DICEModel
 using JuMP, Ipopt
 #using JLD2
@@ -104,44 +111,32 @@ end
 
 # -----------------------------------------------------------------------------
 # Multiple regions test
-res_cbopt_2r = run_dice(DICE2023_2REG())
+res_cbopt_4r = run_dice(DICE2023_NREG(4))
+res_cbopt_1r = run_dice(DICE2023_NREG(1))
 
-@testset "DICE2023 with 2 equal regions" begin
-    @test res_cbopt_2r.solved == true
-    @test res_cbopt_2r.ECO2_R[:,1] ≈ res_cbopt_2r.ECO2_R[:,2]
+@testset "DICE2023 with N equal regions" begin
+    @test res_cbopt_4r.solved == true
+    @test res_cbopt_1r.solved == true
+    @test res_cbopt_1r.ECO2_R[:,1]  ≈ res_cbopt.ECO2_R[:,1] 
+    @test res_cbopt_1r.TATM  ≈ res_cbopt.TATM 
+    @test res_cbopt_4r.ECO2_R[:,1] ≈ res_cbopt_4r.ECO2_R[:,2] ≈ res_cbopt_4r.ECO2_R[:,3] ≈ res_cbopt_4r.ECO2_R[:,4]
 end
-
 
 w_rich  = [5,4,3,3,1,1,3,2,2,1,1.5,1]
 w_equal = fill(1,12)
 w_poor  = [1,1,1,1.5,2,2,3,3,2,5,5,5]
-pars = RICE2023(;weights=w_poor)
-res_cbopt_12r = run_dice(pars;optimizer=optimizer_with_attributes(Ipopt.Optimizer,
-"print_level" => 5, "max_iter" => 1000, "acceptable_tol" =>10^-4, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^8, "acceptable_constr_viol_tol" => 0.1, "acceptable_compl_inf_tol" =>0.1, "acceptable_obj_change_tol" =>10.0^10, 
-    ))
 
-res_cbopt_12r.ECO2_R[:,1] ≈ res_cbopt_12r.ECO2_R[:,2]
+# res_cbopt_12r = run_dice(RICE2023(;weights=w_poor);optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 1000, "acceptable_tol" =>10^-4, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^8, "acceptable_constr_viol_tol" => 0.1, "acceptable_compl_inf_tol" =>0.1, "acceptable_obj_change_tol" =>10.0^10))
 
+res_cbopt_12r_poor = run_dice(RICE2023(;weights=w_poor)) # 687 iterations
 
+#res_cbopt_12r_equal = run_dice(RICE2023(;weights=w_equal);optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5)) # 2006 iterations
 
+res_cbopt_12r_rich = run_dice(RICE2023(;weights=w_rich)) # 433 iterations
 
-e1 = [0, 0, 0, 0, 0, 0, 0.04, 0, 0, 0, 0, 0.56]
-e1s = sum(e1)
-
-eland0 = e1 .* 5.9/e1s 
-
-res_cbopt_12r = run_dice(pars;optimizer=optimizer_with_attributes(Ipopt.Optimizer,
-  "print_level" => 5,
-  "max_iter" => 300, 
-  "tol" =>1000.0,
-  "dual_inf_tol" => 1000000.0,
-  "constr_viol_tol" => 1000.0,
-  "compl_inf_tol" => 1000.0
-))
-
-
-
-
-
-res_cbopt_12r.ECO2
-res_cbopt.ECO2
+@testset "RICE2023" begin
+    @test res_cbopt_12r_poor.solved
+    @test res_cbopt_12r_rich.solved
+    # When weigth is given to the rich, US can pollute more:
+    @test sum(res_cbopt_12r_rich.ECO2_R[:,1]) > sum(res_cbopt_12r_poor.ECO2_R[:,1])
+end

@@ -1,4 +1,6 @@
 """
+Part of [DICEModel](https://github.com/sylvaticus/DICEModel.jl). Licence is MIT.
+
 In this file we define the struct hosting the parameters of the model and different constructors that define each a "default" of these parameters (e.g. DICE2023 or RICE2023). User can then fine-tune this default with individual parameter choices.
 """
 
@@ -11,10 +13,12 @@ In this file we define the struct hosting the parameters of the model and differ
 """
     DICEParameters
 
-This structure contains the "default" parameters, which can eventually be modified using keyword arguments in the `run_dice(pars)` function (e.g. `run_dice(a2base = [0.01])`).
+Row and computed parameters for the optimization function.
 
-The structure first defines some "raw" parameters, and then some "computed" parameters (mostly arrays of ntsteps length).
-Both can be overridden with keyword arguments in the `run_dice(pars)` function. In particular, "computed" parameters can be overridden in two ways: either by overriding the raw parameters from which they are computed, or by computing the parameter in a different way (outside the model) and overriding the computed parameter.
+This structure contains the "default of the default" parameters, which can eventually be modified using either keyword arguments in specific functions (each defining its own "defaults") or directly in the `run_dice(pars)` function (e.g. `run_dice(a2base = [0.01])`). This second method overrides the specific defaults of the `DICE2013` function.
+
+The structure first defines some "raw" parameters, and then some "computed" parameters (mostly matrices of ntsteps x nregions length).
+Both can be overridden with keyword arguments. In particular, "computed" parameters can be overridden in two ways: either by overriding the raw parameters from which they are computed, or by computing the parameter in a different way (outside the model) and overriding the computed parameter.
 
 # Available parameters:
 $(FIELDS)
@@ -34,8 +38,8 @@ Base.@kwdef struct DICEParameters
     "Name of the regions"
     regions = ["World"]
 
-    "Weights"
-    weights = [1.0]
+    "Utility weights to assign to each region. Note these are **exogenous** (default to equal weights), are NOT the Negishi weights."
+    weights = [1.0/length(regions) for _ in 1:length(regions)]
 
     # --------------------------------------------------------------------
     # Population and technology
@@ -331,7 +335,7 @@ end
 
 Parameters constructor with defaults aligned to DICE2023. 
 
-Create a parameters struct with the defaults of DICE2023 model. Different parameters, either the "raw" ones or the "computed ones", can be specified using keywork arguments.
+Create a parameters struct with the defaults of the DICE2023 model. Different parameters, either the "raw" ones or the "computed ones", can be specified using keywork arguments.
 
 See [`DICEParameters`](@ref) for a complete list of available parameters.
 
@@ -350,203 +354,106 @@ function DICE2023(;kwargs...)
 end
 
 """
-  RICE2020()
+    DICE2023_NREG(n;kwargs...)
 
-Parameters constructor with defaults aligned to RICE2020. 
+Build parameters for a DICE2023 world partitioned in n equal regions (unless parameters are overrided)
 
-Create a parameters struct with the defaults of the 12-regions RICE2020 model. Different parameters, either the "raw" ones or the "computed ones", can be specified using keywork arguments.
+Create a parameters struct where the world is partitioned in n regions, and where each region is equal, with the same coefficients but with 1/n of initial emissions, capital, production, population, ...
 
-See [`DICEParameters`](@ref) for a complete list of available parameters.
+Data is from DICE2013, so the output of `DICE2023_NREG(1)` is the same as `DICE2023()`.
+
+Using the keyword arguments one can specify individual parameters that differ from DICE2023, with eventually a regional specification.
+    
+See [`DICEParameters`](@ref) for a complete list of available parameters and [`run_dice`](@ref) to run the optimization with the parameter struct created with this function.
 
 # Example
 ```julia
-alt_dam_scen = DICEParameters(a2base = [0.01]) # single value array parameter for the "world region"
+four_regions_parameters = DICE2023_NREG(4) 
+alt_dam_parameters      = DICE2023_NREG(2, a2base = [0.01, 0.02]) # two regions differing only for the a2base parameter
+results = run_dice(four_regions_parameters)
 ```
-
-# Note
-- Something in the middle struct of DICE2023 and data of RICE2020
-
 """
-function DICE2023_2REG(;
-    regions = ["World_half1","World_half2"],
-
-    weights = fill(0.5,2),
-    gamma    = fill(0.3,2), # "Capital elasticity in production function"    
-    pop1    = fill(7752.9/2,2), # "Initial world population 2020 (millions)" 
-    popadj  = fill(0.145,2), # "Growth rate to calibrate to 2050 population projection"
-    popasym = fill(10825/2,2), # "Asymptotic population (millions)"
-    dk      = fill(0.1,2), # "Depreciation rate on capital (per year)"     
-    q1      = fill(135.7/2,2), # "Initial world output 2020 (trill 2019 USD)" 
-    al1     = fill(5.84,2), # "Initial level of total factor productivity"    
-    ga1     = fill(0.066,2), # "Initial growth rate for TFP per 5 years"   
-    dela    = fill(0.0015,2), # "Decline rate of TFP per 5 years"
+function DICE2023_NREG(n=2;
+    regions = ["Reg_$(r_n)" for r_n in 1:n],
+    weights = fill(1/n,n),
+    gamma   = fill(0.3,n), # "Capital elasticity in production function"    
+    pop1    = fill(7752.9/n,n), # "Initial world population 2020 (millions)" 
+    popadj  = fill(0.145,n), # "Growth rate to calibrate to 2050 population projection"
+    popasym = fill(10825/n,n), # "Asymptotic population (millions)"
+    dk      = fill(0.1,n), # "Depreciation rate on capital (per year)"     
+    q1      = fill(135.7/n,n), # "Initial world output 2020 (trill 2019 USD)" 
+    al1     = fill(5.84,n), # "Initial level of total factor productivity"    
+    ga1     = fill(0.066,n), # "Initial growth rate for TFP per 5 years"   
+    dela    = fill(0.0015,n), # "Decline rate of TFP per 5 years"
     # --------------------------------------------------------------------
     # Emissions parameters and Non-CO2 GHG with sigma = emissions/output
-    gsigma1   = fill(-0.015,2), # "Initial growth of sigma (per year)"
-    delgsig   = fill(0.96,2), # "Decline rate of gsigma per period"
-    asymgsig  = fill(-0.005,2), # "Asymptotic sigma"
-    e1        = fill(37.56/2,2), # "Industrial emissions 2020 (GtCO2 per year)" 
-    miu1      = fill(0.05,2), # "Emissions control rate historical 2020" 
+    gsigma1   = fill(-0.015,n), # "Initial growth of sigma (per year)"
+    delgsig   = fill(0.96,n), # "Decline rate of gsigma per period"
+    asymgsig  = fill(-0.005,n), # "Asymptotic sigma"
+    e1        = fill(37.56/n,n), # "Industrial emissions 2020 (GtCO2 per year)" 
+    miu1      = fill(0.05,n), # "Emissions control rate historical 2020" 
     # --------------------------------------------------------------------
     # Climate damage parameters    
-    a1     = fill(0,2), # "Damage intercept"       
-    a2base = fill(0.003467,2), # "Damage quadratic term"
-    a3     = fill(2,2), # "Damage exponent"
+    a1     = fill(0,n), # "Damage intercept"       
+    a2base = fill(0.003467,n), # "Damage quadratic term"
+    a3     = fill(2,n), # "Damage exponent"
     # --------------------------------------------------------------------
     # Abatement cost
-    expcost2  = fill(2.6,2), # "Exponent of control cost function"
-    pback2050 = fill(515,2), # "Cost of backstop in 2019\$ per tCO2 (2050)"
+    expcost2  = fill(2.6,n), # "Exponent of control cost function"
+    pback2050 = fill(515,n), # "Cost of backstop in 2019\$ per tCO2 (2050)"
     # --------------------------------------------------------------------
     # Limits on emissions controls
-    limmiu2070        = fill(1.0,2), # "Emission control limit from 2070"
-    limmiu2120        = fill(1.1,2), # "Emission control limit from 2120"
-    limmiu2200        = fill(1.05,2), # "Emission control limit from 2220"
-    limmiu2300        = fill(1.0,2), # "Emission control limit from 2300"
-    delmiumax         = fill(0.12,2), # "Emission control delta limit per period"
+    limmiu2070        = fill(1.0,n), # "Emission control limit from 2070"
+    limmiu2120        = fill(1.1,n), # "Emission control limit from 2120"
+    limmiu2200        = fill(1.05,n), # "Emission control limit from 2220"
+    limmiu2300        = fill(1.0,n), # "Emission control limit from 2300"
+    delmiumax         = fill(0.12,n), # "Emission control delta limit per period"
     # --------------------------------------------------------------------
     # Preferences, growth uncertainty, and timing
-    betaclim = fill(0.5,2), # "Climate beta"  
-    elasmu   = fill(0.95,2), # "Elasticity of marginal utility of consumption" 
-    prstp    = fill(0.001,2), # "Pure rate of social time preference"
-    pi_val   = fill(0.05,2), # "Capital risk premium (renamed to avoid conflict with Julia's pi)" 
-    k0       = fill(295/2,2), # "Initial capital stock (10^12 2019 USD)"  
-    siggc1   = fill(0.01,2), # "Annual standard deviation of consumption growth"
+    betaclim = fill(0.5,n), # "Climate beta"  
+    elasmu   = fill(0.95,n), # "Elasticity of marginal utility of consumption" 
+    prstp    = fill(0.001,n), # "Pure rate of social time preference"
+    pi_val   = fill(0.05,n), # "Capital risk premium (renamed to avoid conflict with Julia's pi)" 
+    k0       = fill(295/n,n), # "Initial capital stock (10^12 2019 USD)"  
+    siggc1   = fill(0.01,n), # "Annual standard deviation of consumption growth"
     # --------------------------------------------------------------------
     # Scaling so that MU(C(1)) = 1 and objective function = PV consumption
-    srf    = fill(1000000,2), # "Scaling factor for discounting"
+    srf    = fill(1000000,n), # "Scaling factor for discounting"
     # --------------------------------------------------------------------
     # Parameters for non-industrial emissions  
-    eland0         = fill(5.9/2,2), # "Carbon emissions from land 2015 (GtCO2 per year)"    
-    deland         = fill(0.1,2), # "Decline rate of land emissions (per period)"    
-    f_ghgabate2020 = fill(0.518/2,2), # "Forcings of abatable non-CO2 GHG in 2020"  
-    eco2eghgb2020  = fill(9.96/2,2), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2020"     
-    eco2eghgb2100  = fill(15.5/2,2), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"   
-    emissrat2020   = fill(1.4,2), # "Ratio of CO2e to industrial CO2 in 2020"    
-    emissrat2100   = fill(1.21,2), # "Ratio of CO2e to industrial CO2 in 2100"
+    eland0         = fill(5.9/n,n), # "Carbon emissions from land 2015 (GtCO2 per year)"    
+    deland         = fill(0.1,n), # "Decline rate of land emissions (per period)"    
+    f_ghgabate2020 = fill(0.518/n,n), # "Forcings of abatable non-CO2 GHG in 2020"  
+    eco2eghgb2020  = fill(9.96/n,n), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2020"     
+    eco2eghgb2100  = fill(15.5/n,n), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"   
+    emissrat2020   = fill(1.4,n), # "Ratio of CO2e to industrial CO2 in 2020"    
+    emissrat2100   = fill(1.21,n), # "Ratio of CO2e to industrial CO2 in 2100"
     kwargs...
     )
     pars = DICEParameters(;regions, weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
     return pars
 end
 
-function RICE2020(;
-    tstep   = 5, # "Years per period"
-    ntsteps = 81, # "Number of time periods" 
-    regions = ["USA", "EUS", "JPN", "OHI", "RUS", "EEC", "CHN", "IND", "MDE", "SSA", "LAA", "ROW"],
-    y0      = [17.060, 12.898, 4.810, 9.452, 3.609, 2.720, 18.559, 7.525, 8.157, 3.338, 8.434, 10.348],  # Y0 "Initial world output 2015 (trill 2019 USD)"    
-    k0      = [32.957, 28.793, 12.777, 21.242, 5.593, 4.830, 49.296, 13.684, 13.820, 5.562, 17.346, 18.717], # K0 "Initial capital stock (10^12 2019 USD)" 
-    l0      = [0.321, 0.320, 0.128, 0.244, 0.145, 0.149, 1.407, 1.310, 0.407, 0.930, 0.615, 1.369] .* 1000,
-    e_f0    = [1.398, 0.588, 0.317, 0.642, 0.463, 0.228, 2.767, 0.638, 0.736, 0.219, 0.486, 0.715],
-    e_l0    = [0, 0, 0, 0, 0, 0, 0.04, 0, 0, 0, 0, 0.56],
-
-    lgr     = [3.73 , 1.08 , 4.28 , 4.28 , 2.08 , 2.08 , 3.07 , 8.09 , 8.09 , 8.09 , 8.09 , 8.09],
-    lgrgr   = [11.12 , 101.33 , 50.88 , 50.88 , 67.36 , 67.36 , 97.13 , 12.44 , 12.44 , 12.44 , 12.44 , 12.44],
-    tfpgr   = [0.045, 0.065, 0.065, 0.065, 0.08, 0.08, 0.08, 0.07, 0.07, 0.07, 0.07, 0.07],
-    tfpgrgr = [0.0095, 0.011, 0.011, 0.011, 0.01, 0.01, 0.00965, 0.009, 0.009, 0.009, 0.009, 0.009],
-    sig_i   = [9, 10, 12, 12, 10, 7.5, 8, 8, 7, 7, 7, 7],
-    sig_a   = [0.14, 0.2, 0.25, 0.25, 0.2, 0.15, 0.2, 0.2, 0.15, 0.15, 0.15, 0.15],
-
-    a1_fp   = [0.01102, 0.02, 0.01174, 0.01174, 0.02093, 0.01523, 0.02, 0.02093, 0.021, 0.021, 0.02093, 0.02093], # had to rename as a1 already used in DICE2023 for other stuff
-    a2_fp   = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5], # renamed for consistency with a1_fp
-    b1      = [0.07, 0.1, 0.05, 0.05, 0.1, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-    b2      = [2.887, 2.887, 2.887, 2.887, 2.887, 2.887, 2.887, 2.887, 2.887, 2.887, 2.887, 2.887],
-    dam1    = [-0.0026, -0.001, -0.0042, -0.0042, -0.001, 0.0108, -0.0041, -0.0041, 0.0039, 0.0039, 0.0039, 0.0039],
-    dam2    = [0.0017, 0.0049, 0.0025, 0.0025, 0.0049, 0.0033, 0.002, 0.002, 0.0013, 0.0013, 0.0013, 0.0013],
-
-    nreg    = length(regions),
-    weights = fill(1/nreg,nreg),
-    gamma   = fill(0.3,nreg), # "Capital elasticity in production function"     
-
-    dk      = fill(0.1,nreg), # "Depreciation rate on capital (per year)"       
-    al1     = fill(5.84,nreg), # "Initial level of total factor productivity"    
-    ga1     = fill(0.066,nreg), # "Initial growth rate for TFP per 5 years"   
-    dela    = fill(0.0015,nreg), # "Decline rate of TFP per 5 years"
-    # --------------------------------------------------------------------
-    # Emissions parameters and Non-CO2 GHG with sigma = emissions/output
-    gsigma1   = fill(-0.015,nreg), # "Initial growth of sigma (per year)"
-    delgsig   = fill(0.96,nreg), # "Decline rate of gsigma per period"
-    asymgsig  = fill(-0.005,nreg), # "Asymptotic sigma"
-    e1        = fill(37.56/2,nreg), # "Industrial emissions 2020 (GtCO2 per year)" 
-    miu1      = fill(0.05,nreg), # "Emissions control rate historical 2020" 
-    # --------------------------------------------------------------------
-    # Climate damage parameters    
-    a1     = fill(0,nreg), # "Damage intercept"       
-    a2base = fill(0.003467,nreg), # "Damage quadratic term"
-    a3     = fill(2,nreg), # "Damage exponent"
-    # --------------------------------------------------------------------
-    # Abatement cost
-    expcost2  = fill(2.6,nreg), # "Exponent of control cost function"
-    pback2050 = fill(515,nreg), # "Cost of backstop in 2019\$ per tCO2 (2050)"
-    # --------------------------------------------------------------------
-    # Limits on emissions controls
-    limmiu2070        = fill(1.0,nreg), # "Emission control limit from 2070"
-    limmiu2120        = fill(1.1,nreg), # "Emission control limit from 2120"
-    limmiu2200        = fill(1.05,nreg), # "Emission control limit from 2220"
-    limmiu2300        = fill(1.0,nreg), # "Emission control limit from 2300"
-    delmiumax         = fill(0.12,nreg), # "Emission control delta limit per period"
-
-    # --------------------------------------------------------------------
-    # Preferences, growth uncertainty, and timing
-    betaclim = fill(0.5,nreg), # "Climate beta"  
-    elasmu   = fill(0.95,nreg), # "Elasticity of marginal utility of consumption" 
-    prstp    = fill(0.001,nreg), # "Pure rate of social time preference"
-    pi_val   = fill(0.05,nreg), # "Capital risk premium (renamed to avoid conflict with Julia's pi)" 
-    siggc1   = fill(0.01,nreg), # "Annual standard deviation of consumption growth"
-    # --------------------------------------------------------------------
-    # Scaling so that MU(C(1)) = 1 and objective function = PV consumption
-    srf    = fill(1000000,nreg), # "Scaling factor for discounting"
-    # --------------------------------------------------------------------
-    # Parameters for non-industrial emissions    
-    f_ghgabate2020 = fill(0.518/nreg,nreg), # "Forcings of abatable non-CO2 GHG in 2020"  
-    eco2eghgb2020  = fill(9.96/nreg,nreg), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2020"     
-    eco2eghgb2100  = fill(15.5/nreg,nreg), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"   
-    emissrat2020   = fill(1.4,nreg), # "Ratio of CO2e to industrial CO2 in 2020"    
-    emissrat2100   = fill(1.21,nreg), # "Ratio of CO2e to industrial CO2 in 2100"
-    kwargs...
-    )
-   
-    times = 0:tstep:(ntsteps*tstep-1) #  "Time periods sequence (0,5,10,...,400)"
-    tidx  = 1:ntsteps           # "Time periods index sequence (1,2,3,...,81)"
-    t0idx = 0:ntsteps-1    # "Time periods index sequence (0,1,2,...,80)"      
-    ridx = 1:nreg # "Regions index sequence"
-    
-    # Parameter computations that differ from DICE 2023...
-    # Population
-    pop1 = l0
-    lcgr = [lgr[r]/lgrgr[r] * (1-exp(- (t-1)* lgrgr[r]/100)) for t in tidx, r in ridx] 
-    l    = [pop1[r] * exp(lcgr[t,r]) for t in tidx, r in ridx]
-
-    # Production and productivity
-    q1 = y0 
-    tfp0 =  [q1[r]*(1+a1_fp[r]*(0.8/2.5)^a2_fp[r]) / ((k0[r]^gamma[r]) * (pop1[r]^(1-gamma[r]))) for r in ridx]
-    al  =  [tfp0[r]*exp(tfpgr[r] * exp(-tfpgrgr[r]*t) * t) for t in t0idx, r in ridx] # total factor productivity
-
-    # Carbon intensity
-    ssig  = log.(sig_a)
-    sig0  = e_f0 ./ q1
-    dsig  = @. log(1-log(1+sig_i/100) / ssig )
-    gsig  = [ssig[r] * (1-exp(-dsig[r]*t)) for t in t0idx, r in ridx]
-    sigma = [sig0[r] * exp(gsig[t,r]) for t in tidx, r in ridx] # carbon intensity
-
-    # Non-industrial non-abatable emissions
-    eland = [e_l0[r] * (1-0.1)^(t/2) for t in tidx, r in ridx]
-
-    # Damages
-    # Variable: a2base
-
-    # Cost of mitigation
-    # Variable: expcost2
-
-
-    pars = DICEParameters(;regions, weights, gamma, pop1, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, l, al, sigma, eland, kwargs...) 
-    return pars
-end
-
 """
-  RICE2023
+    RICE2023(;kwargs...)
 
-Most regionalised data is the data in RICE2020 rescaled to match DICE2023 totals.
+Build parameters calibrated to have the DICE2023 world totals and the 12-regions RICE2020 regional distribution.
 
+Create a parameters struct where the world is partitioned in 12 regions, with coefficients of DICE2023 but a regional variance derived in most cases from RICE2020 (initial emissions, capital, production, population) or assumed (e.g. damages)
+
+Note that the utility weights to provide to each region are exogenous (default to equal weights), they are NOT the Negishi weights. The `run_dice` function can eventually be used iteractively to look for these weights.
+
+See [`DICEParameters`](@ref) for a complete list of available parameters and [`run_dice`](@ref) to run the optimization with the parameter struct created with this function.
+
+# Example
+```julia
+w_rich  = [5,4,3,3,1,1,3,2,2,1,1.5,1] #
+w_equal = fill(1,12)
+res_cbopt_12r_poor = run_dice(RICE2023(;weights=w_poor))
+res_cbopt_12r_rich = run_dice(RICE2023(;weights=w_rich)) 
+```
+# Notes
+- The default 12 regions are: ["USA", "EUS", "JPN", "OHI", "RUS", "EEC", "CHN", "IND", "MDE", "SSA", "LAA", "ROW"]
 """
 function RICE2023(;
     regions = ["USA", "EUS", "JPN", "OHI", "RUS", "EEC", "CHN", "IND", "MDE", "SSA", "LAA", "ROW"],
@@ -566,20 +473,26 @@ function RICE2023(;
     dela    = fill(0.0015,12),    # "Decline rate of TFP per 5 years"
     gamma   = fill(0.3,12),       # "Capital elasticity in production function"
     # Emission intensity
+    e1        = [5.71, 2.40, 1.30, 2.62, 1.89, 0.93, 11.30, 2.61, 3.01, 0.89, 1.98, 2.92], # "Industrial emissions 2020 (GtCO2 per year)" 
     gsigma1   = fill(-0.015,12),   # "Initial growth of sigma (per year)"
     delgsig   = fill(0.96,12),     # "Decline rate of gsigma per period"
     asymgsig  = fill(-0.005,12),   # "Asymptotic sigma"
-    e1        = [5.71, 2.40, 1.30, 2.62, 1.89, 0.93, 11.30, 2.61, 3.01, 0.89, 1.98, 2.92], # "Industrial emissions 2020 (GtCO2 per year)" 
     # Emission from land use
     eland0         = [0,0,0,0,0,0,0.4,0,0,0,0,5.5], # "Carbon emissions from land 2015 (GtCO2 per year)"    
     deland         = fill(0.1,12),    # "Decline rate of land emissions (per period)"  
-
     # Cost of mitigation
+    # The regional diversity is already accounted in the computation of cost1tot variable, based on emission intensity of the different economies
     expcost2  = fill(2.6,12),     # "Exponent of control cost function"
 
     # Climate change damage
-    a2base = fill(0.003467,12), # "Damage quadratic term"
-
+    # 2 region example total dam equivalence with dam in 2nd region double (in proportion to Y terms): 
+    # a2base*T^a3*Y == a2base_1 * T^a3*Y_1 + 2 * a2base_1 * T^a3 * Y_2
+    # ==> a2base_1 = a2base * Y/(Y_1 + 2 Y_2)
+    # More in general: a2_i = a2 * sum_j(Y_j) / sum_j (coef_j/coef_i Y_i))
+    # dam coefficients (d):  [1, 1, 1, 1, 1, 1, 1, 1.5, 1.5, 2, 2, 2]
+    # A2 base: 0.003467
+    # a2base_r = [0.003467 * sum(q1)/ sum((d[j]/d[i]) * q1[j] for j in ridx ) for i in ridx]
+    a2base = [0.002709, 0.002709, 0.002709, 0.002709, 0.002709, 0.002709, 0.002709, 0.004064, 0.004064, 0.005419, 0.005419, 0.005419], # "Damage quadratic term"
     # --------------------------------------------------------------------     
     dk      = fill(0.1,12), # "Depreciation rate on capital (per year)"   
     # --------------------------------------------------------------------
@@ -592,7 +505,6 @@ function RICE2023(;
     a3     = fill(2,12), # "Damage exponent"
     # --------------------------------------------------------------------
     # Abatement cost
-    
     pback2050 = fill(515,12), # "Cost of backstop in 2019\$ per tCO2 (2050)"
     # --------------------------------------------------------------------
     # Limits on emissions controls
@@ -623,83 +535,3 @@ function RICE2023(;
     pars = DICEParameters(;regions, weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
     return pars
 end
-
-
-
-#=
-function RICE2023(;
-    regions = ["USA", "EUS", "JPN", "OHI", "RUS", "EEC", "CHN", "IND", "MDE", "SSA", "LAA", "ROW"],
-    weights = fill(1,12),
-    # ----------------------------------
-    # Main regionalised data
-    
-    # Population
-    pop1    = fill(7752.9/12,12), # "Initial world population 2020 (millions)" 
-    popadj  = fill(0.145,12),     # "Growth rate to calibrate to 2050 population projection"
-    popasym = fill(10825/12,12),  # "Asymptotic population (millions)"
-    # Production and factor productivity
-    q1      = fill(135.7/12,12),  # "Initial world output 2020 (trill 2019 USD)" 
-    al1     = fill(5.84,12),      # "Initial level of total factor productivity"    
-    ga1     = fill(0.066,12),     # "Initial growth rate for TFP per 5 years"   
-    dela    = fill(0.0015,12),    # "Decline rate of TFP per 5 years"
-    gamma   = fill(0.3,12),       # "Capital elasticity in production function"
-    # Emission intensity
-    gsigma1   = fill(-0.015,12),   # "Initial growth of sigma (per year)"
-    delgsig   = fill(0.96,12),     # "Decline rate of gsigma per period"
-    asymgsig  = fill(-0.005,12),   # "Asymptotic sigma"
-    e1        = fill(37.56/12,12), # "Industrial emissions 2020 (GtCO2 per year)" 
-    # Emission from land use
-    eland0         = fill(5.9/12,12), # "Carbon emissions from land 2015 (GtCO2 per year)"    
-    deland         = fill(0.1,12),    # "Decline rate of land emissions (per period)"  
-
-    # Cost of mitigation
-    expcost2  = fill(2.6,12),     # "Exponent of control cost function"
-
-    # Climate change damage
-    a2base = fill(0.003467,12), # "Damage quadratic term"
-
-    # --------------------------------------------------------------------     
-    dk      = fill(0.1,12), # "Depreciation rate on capital (per year)"   
-    # --------------------------------------------------------------------
-    # Emissions parameters and Non-CO2 GHG with sigma = emissions/output
-    
-    miu1      = fill(0.05,12), # "Emissions control rate historical 2020" 
-    # --------------------------------------------------------------------
-    # Climate damage parameters    
-    a1     = fill(0,12), # "Damage intercept"       
-    a3     = fill(2,12), # "Damage exponent"
-    # --------------------------------------------------------------------
-    # Abatement cost
-    
-    pback2050 = fill(515,12), # "Cost of backstop in 2019\$ per tCO2 (2050)"
-    # --------------------------------------------------------------------
-    # Limits on emissions controls
-    limmiu2070        = fill(1.0,12), # "Emission control limit from 2070"
-    limmiu2120        = fill(1.1,12), # "Emission control limit from 2120"
-    limmiu2200        = fill(1.05,12), # "Emission control limit from 2220"
-    limmiu2300        = fill(1.0,12), # "Emission control limit from 2300"
-    delmiumax         = fill(0.12,12), # "Emission control delta limit per period"
-    # --------------------------------------------------------------------
-    # Preferences, growth uncertainty, and timing
-    betaclim = fill(0.5,12), # "Climate beta"  
-    elasmu   = fill(0.95,12), # "Elasticity of marginal utility of consumption" 
-    prstp    = fill(0.001,12), # "Pure rate of social time preference"
-    pi_val   = fill(0.05,12), # "Capital risk premium (renamed to avoid conflict with Julia's pi)" 
-    k0       = fill(295/12,12), # "Initial capital stock (10^12 2019 USD)"  
-    siggc1   = fill(0.01,12), # "Annual standard deviation of consumption growth"
-    # --------------------------------------------------------------------
-    # Scaling so that MU(C(1)) = 1 and objective function = PV consumption
-    srf    = fill(1000000,12), # "Scaling factor for discounting"
-    # --------------------------------------------------------------------
-    # Parameters for non-industrial emissions  
-    f_ghgabate2020 = fill(0.518/12,12), # "Forcings of abatable non-CO2 GHG in 2020"  
-    eco2eghgb2020  = fill(9.96/12,12), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2020"     
-    eco2eghgb2100  = fill(15.5/12,12), # "Emissions of abatable non-CO2 GHG (GtCO2e) in 2100"   
-    emissrat2020   = fill(1.4,12), # "Ratio of CO2e to industrial CO2 in 2020"    
-    emissrat2100   = fill(1.21,12), # "Ratio of CO2e to industrial CO2 in 2100"
-    kwargs...
-    )
-    pars = DICEParameters(;regions, weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
-    return pars
-end
-=#
