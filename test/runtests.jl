@@ -66,7 +66,6 @@ end
     @test isapprox(res_t2c.ECO2[17], 1.2, atol=0.051)
     @test isapprox(res_t15c.ECO2[1], 42.9, atol=0.051)
     @test isapprox(res_t15c.ECO2[7], 5.7, atol=0.051)
-
 end
 
 @testset "CO2 concentration with alt damage and Paris extended scenarios" begin
@@ -111,8 +110,8 @@ end
 
 # -----------------------------------------------------------------------------
 # Multiple regions test
-res_cbopt_4r = run_dice(DICE2023_NREG(4))
 res_cbopt_1r = run_dice(DICE2023_NREG(1))
+res_cbopt_4r = run_dice(DICE2023_NREG(4))
 
 @testset "DICE2023 with N equal regions" begin
     @test res_cbopt_4r.solved == true
@@ -128,11 +127,11 @@ w_poor  = [1,1,1,1.5,2,2,3,3,2,5,5,5]
 
 # res_cbopt_12r = run_dice(RICE2023(;weights=w_poor);optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 1000, "acceptable_tol" =>10^-4, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^8, "acceptable_constr_viol_tol" => 0.1, "acceptable_compl_inf_tol" =>0.1, "acceptable_obj_change_tol" =>10.0^10))
 
-res_cbopt_12r_poor = run_dice(RICE2023(;weights=w_poor)) # 687 iterations
+res_cbopt_12r_poor = run_dice(RICE2023(;weights=w_poor)) # 657 iterations
 
 #res_cbopt_12r_equal = run_dice(RICE2023(;weights=w_equal);optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5)) # 2006 iterations
 
-res_cbopt_12r_rich = run_dice(RICE2023(;weights=w_rich)) # 433 iterations
+res_cbopt_12r_rich = run_dice(RICE2023(;weights=w_rich)) # 483 iterations
 
 @testset "RICE2023" begin
     @test res_cbopt_12r_poor.solved

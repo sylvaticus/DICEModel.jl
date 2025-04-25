@@ -53,7 +53,7 @@ res_12regions_devprior = run_dice(RICE2023(;weights=w_dev_country_priority))
 """
 function run_dice(
       pars::DICEParameters;
-      optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20),
+      optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "tol" => 10^-8, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "dual_inf_tol" => 1.0, "acceptable_dual_inf_tol" =>10.0^10, "constr_viol_tol" => 0.00001, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20),
       bounds = Dict{String,Tuple{String,String}}()
     ) 
 
@@ -74,7 +74,7 @@ function run_dice(
     ######################################################################
 
     @variables m begin
-        EIND_R[tidx,ridx]       # Industrial CO2 emissions (GtCO2 per yr), regional
+        EIND_R[tidx,ridx]      # Industrial CO2 emissions (GtCO2 per yr), regional
         EIND[tidx]              # Industrial CO2 emissions (GtCO2 per yr)
         ECO2_R[tidx,ridx]       # Total CO2 emissions (GtCO2 per year), regional
         ECO2[tidx]              # Total CO2 emissions (GtCO2 per year)
@@ -83,16 +83,16 @@ function run_dice(
         F_GHGABATE_R[tidx,ridx] # Forcings abateable nonCO2 GHG, regional   
     
         
-        MIU_R[tidx,ridx] >= 0.0      # Emission control rate GHGs (**control**), regional
+        0.0 <= MIU_R[tidx,ridx] <= 10.0      # Emission control rate GHGs (**control**), regional
         C_R[tidx,ridx]  >= 0.0       # Consumption (trillions 2019 US dollars per year), regional
         C[tidx] >= 0.0         # Consumption (trillions 2019 US dollars per year)
         K_R[tidx,ridx] >= 0.0         # Capital stock (trillions 2019 US dollars), regional
         K[tidx] >= 0.0         # Capital stock (trillions 2019 US dollars)
-        CPC_R[tidx,ridx]              # Per capita consumption (thousands 2019 USD per year), regional
+        CPC_R[tidx,ridx] >= 0.0             # Per capita consumption (thousands 2019 USD per year), regional
         CPC[tidx]              # Per capita consumption (thousands 2019 USD per year)
         I_R[tidx,ridx] >= 0.0         # Investment (trillions 2019 USD per year), regional
         I[tidx] >= 0.0         # Investment (trillions 2019 USD per year)
-        S_R[tidx,ridx]               # Gross savings rate as fraction of gross world product (**control**), regional
+        0.0 <= S_R[tidx,ridx] <= 1.0              # Gross savings rate as fraction of gross world product (**control**), regional
         S[tidx]                # Gross savings rate as fraction of gross world product (**control**)
         Y_R[tidx,ridx] >= 0.0         # Gross world product net of abatement and damages (trillions 2019 USD per year), regional
         Y[tidx] >= 0.0         # Gross world product net of abatement and damages (trillions 2019 USD per year)
@@ -103,12 +103,12 @@ function run_dice(
         0.0 <= DAMFRAC_R[tidx,ridx] <= 1.0    # Damages as fraction of gross output, regional
         DAMAGES[tidx]          # Damages (trillions 2019 USD per year)
         DAMAGES_R[tidx,ridx] >= 0.0         # Damages (trillions 2019 USD per year)
-        ABATECOST_R[tidx, ridx]        # Cost of emissions reductions  (trillions 2019 USD per year), regional
-        ABATECOST[tidx]        # Cost of emissions reductions  (trillions 2019 USD per year)
-        CCATOT[tidx]           # Total carbon emissions (GtC)
+        ABATECOST_R[tidx, ridx] >= 0.0       # Cost of emissions reductions  (trillions 2019 USD per year), regional
+        ABATECOST[tidx] >= 0.0       # Cost of emissions reductions  (trillions 2019 USD per year)
+        CCATOT[tidx]    >= 0.0       # Total carbon emissions (GtC)
         PERIODU_R[tidx,ridx]   # One period utility function, regional
         PERIODU[tidx]          # One period utility function
-        CPRICE_R[tidx,ridx]           # Carbon price (2019$ per ton of CO2) from marginal abatement cost
+        CPRICE_R[tidx,ridx] >= 0.0          # Carbon price (2019$ per ton of CO2) from marginal abatement cost
         TOTPERIODU[tidx]       # Period utility
         UTILITY                # Welfare function
 
@@ -118,14 +118,14 @@ function run_dice(
 
         FORC[tidx]             # Increase in radiative forcing (watts per m2 from 1765)
         TATM[tidx] >= 0.5      # Increase temperature of atmosphere (degrees C from 1765)     
-        TBOX1[tidx]            # Increase temperature of box 1 (degrees C from 1765)
-        TBOX2[tidx]            # Increase temperature of box 2 (degrees C from 1765)
-        RES0[tidx]             # Carbon concentration in Reservoir 0 (GtC from 1765)
-        RES1[tidx]             # Carbon concentration in Reservoir 1 (GtC from 1765)
+        TBOX1[tidx]          # Increase temperature of box 1 (degrees C from 1765)
+        TBOX2[tidx]          # Increase temperature of box 2 (degrees C from 1765)
+        RES0[tidx] >= 0.0          # Carbon concentration in Reservoir 0 (GtC from 1765)
+        RES1[tidx]            # Carbon concentration in Reservoir 1 (GtC from 1765)
         RES2[tidx]             # Carbon concentration in Reservoir 2 (GtC from 1765)
-        RES3[tidx]             # Carbon concentration in Reservoir 3 (GtC from 1765)
+        RES3[tidx]            # Carbon concentration in Reservoir 3 (GtC from 1765)
         MAT[tidx] >= 0.0       # Carbon concentration increase in atmosphere (GtC from 1765)
-        CACC[tidx]             # Accumulated carbon in ocean and other sinks (GtC)
+        CACC[tidx] >= 0.0            # Accumulated carbon in ocean and other sinks (GtC)
         IRFT[tidx] >= 0.0      # IRF100 at time t
         ALPHA[tidx] >= 0.0     # Carbon decay time scaling factor (**control**)
     end
@@ -373,7 +373,7 @@ function run_dice(
       FORC=collect(value.(FORC)),
       TATM=collect(value.(TATM)),
       TBOX1=collect(value.(TBOX1)), TBOX2=collect(value.(TBOX2)),
-      RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES3=collect(value.(RES3)),
+      RES0=collect(value.(RES0)), RES1=collect(value.(RES1)), RES2=collect(value.(RES2)), RES3=collect(value.(RES3)),
       MAT=collect(value.(MAT)),
       CACC=collect(value.(CACC)),
       IRFT=collect(value.(IRFT)),
