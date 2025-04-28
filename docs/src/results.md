@@ -402,9 +402,9 @@ p #hide
     scenarios_plot=["cbopt","parisext","t2c","r3"]
     for(i,s) in enumerate(scenarios_plot)
         if i == 1
-            global p = plot(times[1:9] ,results[s].CPRICE[1:9],ylim=(0,350), title="Carbon price",ylabel="2019\$ / tCO₂";plot_attributes[s]...);
+            global p = plot(times[1:9] ,results[s].CPRICE_R[1:9,1],ylim=(0,350), title="Carbon price",ylabel="2019\$ / tCO₂";plot_attributes[s]...);
         else
-            plot!(times[1:9] ,results[s].CPRICE[1:9];plot_attributes[s]...)
+            plot!(times[1:9] ,results[s].CPRICE_R[1:9,1];plot_attributes[s]...)
         end
     end
     nothing #hide

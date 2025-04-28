@@ -367,7 +367,7 @@ function run_dice(
       ABATECOST_R=collect(value.(ABATECOST_R)), ABATECOST=collect(value.(ABATECOST)),
       CCATOT=collect(value.(CCATOT)),
       PERIODU_R=collect(value.(PERIODU_R)), PERIODU=collect(value.(PERIODU)),
-      CPRICE_R=value.(CPRICE_R),
+      CPRICE_R=collect(value.(CPRICE_R)),
       TOTPERIODU=collect(value.(TOTPERIODU)),
       UTILITY=value(UTILITY),
       FORC=collect(value.(FORC)),
