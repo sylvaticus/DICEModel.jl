@@ -13,9 +13,9 @@ While `DICEModel.jl` is _implemented_ in Julia it can easily be used in Python o
 - [`run_dice_scenario(scenario_name)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice_scenario-Tuple{String}): run one of the "official" 10 scenarios ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/Scenarios.jl));
 - [`run_dice(;optimizer,bounds,kwargs...)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.run_dice-Tuple{}): run DICE with custom solver engine (and eventually options), custom variable constraints (bounds) or custom parameters ([browse code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/CoreModel.jl));
 - [`DICEParameters`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.DICEParameters): Available parameters to use with the `run_dice` function
-- [`DICE2023(;kwargs...)`](): Instantiate a `DICEParameters` struct with defaults parameters to DICE2023 (single region)
-- [`DICE2023_NREG(n;kwargs...)`](): Build parameters for a DICE2023 world partitioned in _n_ equal regions (unless parameters are overrided)
-- [`RICE2023(;kwargs...)`](): Build parameters calibrated to have the DICE2023 world totals and the 12-regions RICE2020 regional distribution.
+- [`DICE2023(;kwargs...)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.DICE2023-Tuple{}): Instantiate a `DICEParameters` struct with defaults parameters to DICE2023 (single region)
+- [`DICE2023_NREG(n;kwargs...)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.DICE2023_NREG): Build parameters for a DICE2023 world partitioned in _n_ equal regions (unless parameters are overrided)
+- [`RICE2023(;kwargs...)`](https://sylvaticus.github.io/DICEModel.jl/dev/api.html#DICEModel.RICE2023-Tuple{}): Build parameters calibrated to have the DICE2023 world totals and the 12-regions RICE2020 regional distribution.
 
 ### Results
 

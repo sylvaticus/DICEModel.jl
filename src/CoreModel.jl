@@ -18,9 +18,9 @@ This function runs the DICE model and returns the results as a named tuple. Note
 - `pars`: An istance of the [`DICEModel`](@ref) struct containing the needed parameters
 
 ## Keyword arguments:
-- `optimizer': The optimiser to use and possibly its options. Defaults to: [`optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20)`]. All, except the print levels, are the Ipopt defaults.
-- `bounds``: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as key and a two-element tuple as value. The first element is either "<=", ">=" or "==", and the second element is the right-hand side of the constraint (a single value, a vector of ntimesteps length or a matrix of ntimesteps x nregions). Default: (empty dictionary). See the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) for the names of the model variables.
-- `kwargs``: Keyword arguments to override the default parameter values of DICE2023. See the documentation for the [`DICEParameters`](@ref) structure for the available model parameters. 
+- `optimizer`: The optimiser to use and possibly its options. Defaults to: [`optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20)`]. All, except the print levels, are the Ipopt defaults.
+- `bounds`: A dictionary of equality or inequality constraints. Each constraint should be specified with the variable name as key and a two-element tuple as value. The first element is either "<=", ">=" or "==", and the second element is the right-hand side of the constraint (a single value, a vector of ntimesteps length or a matrix of ntimesteps x nregions). Default: (empty dictionary). See the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/DICEModel.jl) for the names of the model variables.
+- `kwargs`: Keyword arguments to override the default parameter values of DICE2023. See the documentation for the [`DICEParameters`](@ref) structure for the available model parameters. 
 
 **WARNING**: Sometimes changing a parameter doesn't lead to the expected behavior. This is because the model (in its original GAMS form that has been re-implemented in this package) performs some calibrations with the parameters, so several parameters have to be changed together. For example all the scenarios that test different discount rates don't change only the `prstp` parameter, but compute several other parameters, sometimes in a different matter than the default model, and have different calibration for initial conditions. Always check the [source code](https://github.com/sylvaticus/DICEModel.jl/blob/main/src/CoreModel.jl) to make sure that the parameter you want to change doesn't have other side effects in the model.
 
@@ -53,7 +53,7 @@ res_12regions_devprior = run_dice(RICE2023(;weights=w_dev_country_priority))
 """
 function run_dice(
       pars::DICEParameters;
-      optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "tol" => 10^-8, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "dual_inf_tol" => 1.0, "acceptable_dual_inf_tol" =>10.0^10, "constr_viol_tol" => 0.00001, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20),
+      optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "tol" => 10^-8, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "dual_inf_tol" => 1.0, "acceptable_dual_inf_tol" =>10.0^10, "constr_viol_tol" => 0.00001, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20),
       bounds = Dict{String,Tuple{String,String}}()
     ) 
 
@@ -319,9 +319,9 @@ function run_dice(
 
     status = termination_status(m)
 
-    if(!is_solved_and_feasible(m))
+    if(!is_solved_and_feasible(m; allow_almost=true))
         @warn "Model not solved"
-        return((solved=false,status=status))
+        return((solved=false,status=status,m=m))
     end
 
     #####################################################################

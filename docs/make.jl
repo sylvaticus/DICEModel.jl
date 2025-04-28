@@ -11,7 +11,8 @@ makedocs(sitename="DICEModel.jl Documentation",
          pages = [
             "Index" => "index.md",
             "API" => "api.md",
-            "Results" => "results.md"
+            "DICE Results" => "results.md",
+            "RICE Results" => "rice_results.md",
          ],
          format = Documenter.HTML(prettyurls = false, assets=["assets/custom.js","assets/custom.css"], analytics = "G-0MDFVNSBYE"),
          warnonly = true,
