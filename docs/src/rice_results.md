@@ -19,28 +19,20 @@ We start by loading the required packages.
     using Pkg
     Pkg.activate(joinpath(@__DIR__,".."))
     #Pkg.add(["DICEModel", "CSV","DataFrames","Plots"]) # Run once and comment this back
-    using DICEModel, CSV, DataFrames, Plots, XLSX
+    using DICEModel, Ipopt, JuMP, CSV, DataFrames, Plots, XLSX
     nothing #hide
     ```
-
-!!! details "Show code"
-```@example mr
-
-nothing #hide
-```
 
 
 ## Effect of multiple regions
 
 We run `DICE2023_NREG` testing 1,2,4,6,8,10 and 12 regional partitions.
 
-
 !!! details "Show code"
     ```@example mr
     nregs = [1,2,4,6,8,10,12]
     n_nregscen = length(nregs)
     results = Dict(["$(nregs[n])_regions" => run_dice(DICE2023_NREG(nregs[n]), optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 4000, "tol"=> 5*10^-8, "acceptable_tol" =>5*10^-6)) for n in 1:n_nregscen])
-    nothing #hide
     plot_attributes = Dict(
         "1_regions"    => (label="1 region (DICE)",   linestyle=:solid, colour=:red3, linewidth=:2),
         "2_regions"    => (label="2 regions",  linestyle=:solid, colour=:navy,linewidth=:3),
@@ -51,6 +43,7 @@ We run `DICE2023_NREG` testing 1,2,4,6,8,10 and 12 regional partitions.
         "12_regions"   => (label="12 regions", linestyle=:dot, colour=:royalblue2,linewidth=:1),
     )
     times  = results["1_regions"].times.+2020
+    nothing #hide
     ```
 
 ### Emissions
