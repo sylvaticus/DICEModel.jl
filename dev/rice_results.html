@@ -6,10 +6,10 @@
 </script><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="search_index.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script><script src="assets/custom.js"></script><link href="assets/custom.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="index.html">DICEModel.jl Documentation</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="index.html">Index</a></li><li><a class="tocitem" href="api.html">API</a></li><li><a class="tocitem" href="results.html">DICE Results</a></li><li class="is-active"><a class="tocitem" href="rice_results.html">RICE Results</a><ul class="internal"><li><a class="tocitem" href="#Effect-of-multiple-regions"><span>Effect of multiple regions</span></a></li><li><a class="tocitem" href="#RICE2023"><span>RICE2023</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href="rice_results.html">RICE Results</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href="rice_results.html">RICE Results</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/sylvaticus/DICEModel.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/sylvaticus/DICEModel.jl/blob/main/docs/src/rice_results.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Multi-regional-(RICE)-Results"><a class="docs-heading-anchor" href="#Multi-regional-(RICE)-Results">Multi-regional (RICE) Results</a><a id="Multi-regional-(RICE)-Results-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-regional-(RICE)-Results" title="Permalink"></a></h1><p>This page reports preliminary results from running the package with multi-regional partitions of the world and compare them with the 1-region implementation (DICE).</p><p>We first run the model with <em>equal</em> n regions (changing n) and then with the more realistic RICE-based partition (changing the weights).</p><p><strong>Warning</strong> This is a first draft of the model results. Several anomalies are present, most likely due to errors in the code or in the parametrisation.</p><ul><li><a href="rice_results.html#Multi-regional-(RICE)-Results">Multi-regional (RICE) Results</a></li><li class="no-marker"><ul><li><a href="rice_results.html#Effect-of-multiple-regions">Effect of multiple regions</a></li><li class="no-marker"><ul><li><a href="rice_results.html#Emissions">Emissions</a></li><li><a href="rice_results.html#Temperatures">Temperatures</a></li><li><a href="rice_results.html#Emission-Control-rate">Emission Control rate</a></li><li><a href="rice_results.html#Interregional-variability">Interregional variability</a></li></ul></li><li><a href="rice_results.html#RICE2023">RICE2023</a></li><li class="no-marker"><ul><li><a href="rice_results.html#Totals-and-comparision-with-DICE/DICE-12-region">Totals and comparision with DICE/DICE 12 region</a></li><li class="no-marker"><ul><li><a href="rice_results.html#Emissions-2">Emissions</a></li><li><a href="rice_results.html#Temperatures-2">Temperatures</a></li><li><a href="rice_results.html#Mean-control-rate">Mean control rate</a></li></ul></li><li><a href="rice_results.html#Regional-Variance">Regional Variance</a></li><li class="no-marker"><ul><li><a href="rice_results.html#Emissions-3">Emissions</a></li></ul></li><li><a href="rice_results.html#Emmissions">Emmissions</a></li><li><a href="rice_results.html#Control-rates">Control rates</a></li><li><a href="rice_results.html#Welfare-analysis-(weights-distribution)">Welfare analysis (weights distribution)</a></li><li class="no-marker"><ul><li><a href="rice_results.html#Emissions-4">Emissions</a></li><li><a href="rice_results.html#Temperatures-3">Temperatures</a></li></ul></li></ul></li></ul></li></ul><p>We start by loading the required packages.</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">using Pkg
 Pkg.activate(joinpath(@__DIR__,&quot;..&quot;))
 #Pkg.add([&quot;DICEModel&quot;, &quot;CSV&quot;,&quot;DataFrames&quot;,&quot;Plots&quot;]) # Run once and comment this back
-using DICEModel, Ipopt, JuMP, Plots, Test</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  Activating project at `~/work/DICEModel.jl/DICEModel.jl/docs`</code></pre></div></details><pre><code class="language- hljs">nregs = [1,2,4,6,8,12]
+using DICEModel, Ipopt, JuMP, Plots, Test</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  Activating project at `~/work/DICEModel.jl/DICEModel.jl/docs`</code></pre></div></details><h2 id="Effect-of-multiple-regions"><a class="docs-heading-anchor" href="#Effect-of-multiple-regions">Effect of multiple regions</a><a id="Effect-of-multiple-regions-1"></a><a class="docs-heading-anchor-permalink" href="#Effect-of-multiple-regions" title="Permalink"></a></h2><p>We run <code>DICE2023_NREG</code> testing 1,2,4,6,8,10 and 12 regional partitions.</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">nregs = [1,2,4,6,8,12]
 n_nregscen = length(nregs)
 results = Dict([&quot;$(nregs[n])_regions&quot; =&gt; run_dice(DICE2023_NREG(nregs[n]), optimizer=optimizer_with_attributes(Ipopt.Optimizer,&quot;print_level&quot; =&gt; 5, &quot;max_iter&quot; =&gt; 4000, &quot;tol&quot;=&gt; 5*10^-8, &quot;acceptable_tol&quot; =&gt;5*10^-6)) for n in 1:n_nregscen])
-[r.solved for r in results]</code></pre><h2 id="Effect-of-multiple-regions"><a class="docs-heading-anchor" href="#Effect-of-multiple-regions">Effect of multiple regions</a><a id="Effect-of-multiple-regions-1"></a><a class="docs-heading-anchor-permalink" href="#Effect-of-multiple-regions" title="Permalink"></a></h2><p>We run <code>DICE2023_NREG</code> testing 1,2,4,6,8,10 and 12 regional partitions.</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">plot_attributes = Dict(
+plot_attributes = Dict(
     &quot;1_regions&quot;    =&gt; (label=&quot;1 region (DICE)&quot;,   linestyle=:solid, colour=:red3, linewidth=:2),
     &quot;2_regions&quot;    =&gt; (label=&quot;2 regions&quot;,  linestyle=:solid, colour=:navy,linewidth=:3),
     &quot;4_regions&quot;    =&gt; (label=&quot;4 regions&quot;,  linestyle=:dash, colour=:midnightblue,linewidth=:3),
@@ -18,7 +18,827 @@ results = Dict([&quot;$(nregs[n])_regions&quot; =&gt; run_dice(DICE2023_NREG(nre
     &quot;10_regions&quot;   =&gt; (label=&quot;10 regions&quot;, linestyle=:dash, colour=:darkslategray,linewidth=:1),
     &quot;12_regions&quot;   =&gt; (label=&quot;12 regions&quot;, linestyle=:dot, colour=:royalblue2,linewidth=:1),
 )
-times  = results[&quot;1_regions&quot;].times.+2020</code></pre></div></details><h3 id="Emissions"><a class="docs-heading-anchor" href="#Emissions">Emissions</a><a id="Emissions-1"></a><a class="docs-heading-anchor-permalink" href="#Emissions" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">scenarios_plot=[&quot;$(nregs[n])_regions&quot; for n in 1:n_nregscen]
+times  = results[&quot;1_regions&quot;].times.+2020</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">This is Ipopt version 3.14.17, running with linear solver MUMPS 5.7.3.
+
+Number of nonzeros in equality constraint Jacobian...:     9902
+Number of nonzeros in inequality constraint Jacobian.:      969
+Number of nonzeros in Lagrangian Hessian.............:     3058
+
+Total number of variables............................:     3727
+                     variables with only lower bounds:     1944
+                variables with lower and upper bounds:      243
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     3529
+Total number of inequality constraints...............:      809
+        inequality constraints with only lower bounds:      486
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:      323
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 6.28e+03 1.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  3.6192919e+03 6.28e+03 2.69e+03  -1.0 2.97e+10    -  8.82e-08 3.01e-06f  1
+   2  3.7115342e+03 6.28e+03 2.89e+03  -1.0 1.74e+09    -  6.21e-07 4.04e-06f  1
+   3r 3.7115342e+03 6.28e+03 9.99e+02   3.8 0.00e+00    -  0.00e+00 3.32e-07R  5
+   4r 2.9022585e+03 5.10e+03 9.99e+02   3.8 4.23e+07    -  4.33e-05 1.92e-04f  1
+   5  3.1082654e+03 5.10e+03 9.66e+00  -1.0 2.71e+07    -  1.10e-04 3.51e-04f  1
+   6  3.1099930e+03 5.10e+03 1.04e+01  -1.0 1.24e+07    -  9.18e-05 2.51e-05f  1
+   7  3.1306375e+03 5.10e+03 6.88e+00  -1.0 1.20e+07    -  6.48e-05 1.27e-04f  1
+   8  3.1306719e+03 5.10e+03 7.09e+00  -1.0 9.60e+06    -  1.60e-04 4.27e-07h  3
+   9  3.1333987e+03 5.10e+03 1.47e+01  -1.0 9.71e+06    -  2.34e-04 2.60e-05f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10  3.1674857e+03 5.10e+03 3.98e+01  -1.0 9.44e+06    -  1.13e-04 2.60e-04f  1
+  11  3.1760684e+03 5.10e+03 5.39e+01  -1.0 6.60e+06    -  2.59e-04 1.73e-04f  1
+  12  3.1929592e+03 5.10e+03 7.27e+01  -1.0 5.49e+06    -  3.10e-04 3.07e-04f  1
+  13  3.2135966e+03 5.09e+03 8.53e+01  -1.0 4.17e+06    -  4.57e-04 4.88e-04f  1
+  14  3.2463670e+03 5.09e+03 6.70e+01  -1.0 2.95e+06    -  6.60e-04 1.10e-03f  1
+  15  3.2464744e+03 5.09e+03 6.43e+01  -1.0 1.65e+06    -  1.29e-03 2.59e-04f  1
+  16  3.2338336e+03 5.08e+03 5.53e+01  -1.0 1.49e+06    -  5.55e-04 1.31e-03h  1
+  17  3.2331764e+03 5.08e+03 5.55e+01  -1.0 9.68e+05    -  3.38e-05 1.55e-05h  1
+  18  3.2331673e+03 5.08e+03 5.55e+01  -1.0 9.64e+05    -  8.83e-07 6.56e-07f  2
+  19  3.2331371e+03 5.08e+03 5.55e+01  -1.0 9.64e+05    -  1.36e-06 2.81e-06f  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20  3.2330984e+03 5.08e+03 5.57e+01  -1.0 9.63e+05    -  4.20e-06 1.15e-05h  1
+  21  3.2333000e+03 5.08e+03 5.62e+01  -1.0 9.60e+05    -  1.35e-05 2.27e-05h  1
+  22  3.2336914e+03 5.08e+03 5.69e+01  -1.0 9.54e+05    -  3.19e-07 4.12e-05f  1
+  23  3.2344711e+03 5.08e+03 9.79e+01  -1.0 9.43e+05    -  4.51e-06 1.68e-04f  1
+  24  3.2348169e+03 5.08e+03 1.34e+02  -1.0 9.02e+05    -  4.93e-04 1.75e-04f  1
+  25  3.2352992e+03 5.08e+03 1.47e+02  -1.0 8.62e+05    -  1.88e-04 4.63e-04f  1
+  26  3.2352344e+03 5.08e+03 1.47e+02  -1.0 7.67e+05    -  2.08e-04 1.02e-05h  1
+  27  3.2336793e+03 5.07e+03 1.47e+02  -1.0 7.66e+05    -  4.29e-05 2.14e-04f  1
+  28  3.2335784e+03 5.07e+03 1.47e+02  -1.0 7.28e+05    -  2.46e-05 1.01e-05h  1
+  29  3.2328861e+03 5.07e+03 1.47e+02  -1.0 7.26e+05    -  1.35e-05 6.92e-05f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30  3.2318796e+03 5.07e+03 1.47e+02  -1.0 7.15e+05    -  1.61e-04 9.37e-05h  1
+  31  3.2299075e+03 5.07e+03 1.47e+02  -1.0 7.00e+05    -  6.39e-05 1.63e-04h  1
+  32  3.2273344e+03 5.07e+03 1.47e+02  -1.0 6.74e+05    -  5.26e-05 1.88e-04h  1
+  33  3.2229742e+03 5.07e+03 1.48e+02  -1.0 6.47e+05    -  1.49e-04 2.82e-04h  1
+  34  3.2223350e+03 5.07e+03 1.48e+02  -1.0 6.09e+05    -  4.54e-05 3.42e-05h  1
+  35  3.2218708e+03 5.07e+03 1.48e+02  -1.0 6.05e+05    -  3.73e-05 2.38e-05h  1
+  36  3.2184419e+03 5.07e+03 1.48e+02  -1.0 6.02e+05    -  2.27e-06 1.75e-04h  1
+  37  3.2099059e+03 5.07e+03 2.25e+02  -1.0 5.80e+05    -  1.15e-04 4.10e-04h  1
+  38  3.2071066e+03 5.07e+03 2.15e+02  -1.0 5.34e+05    -  1.58e-04 1.17e-04h  1
+  39  3.1963283e+03 5.06e+03 3.04e+02  -1.0 5.22e+05    -  3.52e-05 4.51e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40  3.1868363e+03 5.06e+03 3.26e+02  -1.0 4.79e+05    -  2.42e-04 3.99e-04h  1
+  41  3.1860666e+03 5.06e+03 3.73e+02  -1.0 4.45e+05    -  7.40e-05 3.27e-05h  1
+  42  3.1854718e+03 5.06e+03 5.64e+02  -1.0 4.42e+05    -  5.47e-05 2.48e-05h  1
+  43  3.1729929e+03 5.06e+03 9.21e+02  -1.0 4.40e+05    -  1.79e-06 5.29e-04h  1
+  44  3.1702163e+03 5.06e+03 9.12e+02  -1.0 4.01e+05    -  1.54e-04 1.20e-04h  1
+  45  3.1336067e+03 5.05e+03 1.19e+03  -1.0 3.93e+05    -  8.73e-05 1.60e-03h  1
+  46  3.1320441e+03 5.05e+03 1.17e+03  -1.0 3.01e+05    -  1.26e-04 7.14e-05h  1
+  47  3.1228146e+03 5.05e+03 1.25e+03  -1.0 2.98e+05    -  7.08e-05 4.25e-04h  1
+  48  3.1221483e+03 5.05e+03 1.33e+03  -1.0 2.79e+05    -  1.54e-04 3.09e-05h  1
+  49  3.1213276e+03 5.05e+03 1.32e+03  -1.0 2.78e+05    -  3.61e-05 3.75e-05h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  50  3.1207785e+03 5.05e+03 1.26e+03  -1.0 2.76e+05    -  2.04e-05 2.38e-05h  1
+  51  3.0922207e+03 5.04e+03 1.60e+03  -1.0 2.75e+05    -  3.63e-06 1.33e-03h  1
+  52  3.0902233e+03 5.04e+03 1.57e+03  -1.0 2.25e+05    -  1.68e-04 7.83e-05h  1
+  53  3.0789152e+03 5.04e+03 1.67e+03  -1.0 2.23e+05    -  6.29e-05 4.33e-04h  1
+  54  3.0510418e+03 5.03e+03 1.99e+03  -1.0 2.09e+05    -  1.28e-04 1.10e-03h  1
+  55  3.0374352e+03 5.03e+03 2.06e+03  -1.0 1.79e+05    -  2.08e-04 5.80e-04h  1
+  56  3.0096408e+03 5.02e+03 2.09e+03  -1.0 1.65e+05    -  5.38e-04 1.24e-03h  1
+  57  3.0087245e+03 5.02e+03 2.82e+03  -1.0 1.39e+05    -  1.55e-03 4.36e-05h  1
+  58  3.0063467e+03 5.02e+03 2.18e+03  -1.0 1.38e+05    -  2.54e-05 1.13e-04h  1
+  59  2.9459206e+03 5.01e+03 1.54e+03  -1.0 1.36e+05    -  8.75e-06 2.94e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  60  2.9438656e+03 5.01e+03 1.54e+03  -1.0 8.88e+04    -  1.21e-03 9.80e-05h  1
+  61  2.9166052e+03 5.00e+03 1.54e+03  -1.0 8.76e+04    -  2.81e-04 1.26e-03h  1
+  62  2.8435908e+03 4.98e+03 1.54e+03  -1.0 7.24e+04    -  7.60e-04 3.57e-03h  1
+  63  2.8417618e+03 4.98e+03 1.54e+03  -1.0 3.84e+04    -  6.37e-04 9.56e-05h  1
+  64  2.8303007e+03 4.98e+03 1.54e+03  -1.0 3.76e+04    -  2.27e-04 5.68e-04h  1
+  65  2.8291373e+03 4.98e+03 1.54e+03  -1.0 3.33e+04    -  4.11e-04 5.92e-05h  1
+  66  2.8276671e+03 4.98e+03 1.54e+03  -1.0 3.29e+04    -  1.64e-04 7.31e-05h  1
+  67  2.8063738e+03 4.97e+03 1.53e+03  -1.0 3.24e+04    -  4.62e-06 1.07e-03h  1
+  68  2.7584069e+03 4.96e+03 1.58e+03  -1.0 3.10e+04    -  5.97e-04 2.52e-03h  1
+  69  2.7567828e+03 4.96e+03 1.55e+03  -1.0 2.89e+04    -  3.47e-04 8.64e-05h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  70  2.7492027e+03 4.96e+03 1.58e+03  -1.0 3.17e+04    -  1.64e-04 3.85e-04h  1
+  71  2.7076607e+03 4.95e+03 1.87e+03  -1.0 3.19e+04    -  1.96e-04 2.09e-03h  1
+  72  2.6901622e+03 4.94e+03 2.02e+03  -1.0 3.61e+04    -  3.45e-04 9.95e-04h  1
+  73  2.6762277e+03 4.94e+03 2.20e+03  -1.0 3.62e+04    -  2.09e-04 7.98e-04h  1
+  74  2.6651517e+03 4.94e+03 2.36e+03  -1.0 3.55e+04    -  2.24e-04 6.40e-04h  1
+  75  2.6502741e+03 4.93e+03 2.62e+03  -1.0 3.35e+04    -  3.23e-04 8.61e-04h  1
+  76  2.6486412e+03 4.93e+03 2.64e+03  -1.0 3.08e+04    -  7.56e-05 9.29e-05h  1
+  77  2.6390012e+03 4.93e+03 2.99e+03  -1.0 3.02e+04    -  6.04e-05 5.40e-04h  1
+  78  2.6297574e+03 4.93e+03 3.38e+03  -1.0 2.78e+04    -  1.53e-04 5.28e-04h  1
+  79  2.6248339e+03 4.93e+03 3.68e+03  -1.0 2.15e+04    -  9.14e-05 2.84e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  80  2.6195287e+03 4.92e+03 4.14e+03  -1.0 2.10e+04    -  7.01e-05 3.04e-04h  1
+  81  2.6158017e+03 4.92e+03 4.52e+03  -1.0 2.20e+04    -  6.28e-05 2.14e-04h  1
+  82  2.6122311e+03 4.92e+03 4.92e+03  -1.0 2.27e+04    -  5.35e-05 2.05e-04h  1
+  83  2.6087860e+03 4.92e+03 5.32e+03  -1.0 2.33e+04    -  5.38e-05 1.98e-04h  1
+  84  2.6054326e+03 4.92e+03 5.69e+03  -1.0 2.39e+04    -  5.38e-05 1.94e-04h  1
+  85  2.6020663e+03 4.92e+03 6.06e+03  -1.0 2.45e+04    -  5.06e-05 1.95e-04h  1
+  86  2.5987702e+03 4.92e+03 6.42e+03  -1.0 2.53e+04    -  5.00e-05 1.92e-04h  1
+  87  2.5954935e+03 4.92e+03 6.75e+03  -1.0 2.64e+04    -  5.57e-05 1.92e-04h  1
+  88  2.5920973e+03 4.92e+03 7.08e+03  -1.0 2.74e+04    -  5.90e-05 1.99e-04h  1
+  89  2.5886373e+03 4.91e+03 7.41e+03  -1.0 2.85e+04    -  6.04e-05 2.04e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  90  2.5851448e+03 4.91e+03 7.72e+03  -1.0 2.95e+04    -  6.33e-05 2.06e-04h  1
+  91  2.5815751e+03 4.91e+03 8.02e+03  -1.0 3.04e+04    -  7.05e-05 2.11e-04h  1
+  92  2.5778927e+03 4.91e+03 8.35e+03  -1.0 3.13e+04    -  5.40e-05 2.18e-04h  1
+  93  2.5744130e+03 4.91e+03 8.63e+03  -1.0 3.26e+04    -  6.63e-05 2.07e-04h  1
+  94  2.5704450e+03 4.91e+03 8.94e+03  -1.0 3.34e+04    -  6.87e-05 2.36e-04h  1
+  95  2.5688908e+03 4.91e+03 8.96e+03  -1.0 3.44e+04    -  8.04e-05 9.26e-05h  1
+  96r 2.5688908e+03 4.91e+03 1.00e+03   3.7 0.00e+00    -  0.00e+00 4.48e-07R  5
+  97r 1.5983223e+03 2.16e+03 1.91e+03   3.7 6.91e+07    -  2.73e-05 5.70e-04f  1
+  98  1.5941387e+03 2.16e+03 1.67e+02  -1.0 1.29e+05    -  1.36e-02 8.09e-05h  1
+  99  1.5765162e+03 2.16e+03 3.56e+02  -1.0 6.89e+04    -  5.40e-03 8.01e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 100  1.5432466e+03 2.16e+03 4.88e+02  -1.0 7.10e+04    -  4.92e-03 1.32e-03h  1
+ 101  1.5054132e+03 2.15e+03 9.50e+02  -1.0 7.43e+04    -  1.12e-02 2.01e-03h  1
+ 102  1.4294780e+03 2.14e+03 1.02e+03  -1.0 7.89e+04    -  7.39e-03 6.56e-03h  1
+ 103  1.3356654e+03 2.13e+03 7.43e+02  -1.0 9.14e+04    -  4.61e-03 7.02e-03h  1
+ 104  1.2989839e+03 2.12e+03 7.44e+02  -1.0 1.01e+05    -  2.89e-03 2.48e-03h  1
+ 105  1.2757614e+03 2.12e+03 1.10e+03  -1.0 1.03e+05    -  6.78e-03 1.48e-03h  1
+ 106  1.2410383e+03 2.11e+03 1.31e+03  -1.0 1.05e+05    -  6.81e-03 2.06e-03h  1
+ 107  1.2050139e+03 2.11e+03 1.36e+03  -1.0 1.07e+05    -  5.61e-03 2.02e-03h  1
+ 108  1.1731354e+03 2.10e+03 1.34e+03  -1.0 1.08e+05    -  4.25e-03 1.74e-03h  1
+ 109  1.1652292e+03 2.10e+03 1.37e+03  -1.0 1.63e+05    -  5.56e-06 4.28e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 110  1.1414902e+03 2.10e+03 1.39e+03  -1.0 1.10e+05    -  7.95e-04 1.29e-03h  1
+ 111  1.1410312e+03 2.10e+03 1.49e+03  -1.0 2.51e+04  -2.0 3.23e-04 1.33e-04h  1
+ 112  1.1385575e+03 2.10e+03 2.53e+03  -1.0 3.93e+04  -2.5 2.14e-03 7.36e-04h  1
+ 113  1.1374865e+03 2.10e+03 2.78e+03  -1.0 3.45e+04  -2.1 4.65e-04 3.18e-04h  1
+ 114  1.1339979e+03 2.10e+03 2.29e+03  -1.0 4.85e+04  -2.5 4.62e-04 1.01e-03h  1
+ 115  1.1329071e+03 2.10e+03 2.27e+03  -1.0 3.10e+04  -2.1 2.84e-04 2.99e-04h  1
+ 116  1.1318300e+03 2.10e+03 2.68e+03  -1.0 1.11e+05  -2.6 6.93e-04 1.35e-04h  1
+ 117  1.1293018e+03 2.09e+03 2.53e+03  -1.0 1.11e+05  -2.2 1.69e-04 3.23e-04h  1
+ 118  1.1239138e+03 2.09e+03 2.36e+03  -1.0 1.14e+05  -2.6 4.21e-04 6.85e-04h  1
+ 119  1.1158150e+03 2.09e+03 1.86e+03  -1.0 1.12e+05  -2.2 5.97e-04 1.03e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 120  1.1130789e+03 2.09e+03 2.10e+03  -1.0 1.16e+05  -2.7 5.86e-04 3.36e-04h  1
+ 121  1.1105191e+03 2.09e+03 2.92e+03  -1.0 1.13e+05  -2.3 7.59e-04 3.13e-04h  1
+ 122  1.1076013e+03 2.09e+03 1.56e+03  -1.0 1.09e+05  -1.8 3.93e-06 3.62e-04h  1
+ 123  1.1010969e+03 2.09e+03 3.47e+03  -1.0 1.19e+05  -2.3 2.14e-05 7.93e-04h  1
+ 124  1.0981443e+03 2.09e+03 2.85e+03  -1.0 1.21e+05  -2.8 7.59e-04 3.48e-04h  1
+ 125  1.0933947e+03 2.09e+03 4.19e+03  -1.0 1.20e+05  -2.4 1.80e-05 5.85e-04h  1
+ 126  1.0921594e+03 2.09e+03 1.87e+03  -1.0 1.16e+05  -1.9 6.94e-04 1.59e-04h  1
+ 127  1.0902423e+03 2.08e+03 1.91e+03  -1.0 1.19e+05  -2.4 2.16e-04 2.40e-04h  1
+ 128  1.0854845e+03 2.08e+03 3.51e+03  -1.0 1.14e+05  -2.0 1.07e-04 6.11e-04h  1
+ 129  1.0810439e+03 2.08e+03 3.31e+03  -1.0 1.07e+05  -1.6 6.36e-04 6.01e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 130  1.0786009e+03 2.08e+03 3.48e+03  -1.0 1.15e+05  -2.0 2.15e-04 3.19e-04h  1
+ 131  1.0738253e+03 2.08e+03 3.46e+03  -1.0 1.18e+05  -2.5 6.12e-04 5.93e-04h  1
+ 132  1.0656464e+03 2.08e+03 3.60e+03  -1.0 1.19e+05  -3.0 8.18e-04 9.70e-04h  1
+ 133  1.0599993e+03 2.08e+03 4.83e+03  -1.0 1.19e+05  -2.6 3.31e-04 6.85e-04h  1
+ 134  1.0512831e+03 2.07e+03 4.60e+03  -1.0 1.20e+05  -3.0 1.07e-03 1.00e-03h  1
+ 135  1.0404175e+03 2.07e+03 9.89e+03  -1.0 1.19e+05  -2.6 7.79e-05 1.34e-03h  1
+ 136  1.0350008e+03 2.07e+03 1.01e+04  -1.0 1.21e+05  -3.1 5.94e-04 6.43e-04h  1
+ 137  1.0205322e+03 2.07e+03 1.67e+04  -1.0 1.21e+05  -3.6 1.93e-04 1.61e-03h  1
+ 138  1.0134156e+03 2.07e+03 1.28e+04  -1.0 1.22e+05  -4.0 1.68e-03 7.39e-04h  1
+ 139  1.0016694e+03 2.06e+03 1.66e+04  -1.0 1.22e+05  -4.5 1.60e-04 1.13e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 140  9.9444567e+02 2.06e+03 1.69e+04  -1.0 1.23e+05  -5.0 1.02e-03 1.10e-03h  1
+ 141  9.9285351e+02 2.06e+03 1.73e+04  -1.0 1.67e+05  -4.6 9.84e-06 1.57e-04h  1
+ 142  9.9040726e+02 2.06e+03 1.14e+04  -1.0 1.23e+05  -5.1 2.34e-03 6.92e-04h  1
+ 143  9.7779406e+02 2.06e+03 1.32e+04  -1.0 1.16e+05  -1.9 1.29e-03 1.63e-03h  1
+ 144  9.6583997e+02 2.05e+03 1.78e+04  -1.0 1.13e+05  -1.5 8.04e-04 1.59e-03h  1
+ 145  9.5980557e+02 2.05e+03 2.09e+04  -1.0 1.14e+05  -1.1 4.70e-04 8.07e-04h  1
+ 146  9.5678259e+02 2.05e+03 2.35e+04  -1.0 1.14e+05  -0.6 2.42e-04 4.03e-04h  1
+ 147  9.5525278e+02 2.05e+03 1.01e+04  -1.0 1.15e+05  -0.2 5.94e-04 2.03e-04h  1
+ 148  9.5377896e+02 2.05e+03 9.96e+03  -1.0 1.20e+05  -0.7 2.03e-04 1.89e-04h  1
+ 149  9.5343003e+02 2.05e+03 8.13e+03  -1.0 1.22e+05  -1.2 3.75e-04 4.51e-05h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 150  9.4957237e+02 2.05e+03 8.11e+03  -1.0 1.21e+05  -0.7 9.33e-04 5.00e-04h  1
+ 151  9.4287787e+02 2.05e+03 2.28e+04  -1.0 1.20e+05  -0.3 1.35e-04 8.78e-04h  1
+ 152  9.3584705e+02 2.04e+03 2.44e+04  -1.0 1.23e+05  -0.8 7.70e-04 9.23e-04h  1
+ 153  9.3394963e+02 2.04e+03 2.43e+04  -1.0 1.24e+05  -1.3 2.57e-04 2.45e-04h  1
+ 154  9.2923721e+02 2.04e+03 2.40e+04  -1.0 1.24e+05  -1.7 7.08e-04 6.08e-04h  1
+ 155  9.2000832e+02 2.04e+03 1.56e+04  -1.0 1.24e+05  -1.3 2.95e-03 1.19e-03h  1
+ 156  9.1782135e+02 2.04e+03 1.61e+04  -1.0 1.25e+05  -1.8 2.60e-05 2.93e-04h  1
+ 157  9.1773568e+02 2.04e+03 1.23e+04  -1.0 1.25e+05  -0.5 2.47e-04 1.19e-05h  1
+ 158  9.1696013e+02 2.04e+03 1.15e+04  -1.0 1.25e+05  -0.0 4.18e-04 1.06e-04h  1
+ 159  9.1222788e+02 2.04e+03 7.94e+03  -1.0 1.25e+05  -0.5 2.57e-04 6.71e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 160  9.1121713e+02 2.04e+03 8.20e+03  -1.0 1.25e+05  -1.0 7.27e-05 1.67e-04h  1
+ 161  9.1119273e+02 2.04e+03 8.17e+03  -1.0 1.43e+05  -1.5 2.85e-05 1.25e-05h  1
+ 162  9.0943366e+02 2.04e+03 8.31e+03  -1.0 1.25e+05  -1.0 1.88e-04 2.57e-04h  1
+ 163  9.0776950e+02 2.04e+03 1.03e+04  -1.0 1.25e+05  -0.6 6.36e-04 2.43e-04h  1
+ 164  9.0713217e+02 2.04e+03 2.52e+04  -1.0 1.25e+05  -1.1 2.47e-03 9.87e-05h  1
+ 165  8.9301275e+02 2.03e+03 1.99e+04  -1.0 1.25e+05  -1.6 3.92e-04 2.49e-03h  1
+ 166  8.9042133e+02 2.03e+03 1.79e+04  -1.0 1.26e+05  -1.1 4.56e-06 4.06e-04h  1
+ 167r 8.9042133e+02 2.03e+03 1.00e+03   3.3 0.00e+00  -0.7 0.00e+00 4.81e-07R  5
+ 168r 8.0824620e+02 1.63e+03 9.99e+02   3.3 4.32e+07    -  1.07e-03 9.95e-04f  1
+ 169  8.2154779e+02 1.63e+03 4.33e+00  -1.0 1.73e+05    -  9.95e-05 4.34e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 170  8.2466096e+02 1.62e+03 8.87e+00  -1.0 1.73e+05    -  6.57e-04 1.12e-04f  1
+ 171  8.2957893e+02 1.62e+03 5.80e+01  -1.0 1.73e+05    -  1.56e-03 1.76e-04f  1
+ 172  8.3864893e+02 1.62e+03 9.56e+01  -1.0 1.74e+05    -  6.88e-04 3.04e-04f  1
+ 173  8.4662955e+02 1.62e+03 6.28e+02  -1.0 1.97e+05    -  2.38e-03 2.88e-04f  1
+ 174  8.6349362e+02 1.62e+03 8.93e+02  -1.0 2.98e+05    -  1.19e-03 4.62e-04f  1
+ 175  9.0155067e+02 1.62e+03 2.24e+03  -1.0 3.17e+05    -  4.30e-03 8.96e-04f  1
+ 176  1.2970026e+03 1.61e+03 1.39e+03  -1.0 2.75e+05    -  3.59e-03 6.01e-03f  1
+ 177  1.3145006e+03 1.61e+03 3.07e+03  -1.0 1.95e+05    -  5.41e-03 2.91e-04f  1
+ 178  2.4379087e+03 1.59e+03 9.67e+02  -1.0 2.88e+05    -  3.53e-03 1.36e-02f  1
+ 179  2.7332386e+03 1.57e+03 1.27e+03  -1.0 1.81e+05    -  1.04e-02 1.14e-02f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 180  2.7353723e+03 1.57e+03 1.97e+03  -1.0 1.81e+05    -  1.19e-02 1.55e-04f  1
+ 181  2.7980847e+03 1.57e+03 1.75e+03  -1.0 1.84e+05    -  1.10e-03 2.79e-03f  1
+ 182  2.8044432e+03 1.57e+03 2.50e+03  -1.0 1.72e+05    -  5.33e-03 4.07e-04f  1
+ 183  3.0998849e+03 1.54e+03 1.53e+03  -1.0 1.72e+05    -  8.81e-03 1.75e-02f  1
+ 184  3.1521880e+03 1.53e+03 1.61e+03  -1.0 1.71e+05    -  8.42e-03 5.37e-03f  1
+ 185  3.2713413e+03 1.51e+03 1.56e+03  -1.0 1.71e+05    -  6.57e-03 1.23e-02f  1
+ 186  3.3183776e+03 1.50e+03 1.56e+03  -1.0 1.70e+05    -  5.87e-03 9.19e-03f  1
+ 187r 3.3183776e+03 1.50e+03 1.00e+03   2.8 0.00e+00  -1.2 0.00e+00 3.85e-07R  5
+ 188r 3.3180578e+03 1.59e+03 1.98e+03   2.8 1.76e+05    -  6.68e-04 2.10e-03f  1
+ 189  3.3190099e+03 1.59e+03 2.39e+00  -1.0 1.95e+05    -  1.50e-04 6.25e-05f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 190  3.3194437e+03 1.59e+03 1.97e+01  -1.0 1.72e+05    -  1.66e-04 2.83e-05f  1
+ 191  3.3311197e+03 1.59e+03 4.56e+01  -1.0 1.72e+05    -  3.37e-05 7.54e-04f  1
+ 192  3.3329409e+03 1.59e+03 3.68e+01  -1.0 1.72e+05    -  1.19e-03 1.28e-04f  1
+ 193  3.3363388e+03 1.59e+03 1.59e+02  -1.0 1.71e+05    -  1.81e-03 2.65e-04f  1
+ 194  3.3388807e+03 1.59e+03 2.71e+02  -1.0 1.71e+05    -  1.38e-03 3.04e-04h  1
+ 195  3.3421668e+03 1.59e+03 5.65e+02  -1.0 1.71e+05    -  2.52e-03 6.15e-04f  1
+ 196  3.3756149e+03 1.58e+03 4.27e+02  -1.0 1.71e+05    -  3.09e-03 3.99e-03f  1
+ 197  3.5628675e+03 1.55e+03 7.48e+02  -1.0 1.71e+05    -  5.89e-03 2.00e-02f  1
+ 198  3.6427861e+03 1.50e+03 1.01e+03  -1.0 1.68e+05    -  2.27e-02 3.06e-02f  1
+ 199  3.5299507e+03 1.41e+03 1.58e+03  -1.0 1.64e+05    -  2.94e-02 5.86e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 200  3.4459621e+03 1.39e+03 1.62e+03  -1.0 1.56e+05    -  9.80e-03 1.46e-02h  1
+ 201  3.3286838e+03 1.36e+03 1.72e+03  -1.0 1.54e+05    -  8.57e-03 2.10e-02h  1
+ 202  3.1852991e+03 1.32e+03 1.85e+03  -1.0 1.51e+05    -  8.57e-03 2.75e-02h  1
+ 203  3.0915802e+03 1.29e+03 1.86e+03  -1.0 1.47e+05    -  1.42e-02 1.97e-02h  1
+ 204  2.8298324e+03 1.19e+03 1.94e+03  -1.0 1.45e+05    -  3.13e-02 6.94e-02h  1
+ 205  2.6643656e+03 1.15e+03 1.73e+03  -1.0 1.35e+05    -  1.12e-01 3.44e-02h  1
+ 206  2.6549203e+03 1.15e+03 1.75e+03  -1.0 1.31e+05    -  4.01e-02 2.52e-03h  1
+ 207  2.6547967e+03 1.15e+03 1.75e+03  -1.0 1.31e+05    -  2.95e-04 5.94e-05h  1
+ 208  2.6465171e+03 1.14e+03 2.05e+03  -1.0 1.31e+05    -  2.05e-04 7.09e-03h  1
+ 209  2.6092528e+03 1.12e+03 3.58e+03  -1.0 1.30e+05    -  2.02e-03 1.63e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 210  2.6087978e+03 1.12e+03 3.04e+03  -1.0 1.28e+05    -  2.43e-02 1.73e-04h  1
+ 211  2.6126568e+03 1.12e+03 3.04e+03  -1.0 1.28e+05    -  6.35e-04 1.70e-03f  1
+ 212  2.6191973e+03 1.12e+03 3.04e+03  -1.0 1.28e+05    -  2.63e-03 1.27e-03f  1
+ 213  2.6248094e+03 1.12e+03 3.04e+03  -1.0 1.27e+05    -  1.93e-03 4.10e-04f  1
+ 214  2.6540934e+03 1.11e+03 3.03e+03  -1.0 1.27e+05    -  2.33e-03 1.80e-03f  1
+ 215  2.6570050e+03 1.11e+03 3.03e+03  -1.0 1.27e+05    -  4.34e-04 1.62e-04f  1
+ 216  2.6804381e+03 1.11e+03 3.02e+03  -1.0 1.27e+05    -  5.35e-04 1.29e-03f  1
+ 217  2.6918115e+03 1.11e+03 3.03e+03  -1.0 1.27e+05    -  2.12e-03 6.80e-04f  1
+ 218  2.7240731e+03 1.11e+03 3.03e+03  -1.0 1.27e+05    -  2.95e-03 1.95e-03f  1
+ 219  2.7537218e+03 1.11e+03 3.04e+03  -1.0 1.27e+05    -  5.40e-03 1.96e-03f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 220  2.7598474e+03 1.11e+03 4.49e+03  -1.0 1.26e+05    -  2.36e-03 4.25e-04f  1
+ 221  2.7782108e+03 1.11e+03 5.07e+03  -1.0 1.26e+05    -  2.68e-03 1.26e-03f  1
+ 222  2.7937295e+03 1.10e+03 5.15e+03  -1.0 1.26e+05    -  2.52e-03 1.08e-03f  1
+ 223  2.7960089e+03 1.10e+03 5.15e+03  -1.0 1.26e+05    -  1.62e-04 1.66e-04f  1
+ 224  2.8120455e+03 1.10e+03 5.12e+03  -1.0 1.26e+05    -  5.04e-05 1.14e-03f  1
+ 225  2.8401860e+03 1.10e+03 5.10e+03  -1.0 1.26e+05    -  1.52e-03 2.20e-03f  1
+ 226  2.8425411e+03 1.10e+03 5.10e+03  -1.0 1.26e+05    -  7.24e-04 1.92e-04f  1
+ 227  2.8500485e+03 1.10e+03 5.10e+03  -1.0 1.26e+05    -  3.86e-04 5.62e-04f  1
+ 228  2.8506012e+03 1.10e+03 5.10e+03  -1.0 1.26e+05    -  3.58e-05 3.77e-05f  1
+ 229  2.8596045e+03 1.10e+03 5.09e+03  -1.0 1.26e+05    -  6.28e-05 6.11e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 230  2.8596632e+03 1.10e+03 5.09e+03  -1.0 1.26e+05    -  2.26e-05 3.93e-06h  2
+ 231  2.8640024e+03 1.10e+03 5.09e+03  -1.0 1.26e+05    -  5.99e-06 2.73e-04f  1
+ 232  2.8643524e+03 1.10e+03 5.09e+03  -1.0 1.25e+05    -  5.78e-05 2.03e-05f  1
+ 233  2.8715648e+03 1.10e+03 5.09e+03  -1.0 1.25e+05    -  6.82e-05 4.17e-04f  1
+ 234  2.8723484e+03 1.10e+03 5.09e+03  -1.0 1.25e+05    -  1.18e-04 4.27e-05f  1
+ 235  2.8934095e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  1.46e-04 1.14e-03f  1
+ 236  2.8937519e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  1.04e-04 1.89e-05h  1
+ 237  2.8967639e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  4.88e-05 1.52e-04f  1
+ 238  2.8981921e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  1.24e-04 6.51e-05f  1
+ 239  2.9026014e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  1.86e-04 1.91e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 240  2.9087715e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  2.76e-04 2.39e-04f  1
+ 241  2.9194479e+03 1.10e+03 5.08e+03  -1.0 1.25e+05    -  2.79e-04 3.46e-04f  1
+ 242  2.9357084e+03 1.09e+03 5.08e+03  -1.0 1.25e+05    -  3.48e-04 4.18e-04f  1
+ 243  2.9826452e+03 1.09e+03 5.07e+03  -1.0 1.25e+05    -  4.46e-04 1.07e-03f  1
+ 244  3.2467626e+03 1.09e+03 5.06e+03  -1.0 1.25e+05    -  1.42e-03 6.83e-03f  1
+ 245  3.3802177e+03 1.08e+03 5.01e+03  -1.0 1.24e+05    -  8.53e-03 6.03e-03f  1
+ 246  3.3817293e+03 1.08e+03 5.00e+03  -1.0 1.23e+05    -  1.26e-03 8.57e-05f  1
+ 247  3.4050721e+03 1.08e+03 5.00e+03  -1.0 1.23e+05    -  3.91e-04 1.25e-03f  1
+ 248  3.6182075e+03 1.06e+03 5.08e+03  -1.0 1.23e+05    -  2.50e-03 1.21e-02f  1
+ 249  3.7487802e+03 1.05e+03 4.99e+03  -1.0 1.22e+05    -  7.09e-03 9.92e-03f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 250  3.8090935e+03 1.05e+03 5.27e+03  -1.0 1.21e+05    -  2.45e-02 5.43e-03f  1
+ 251  4.0174400e+03 1.03e+03 5.24e+03  -1.0 1.20e+05    -  2.27e-02 1.93e-02f  1
+ 252  4.1143967e+03 1.02e+03 5.37e+03  -1.0 1.18e+05    -  2.29e-02 1.17e-02f  1
+ 253  4.2662631e+03 9.91e+02 5.17e+03  -1.0 1.17e+05    -  1.83e-02 2.30e-02f  1
+ 254  4.3139684e+03 9.78e+02 5.16e+03  -1.0 1.14e+05    -  1.72e-02 1.30e-02f  1
+ 255  4.3502947e+03 9.62e+02 5.17e+03  -1.0 1.13e+05    -  2.43e-02 1.64e-02f  1
+ 256  4.3680262e+03 9.37e+02 5.00e+03  -1.0 1.11e+05    -  2.10e-02 2.49e-02f  1
+ 257  4.3568044e+03 9.18e+02 5.07e+03  -1.0 1.08e+05    -  3.94e-02 2.00e-02h  1
+ 258  4.3322122e+03 9.00e+02 5.01e+03  -1.0 1.06e+05    -  2.49e-02 1.97e-02h  1
+ 259  4.3309278e+03 8.99e+02 4.99e+03  -1.0 1.04e+05    -  6.75e-06 1.52e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 260  4.3310095e+03 8.99e+02 4.76e+03  -1.0 8.21e+03  -1.7 4.07e-03 1.37e-04h  1
+ 261  4.3284748e+03 8.98e+02 4.87e+03  -1.0 1.04e+05  -2.2 6.51e-03 7.40e-04h  1
+ 262  4.3189747e+03 8.95e+02 4.73e+03  -1.0 1.04e+05  -1.7 1.33e-03 2.79e-03h  1
+ 263  4.2828861e+03 8.86e+02 4.81e+03  -1.0 1.03e+05  -2.2 4.53e-05 1.04e-02h  1
+ 264  4.2820793e+03 8.86e+02 4.78e+03  -1.0 9.70e+04  -1.8 8.29e-04 2.55e-04h  1
+ 265  4.2282337e+03 8.60e+02 4.44e+03  -1.0 1.03e+05    -  2.35e-04 2.89e-02h  1
+ 266  4.2227513e+03 8.58e+02 4.43e+03  -1.0 9.75e+04  -2.3 1.93e-03 1.58e-03h  1
+ 267  4.2225358e+03 8.58e+02 4.46e+03  -1.0 9.53e+04  -1.8 1.57e-03 6.60e-05h  1
+ 268  4.1882363e+03 8.45e+02 4.49e+03  -1.0 9.95e+04    -  2.88e-03 1.56e-02h  1
+ 269  4.1880202e+03 8.45e+02 4.66e+03  -1.0 9.64e+04  -2.3 5.51e-03 5.99e-05h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 270  4.1411454e+03 8.28e+02 4.70e+03  -1.0 9.80e+04    -  3.88e-03 2.00e-02h  1
+ 271  4.1398361e+03 8.27e+02 4.70e+03  -1.0 9.24e+04  -1.9 4.05e-04 3.97e-04h  1
+ 272  4.0888150e+03 8.10e+02 4.77e+03  -1.0 9.61e+04    -  6.01e-05 2.07e-02h  1
+ 273  4.0870920e+03 8.10e+02 6.63e+03  -1.0 8.73e+04  -1.5 8.04e-03 5.52e-04h  1
+ 274  4.0547956e+03 8.02e+02 5.99e+03  -1.0 9.18e+04  -1.9 1.84e-03 9.61e-03h  1
+ 275  4.0545953e+03 8.02e+02 6.39e+03  -1.0 9.29e+04  -2.4 2.42e-02 5.71e-05h  1
+ 276  3.9399653e+03 7.75e+02 6.18e+03  -1.0 9.31e+04  -2.9 3.28e-02 3.25e-02h  1
+ 277  3.8804992e+03 7.63e+02 5.65e+03  -1.0 9.02e+04  -3.4 6.83e-02 1.65e-02h  1
+ 278  3.7858629e+03 7.42e+02 5.75e+03  -1.0 8.88e+04  -3.8 1.79e-04 2.63e-02h  1
+ 279  3.7736423e+03 7.40e+02 7.69e+03  -1.0 8.56e+04  -1.6 1.72e-02 3.71e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 280  3.7436871e+03 7.33e+02 7.74e+03  -1.0 8.60e+04  -2.1 1.21e-02 8.91e-03h  1
+ 281  3.6135485e+03 7.04e+02 7.33e+03  -1.0 8.54e+04  -2.6 4.44e-04 3.89e-02h  1
+ 282  3.5849886e+03 6.98e+02 7.72e+03  -1.0 8.21e+04  -2.1 2.48e-02 8.63e-03h  1
+ 283  3.5837655e+03 6.98e+02 9.62e+03  -1.0 8.13e+04  -1.7 1.41e-02 3.79e-04h  1
+ 284  3.4087324e+03 6.59e+02 8.08e+03  -1.0 8.14e+04  -2.2 2.15e-02 5.41e-02h  1
+ 285  3.2743159e+03 6.31e+02 7.02e+03  -1.0 7.71e+04  -2.7 1.48e-01 4.23e-02h  1
+ 286  3.1615748e+03 6.08e+02 6.91e+03  -1.0 7.39e+04  -3.1 2.79e-02 3.63e-02h  1
+ 287  3.1534066e+03 6.07e+02 6.99e+03  -1.0 7.12e+04  -1.8 3.97e-03 2.77e-03h  1
+ 288  3.0179647e+03 5.79e+02 7.05e+03  -1.0 7.10e+04  -2.3 7.61e-02 4.58e-02h  1
+ 289  2.8997995e+03 5.55e+02 6.61e+03  -1.0 6.78e+04  -2.8 5.44e-02 4.09e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 290  2.8444853e+03 5.44e+02 8.04e+03  -1.0 6.50e+04  -1.4 2.02e-02 2.01e-02h  1
+ 291  2.8290824e+03 5.40e+02 9.61e+03  -1.0 6.38e+04  -1.9 7.94e-02 5.65e-03h  1
+ 292  2.6101718e+03 4.97e+02 8.17e+03  -1.0 6.34e+04  -2.4 3.15e-01 8.03e-02h  1
+ 293  2.4915775e+03 4.73e+02 7.27e+03  -1.0 5.84e+04  -2.9 3.05e-01 4.67e-02h  1
+ 294  2.2303330e+03 4.22e+02 6.54e+03  -1.0 5.57e+04  -2.4 2.06e-03 1.07e-01h  1
+ 295  2.0651599e+03 3.91e+02 9.92e+03  -1.0 4.98e+04  -2.0 4.49e-01 7.41e-02h  1
+ 296  1.9723066e+03 3.73e+02 2.20e+04  -1.0 4.61e+04  -1.6 2.27e-01 4.46e-02h  1
+ 297  1.9307000e+03 3.65e+02 1.78e+04  -1.0 4.41e+04  -2.1 2.88e-01 2.06e-02h  1
+ 298  1.8855114e+03 3.57e+02 1.76e+04  -1.0 4.32e+04  -2.5 1.73e-02 2.26e-02h  1
+ 299  1.6859823e+03 3.20e+02 1.27e+04  -1.0 4.22e+04  -2.1 3.21e-01 1.03e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 300  1.6217427e+03 3.09e+02 1.26e+04  -1.0 3.79e+04  -2.6 2.40e-02 3.58e-02h  1
+ 301  1.4994630e+03 2.87e+02 1.03e+04  -1.0 3.65e+04  -2.2 1.69e-01 7.11e-02h  1
+ 302  1.4473236e+03 2.78e+02 9.06e+03  -1.0 3.40e+04  -2.6 6.64e-02 3.20e-02h  1
+ 303  1.3041395e+03 2.52e+02 6.56e+03  -1.0 3.29e+04  -2.2 2.38e-01 9.12e-02h  1
+ 304  1.2576030e+03 2.44e+02 6.19e+03  -1.0 2.99e+04  -2.7 9.54e-02 3.21e-02h  1
+ 305  1.1699697e+03 2.29e+02 5.51e+03  -1.0 2.89e+04  -2.3 1.80e-01 6.26e-02h  1
+ 306  1.1030796e+03 2.17e+02 4.88e+03  -1.0 2.71e+04  -2.8 7.71e-02 5.08e-02h  1
+ 307  8.7824408e+02 1.78e+02 2.72e+03  -1.0 2.58e+04  -2.3 1.01e-01 1.79e-01h  1
+ 308  3.3574819e+02 9.43e+01 2.55e+04  -1.0 2.12e+04  -2.8 8.43e-02 5.29e-01h  1
+ 309  3.2628955e+02 9.23e+01 2.50e+04  -1.0 1.00e+04  -2.4 1.29e-01 2.04e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 310  1.1644686e+02 5.26e+01 1.44e+04  -1.0 9.79e+03  -2.0 2.98e-01 4.18e-01h  1
+ 311  1.1175359e+02 5.91e+01 1.40e+04  -1.0 5.70e+03  -2.4 1.95e-02 3.34e-02h  1
+ 312 -5.1780563e+01 4.02e+01 8.01e+03  -1.0 5.51e+03  -2.0 5.92e-01 5.74e-01h  1
+ 313 -7.6403060e+01 3.26e+01 6.47e+03  -1.0 2.35e+03  -1.6 5.41e-01 1.96e-01h  1
+ 314 -9.6219866e+01 2.64e+01 5.26e+03  -1.0 1.89e+03  -2.1 4.08e-02 2.01e-01h  1
+ 315 -1.3783928e+02 1.31e+02 3.33e+03  -1.0 1.51e+03  -2.5 3.27e-01 9.89e-01h  1
+ 316 -1.3345966e+02 5.68e+01 9.29e+04  -1.0 1.50e+02  -2.1 5.32e-01 1.00e+00f  1
+ 317 -1.1458781e+02 6.81e+00 6.56e+04  -1.0 8.49e+01  -2.6 6.07e-01 1.00e+00f  1
+ 318 -5.9997581e+01 2.98e-01 7.17e+02  -1.7 5.46e+01  -3.1 3.56e-01 1.00e+00f  1
+ 319  4.6047860e+02 8.94e-01 7.17e+02  -1.7 1.74e+06    -  3.43e-03 2.49e-03f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 320  5.6794980e+02 2.19e+00 7.18e+02  -1.7 1.65e+05    -  5.46e-03 3.89e-03f  1
+ 321  7.3778362e+02 5.03e+00 7.05e+02  -1.7 1.24e+05    -  3.82e-03 7.24e-03f  1
+ 322  9.5022836e+02 8.30e+00 7.04e+02  -1.7 6.28e+04    -  1.71e-02 1.36e-02f  1
+ 323  1.0564536e+03 8.91e+00 6.95e+02  -1.7 3.34e+04    -  9.00e-03 9.71e-03f  1
+ 324  1.2349291e+03 1.30e+01 6.55e+02  -1.7 3.38e+04    -  4.84e-03 1.74e-02f  1
+ 325  1.3118643e+03 1.38e+01 6.58e+02  -1.7 2.36e+04    -  1.49e-02 1.07e-02f  1
+ 326  1.5457562e+03 1.82e+01 5.85e+02  -1.7 2.46e+04    -  9.03e-03 3.18e-02f  1
+ 327  1.8190018e+03 2.23e+01 4.95e+02  -1.7 1.69e+04    -  1.60e-02 4.37e-02f  1
+ 328  2.3114497e+03 3.12e+01 4.18e+02  -1.7 1.60e+04    -  2.58e-02 9.10e-02f  1
+ 329  2.6120404e+03 3.22e+01 3.68e+02  -1.7 9.55e+03    -  1.31e-01 9.14e-02f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 330  3.1024223e+03 4.27e+01 3.28e+02  -1.7 6.96e+03    -  8.66e-02 1.97e-01f  1
+ 331  3.2963368e+03 4.24e+01 2.84e+02  -1.7 4.24e+03    -  1.35e-01 1.32e-01f  1
+ 332  3.7383219e+03 7.63e+01 6.87e+02  -1.7 3.62e+03    -  1.13e-01 3.65e-01f  1
+ 333  4.4201867e+03 1.62e+02 2.40e+03  -1.7 2.51e+03    -  1.54e-01 9.28e-01f  1
+ 334  4.6876863e+03 1.05e+02 2.61e+03  -1.7 1.52e+03    -  2.06e-01 9.06e-01f  1
+ 335  4.7304076e+03 9.56e+01 1.98e+03  -1.7 2.23e+03    -  2.14e-01 1.02e-01f  1
+ 336  5.1254462e+03 7.92e+01 2.15e+03  -1.7 2.36e+03    -  1.54e-01 8.86e-01f  1
+ 337  5.1617675e+03 7.32e+01 1.72e+03  -1.7 2.79e+03    -  1.83e-01 8.35e-02f  1
+ 338  5.1623551e+03 7.30e+01 1.42e+03  -1.7 1.22e+03    -  1.35e-01 1.91e-03f  1
+ 339  5.2601549e+03 5.52e+01 1.47e+03  -1.7 1.91e+03    -  1.14e-01 4.61e-01f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 340  5.2957144e+03 4.92e+01 1.23e+03  -1.7 1.68e+03    -  1.75e-01 2.13e-01f  1
+ 341  5.3438672e+03 4.51e+01 1.20e+03  -1.7 1.57e+03    -  9.86e-02 2.96e-01f  1
+ 342  5.3850922e+03 3.82e+01 1.04e+03  -1.7 1.48e+03    -  1.71e-01 2.78e-01f  1
+ 343  5.4259469e+03 3.47e+01 9.47e+02  -1.7 1.67e+03    -  1.35e-01 2.83e-01f  1
+ 344  5.5107508e+03 5.46e+01 9.09e+02  -1.7 1.54e+03    -  1.77e-01 6.22e-01f  1
+ 345  5.6207592e+03 1.08e+02 8.40e+02  -1.7 1.90e+03    -  2.21e-01 1.00e+00f  1
+ 346  5.7102007e+03 1.36e+02 6.77e+02  -1.7 1.38e+03    -  2.38e-01 1.00e+00f  1
+ 347  5.8017752e+03 1.67e+02 5.17e+02  -1.7 1.76e+03    -  2.64e-01 1.00e+00f  1
+ 348  5.8827243e+03 2.07e+02 3.82e+02  -1.7 2.37e+03    -  2.81e-01 1.00e+00f  1
+ 349  5.9586982e+03 2.58e+02 2.83e+02  -1.7 3.12e+03    -  2.80e-01 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 350  5.9808150e+03 2.17e+02 2.00e+02  -1.7 6.35e+03    -  2.92e-01 2.88e-01f  1
+ 351  6.0458937e+03 2.73e+02 1.56e+02  -1.7 6.76e+03    -  2.39e-01 7.91e-01f  1
+ 352  6.0652717e+03 2.37e+02 1.43e+02  -1.7 9.44e+03    -  3.63e-02 1.74e-01f  1
+ 353  6.1077415e+03 2.11e+02 1.03e+02  -1.7 1.09e+04    -  3.14e-01 2.81e-01f  1
+ 354  6.1228237e+03 1.93e+02 9.13e+01  -1.7 1.16e+04    -  2.48e-01 1.14e-01f  1
+ 355  6.1740020e+03 1.93e+02 5.36e+01  -1.7 9.69e+03    -  2.35e-01 4.13e-01f  1
+ 356  6.2050168e+03 1.88e+02 3.70e+01  -1.7 1.36e+04    -  2.46e-01 3.09e-01f  1
+ 357  6.2770083e+03 3.48e+02 6.62e+00  -1.7 1.10e+04    -  2.56e-01 8.22e-01f  1
+ 358  6.2805379e+03 3.30e+02 6.26e+00  -1.7 1.41e+04    -  3.06e-01 5.27e-02f  1
+ 359  6.3096867e+03 3.00e+02 3.61e+00  -1.7 1.48e+04    -  2.48e-01 4.24e-01f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 360  6.3154145e+03 2.79e+02 3.32e+00  -1.7 1.72e+04    -  5.15e-01 8.05e-02f  1
+ 361  6.3370436e+03 2.63e+02 2.28e+00  -1.7 1.87e+04    -  4.45e-01 3.14e-01f  1
+ 362  6.3695647e+03 3.06e+02 1.14e+00  -1.7 1.78e+04    -  7.30e-01 4.97e-01f  1
+ 363  6.3876455e+03 2.91e+02 8.05e-01  -1.7 2.03e+04    -  5.39e-01 2.96e-01f  1
+ 364  6.3935502e+03 2.72e+02 7.28e-01  -1.7 2.29e+04    -  9.52e-01 9.63e-02f  1
+ 365  6.4062173e+03 2.56e+02 5.68e-01  -1.7 2.19e+04    -  6.79e-01 2.19e-01f  1
+ 366  6.4230229e+03 2.65e+02 4.07e-01  -1.7 2.45e+04    -  8.92e-01 3.13e-01f  1
+ 367  6.4418333e+03 3.03e+02 3.94e-01  -1.7 2.54e+04    -  6.82e-01 3.76e-01f  1
+ 368  6.4613167e+03 3.56e+02 3.97e-01  -1.7 2.62e+04    -  8.54e-01 4.28e-01f  1
+ 369  6.4783651e+03 3.89e+02 3.73e-01  -1.7 2.84e+04    -  7.10e-01 4.05e-01f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 370  6.4941830e+03 4.23e+02 3.56e-01  -1.7 3.03e+04    -  8.47e-01 4.14e-01f  1
+ 371  6.5120435e+03 5.05e+02 3.60e-01  -1.7 3.07e+04    -  7.39e-01 5.01e-01f  1
+ 372  6.5296666e+03 5.90e+02 3.62e-01  -1.7 3.03e+04    -  7.94e-01 5.53e-01f  1
+ 373  6.5324561e+03 5.43e+02 3.55e-01  -1.7 3.03e+04    -  7.29e-01 8.85e-02f  1
+ 374  6.5491703e+03 6.41e+02 3.45e-01  -1.7 3.32e+04    -  1.00e+00 5.58e-01f  1
+ 375  6.5638826e+03 7.11e+02 3.17e-01  -1.7 3.68e+04    -  6.63e-01 5.53e-01f  1
+ 376  6.5761447e+03 7.32e+02 2.89e-01  -1.7 4.01e+04    -  9.06e-01 5.02e-01f  1
+ 377  6.5803782e+03 6.42e+02 2.62e-01  -1.7 4.09e+04    -  7.02e-01 1.84e-01h  1
+ 378  6.5874190e+03 5.84e+02 2.27e-01  -1.7 4.34e+04    -  1.00e+00 3.05e-01f  1
+ 379  6.6011867e+03 8.68e+02 2.71e-01  -1.7 4.14e+04    -  7.28e-01 6.40e-01f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 380  6.6104745e+03 8.87e+02 2.33e-01  -1.7 4.94e+04    -  7.84e-01 5.06e-01f  1
+ 381  6.6166638e+03 8.24e+02 1.96e-01  -1.7 5.44e+04    -  7.57e-01 3.57e-01h  1
+ 382  6.6234338e+03 8.69e+02 1.80e-01  -1.7 5.54e+04    -  8.57e-01 4.30e-01h  1
+ 383  6.6279487e+03 8.35e+02 1.54e-01  -1.7 6.14e+04    -  7.49e-01 3.14e-01h  1
+ 384  6.6320118e+03 8.17e+02 1.38e-01  -1.7 6.18e+04    -  9.01e-01 3.15e-01h  1
+ 385  6.6363938e+03 9.04e+02 1.25e-01  -1.7 6.58e+04    -  7.77e-01 3.67e-01h  1
+ 386  6.6400388e+03 9.61e+02 1.16e-01  -1.7 7.00e+04    -  8.57e-01 3.51e-01h  1
+ 387  6.6430145e+03 1.00e+03 1.04e-01  -1.7 7.27e+04    -  7.96e-01 3.16e-01h  1
+ 388  6.6451552e+03 9.98e+02 9.38e-02  -1.7 7.55e+04    -  8.85e-01 2.70e-01h  1
+ 389  6.6470400e+03 1.04e+03 8.53e-02  -1.7 7.79e+04    -  8.29e-01 2.83e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 390  6.6489720e+03 1.20e+03 7.17e-02  -1.7 8.38e+04    -  9.00e-01 3.79e-01h  1
+ 391  6.6501010e+03 1.23e+03 6.47e-02  -1.7 8.78e+04    -  7.97e-01 2.90e-01h  1
+ 392  6.6512496e+03 1.44e+03 5.78e-02  -1.7 8.95e+04    -  9.80e-01 4.07e-01h  1
+ 393  6.6521028e+03 1.63e+03 5.22e-02  -1.7 1.02e+05    -  7.92e-01 4.22e-01h  1
+ 394  6.6524146e+03 1.54e+03 4.66e-02  -1.7 9.89e+04    -  1.00e+00 3.17e-01h  1
+ 395  6.6525854e+03 1.44e+03 3.71e-02  -1.7 9.18e+04    -  1.00e+00 5.59e-01h  1
+ 396  6.6524810e+03 1.18e+01 4.97e-03  -1.7 7.61e+03    -  1.00e+00 1.00e+00h  1
+ 397  6.6524814e+03 1.05e+00 1.28e-05  -1.7 2.67e+03    -  1.00e+00 1.00e+00h  1
+ 398  6.6582680e+03 1.03e+02 5.54e-01  -2.5 2.42e+04    -  1.00e+00 8.54e-01f  1
+ 399  6.6585057e+03 6.31e+01 1.56e-01  -2.5 5.02e+03    -  1.00e+00 8.19e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 400  6.6586700e+03 2.73e+01 6.42e-02  -2.5 4.40e+03    -  5.67e-01 7.09e-01h  1
+ 401  6.6587408e+03 3.39e+00 9.71e-03  -2.5 8.44e+02    -  1.00e+00 1.00e+00h  1
+ 402  6.6587510e+03 6.81e-02 1.35e-04  -2.5 1.45e+02    -  1.00e+00 1.00e+00h  1
+ 403  6.6587501e+03 2.15e-03 7.14e-07  -2.5 2.09e+01    -  1.00e+00 1.00e+00h  1
+ 404  6.6593737e+03 3.65e+00 1.40e-01  -3.8 5.02e+03    -  1.00e+00 7.61e-01f  1
+ 405  6.6594333e+03 1.93e+00 4.55e-01  -3.8 1.21e+03    -  1.00e+00 5.04e-01h  1
+ 406  6.6594585e+03 6.46e-01 8.91e-02  -3.8 4.92e+02    -  1.00e+00 8.17e-01h  1
+ 407  6.6594537e+03 3.24e-02 4.74e-05  -3.8 3.34e+01    -  1.00e+00 1.00e+00h  1
+ 408  6.6594537e+03 1.09e-03 4.42e-07  -3.8 4.37e+00    -  1.00e+00 1.00e+00h  1
+ 409  6.6594739e+03 7.42e-02 2.36e-02  -5.7 2.01e+02    -  9.90e-01 8.26e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 410  6.6594764e+03 5.26e-03 2.79e-03  -5.7 2.38e+01    -  1.00e+00 9.31e-01h  1
+ 411  6.6594766e+03 4.89e-05 6.09e-07  -5.7 1.76e+00    -  1.00e+00 1.00e+00h  1
+ 412  6.6594766e+03 2.71e-06 3.39e-08  -5.7 8.98e-02    -  1.00e+00 1.00e+00h  1
+ 413  6.6594768e+03 9.75e-06 3.25e-06  -8.3 2.25e+00    -  1.00e+00 9.98e-01h  1
+ 414  6.6594768e+03 7.09e-08 8.85e-10  -8.3 1.45e-02    -  1.00e+00 1.00e+00h  1
+ 415  6.6594768e+03 1.73e-10 2.72e-11  -8.3 2.48e-04    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 415
+
+                                   (scaled)                 (unscaled)
+Objective...............:  -6.6594768366947783e+03    6.6594768366947783e+03
+Dual infeasibility......:   2.7158137201450420e-11    2.7158137201450420e-11
+Constraint violation....:   1.7291768017457798e-10    1.7291768017457798e-10
+Variable bound violation:   0.0000000000000000e+00    0.0000000000000000e+00
+Complementarity.........:   4.5463493495930945e-09    4.5463493495930945e-09
+Overall NLP error.......:   4.5463493495930945e-09    4.5463493495930945e-09
+
+
+Number of objective function evaluations             = 441
+Number of objective gradient evaluations             = 416
+Number of equality constraint evaluations            = 441
+Number of inequality constraint evaluations          = 441
+Number of equality constraint Jacobian evaluations   = 420
+Number of inequality constraint Jacobian evaluations = 420
+Number of Lagrangian Hessian evaluations             = 415
+Total seconds in IPOPT                               = 4.018
+
+EXIT: Optimal Solution Found.
+This is Ipopt version 3.14.17, running with linear solver MUMPS 5.7.3.
+
+Number of nonzeros in equality constraint Jacobian...:    14761
+Number of nonzeros in inequality constraint Jacobian.:     1533
+Number of nonzeros in Lagrangian Hessian.............:     4111
+
+Total number of variables............................:     5185
+                     variables with only lower bounds:     2754
+                variables with lower and upper bounds:      486
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     4745
+Total number of inequality constraints...............:     1213
+        inequality constraints with only lower bounds:      729
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:      484
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 6.28e+03 1.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  8.3179544e+02 6.28e+03 2.47e+03  -1.0 9.45e+09    -  9.25e-08 2.20e-06f  1
+   2  8.4452405e+02 6.28e+03 2.47e+03  -1.0 1.19e+09    -  1.02e-06 3.77e-07f  1
+   3  1.0079541e+03 6.28e+03 3.24e+03  -1.0 9.17e+08    -  3.54e-07 6.36e-06f  1
+   4  1.0162125e+03 6.28e+03 3.22e+03  -1.0 2.59e+08    -  4.55e-06 2.34e-06f  1
+   5  1.0036105e+03 6.28e+03 3.17e+03  -1.0 4.04e+07    -  1.79e-06 1.79e-06s  5
+   6  9.7148413e+02 6.28e+03 3.07e+03  -1.0 1.62e+08    -  2.75e-06 2.75e-06s  5
+   7  9.6226174e+02 6.28e+03 3.05e+03  -1.0 9.50e+07    -  1.18e-06 1.18e-06s  5
+   8r 9.6226174e+02 6.28e+03 9.99e+02   3.8 0.00e+00    -  0.00e+00 0.00e+00R  1
+   9r 7.4147834e+01 5.03e+03 9.99e+02   3.8 2.85e+07    -  1.70e-05 2.74e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10  9.5055565e+01 5.03e+03 4.43e+00  -1.0 1.44e+06    -  3.93e-05 5.68e-04f  1
+  11  9.5544157e+01 5.03e+03 7.54e+00  -1.0 9.85e+05    -  1.40e-04 2.36e-05h  1
+  12  9.6249645e+01 5.03e+03 1.03e+01  -1.0 9.78e+05    -  6.13e-05 3.16e-05f  1
+  13  9.7889585e+01 5.03e+03 5.24e+00  -1.0 9.63e+05    -  1.89e-05 7.08e-05f  1
+  14  1.0009918e+02 5.03e+03 5.29e+00  -1.0 9.26e+05    -  9.64e-05 9.50e-05f  1
+  15  1.0572419e+02 5.03e+03 1.94e+01  -1.0 8.83e+05    -  9.66e-05 2.31e-04f  1
+  16  1.2123043e+02 5.02e+03 3.48e+01  -1.0 7.86e+05    -  3.10e-04 6.97e-04f  1
+  17  1.3243142e+02 5.02e+03 3.57e+01  -1.0 5.78e+05    -  1.00e-03 9.45e-04f  1
+  18  1.3208643e+02 5.02e+03 4.09e+01  -1.0 4.31e+05    -  3.63e-04 1.09e-04h  1
+  19  1.3118611e+02 5.02e+03 3.75e+01  -1.0 4.22e+05    -  3.42e-04 5.20e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20  1.3059025e+02 5.02e+03 4.53e+01  -1.0 3.73e+05    -  7.94e-04 2.74e-04h  1
+  21  1.2734251e+02 5.01e+03 4.30e+01  -1.0 3.57e+05    -  1.15e-03 1.33e-03f  1
+  22  1.2319495e+02 5.00e+03 4.86e+01  -1.0 2.83e+05    -  1.81e-03 9.61e-04h  1
+  23  1.1862830e+02 5.00e+03 4.86e+01  -1.0 2.53e+05    -  8.71e-04 9.24e-04h  1
+  24  1.1636073e+02 5.00e+03 4.87e+01  -1.0 2.28e+05    -  6.91e-04 3.06e-04h  1
+  25  1.0581582e+02 4.99e+03 4.85e+01  -1.0 2.22e+05    -  8.15e-04 1.57e-03h  1
+  26  1.0010141e+02 4.99e+03 4.85e+01  -1.0 1.89e+05    -  9.59e-04 9.10e-04h  1
+  27  8.2587869e+01 4.97e+03 4.83e+01  -1.0 1.76e+05    -  6.40e-04 2.80e-03h  1
+  28  8.2391689e+01 4.97e+03 4.83e+01  -1.0 1.39e+05    -  8.22e-04 2.91e-05h  1
+  29  6.7424576e+01 4.96e+03 5.60e+01  -1.0 1.41e+05    -  5.70e-04 2.24e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30  6.6508868e+01 4.96e+03 4.78e+01  -1.0 1.20e+05    -  7.64e-04 1.23e-04h  1
+  31  6.3001658e+01 4.96e+03 4.80e+01  -1.0 1.20e+05    -  4.08e-04 4.74e-04h  1
+  32  6.2269905e+01 4.96e+03 4.46e+01  -1.0 1.16e+05    -  2.49e-04 9.84e-05h  1
+  33  6.0530976e+01 4.96e+03 4.88e+01  -1.0 1.16e+05    -  9.18e-05 2.34e-04h  1
+  34  5.7986395e+01 4.95e+03 4.88e+01  -1.0 1.14e+05    -  3.21e-04 3.42e-04h  1
+  35r 5.7986395e+01 4.95e+03 9.99e+02   3.7 0.00e+00    -  0.00e+00 3.01e-07R  4
+  36r 4.7643865e+01 2.47e+03 9.99e+02   3.7 7.64e+07    -  9.52e-05 7.19e-04f  1
+  37  2.6779666e+01 2.46e+03 2.00e+02  -1.0 2.03e+05    -  9.94e-04 4.10e-03h  1
+  38  2.4179940e+01 2.46e+03 2.21e+02  -1.0 1.26e+05    -  2.13e-03 1.94e-04h  1
+  39 -2.6098262e+01 2.44e+03 1.93e+02  -1.0 1.38e+05    -  8.72e-04 5.17e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40 -3.6796498e+01 2.44e+03 2.10e+02  -1.0 7.70e+04    -  3.08e-03 1.05e-03h  1
+  41 -4.2471009e+01 2.44e+03 2.27e+02  -1.0 7.78e+04    -  1.82e-03 4.07e-04h  1
+  42 -1.1536589e+02 2.43e+03 1.77e+02  -1.0 7.99e+04    -  1.69e-03 6.13e-03h  1
+  43 -1.1954667e+02 2.42e+03 4.98e+02  -1.0 4.74e+04    -  4.12e-03 4.20e-04h  1
+  44 -1.2123648e+02 2.42e+03 4.69e+03  -1.0 4.72e+04    -  4.76e-03 1.77e-04h  1
+  45 -1.4385961e+02 2.42e+03 1.01e+03  -1.0 5.53e+04    -  3.06e-04 2.41e-03h  1
+  46 -1.4861105e+02 2.42e+03 1.00e+03  -1.0 4.04e+04    -  4.63e-04 4.67e-04h  1
+  47 -1.5298094e+02 2.42e+03 1.81e+03  -1.0 4.06e+04    -  6.44e-04 4.29e-04h  1
+  48 -1.6466736e+02 2.41e+03 1.01e+03  -1.0 5.03e+04    -  7.96e-04 1.19e-03h  1
+  49 -1.8121262e+02 2.41e+03 1.13e+03  -1.0 8.24e+04    -  1.65e-03 1.76e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  50 -1.8303917e+02 2.41e+03 4.49e+03  -1.0 3.14e+04  -2.0 1.21e-03 5.91e-04h  1
+  51 -1.8391816e+02 2.41e+03 2.52e+03  -1.0 1.73e+05  -2.5 5.82e-04 2.63e-04h  1
+  52 -1.8640631e+02 2.41e+03 2.25e+03  -1.0 3.41e+04  -2.1 5.03e-04 7.90e-04h  1
+  53 -1.8909582e+02 2.40e+03 1.15e+04  -1.0 6.99e+04    -  1.76e-06 2.85e-04h  1
+  54 -1.8936015e+02 2.40e+03 1.49e+04  -1.0 4.62e+04    -  2.65e-03 2.80e-05h  1
+  55 -1.9130487e+02 2.40e+03 2.85e+04  -1.0 5.18e+04    -  2.83e-03 2.09e-04h  1
+  56 -2.1189123e+02 2.40e+03 2.94e+04  -1.0 4.60e+04    -  3.89e-04 2.24e-03h  2
+  57 -2.3511582e+02 2.39e+03 4.97e+04  -1.0 4.66e+04    -  5.50e-05 2.48e-03h  1
+  58 -2.3610233e+02 2.39e+03 3.06e+04  -1.0 5.39e+04    -  2.39e-03 1.04e-04h  1
+  59 -2.3814749e+02 2.39e+03 3.07e+04  -1.0 2.74e+04  -2.5 7.07e-04 5.89e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  60 -2.4454805e+02 2.39e+03 5.01e+04  -1.0 2.01e+05    -  1.40e-05 6.78e-04h  1
+  61r-2.4454805e+02 2.39e+03 1.00e+03   3.4 0.00e+00    -  0.00e+00 2.82e-07R  6
+  62r-2.5248784e+02 1.75e+03 1.01e+03   3.4 5.15e+07    -  2.16e-06 2.73e-04f  1
+  63 -2.5310252e+02 1.75e+03 4.07e+02  -1.0 6.63e+04    -  1.16e-02 2.83e-05h  1
+  64 -2.5604485e+02 1.75e+03 8.78e+02  -1.0 6.38e+04    -  2.43e-03 2.37e-04h  1
+  65 -2.6068976e+02 1.75e+03 5.86e+03  -1.0 6.36e+04    -  7.66e-03 3.81e-04h  1
+  66 -2.6379606e+02 1.75e+03 1.05e+04  -1.0 1.13e+05    -  1.31e-03 2.93e-04h  1
+  67 -2.7886888e+02 1.75e+03 1.10e+04  -1.0 1.21e+05    -  1.50e-03 1.43e-03h  1
+  68 -2.8337010e+02 1.75e+03 2.82e+04  -1.0 1.02e+05    -  2.00e-03 4.29e-04h  1
+  69 -2.9627232e+02 1.75e+03 3.90e+04  -1.0 9.93e+04    -  2.50e-03 1.23e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  70 -3.0896839e+02 1.74e+03 4.65e+04  -1.0 1.08e+05    -  2.21e-03 1.21e-03h  1
+  71 -3.1823901e+02 1.74e+03 5.45e+04  -1.0 1.14e+05    -  1.99e-03 8.85e-04h  1
+  72 -3.2766586e+02 1.74e+03 6.32e+04  -1.0 9.31e+04    -  2.12e-03 8.99e-04h  1
+  73 -3.3853768e+02 1.74e+03 7.17e+04  -1.0 9.40e+04    -  2.24e-03 1.03e-03h  1
+  74 -3.5051610e+02 1.74e+03 8.03e+04  -1.0 1.10e+05    -  2.22e-03 1.14e-03h  1
+  75 -3.5948071e+02 1.74e+03 9.17e+04  -1.0 1.16e+05    -  2.06e-03 8.51e-04h  1
+  76 -3.6896086e+02 1.73e+03 1.04e+05  -1.0 9.92e+04    -  2.09e-03 8.98e-04h  1
+  77 -3.7966331e+02 1.73e+03 1.16e+05  -1.0 8.67e+04    -  2.16e-03 1.01e-03h  1
+  78 -3.9129892e+02 1.73e+03 1.30e+05  -1.0 1.01e+05    -  2.18e-03 1.10e-03h  1
+  79 -4.0060953e+02 1.73e+03 1.52e+05  -1.0 1.07e+05    -  2.25e-03 8.84e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  80 -4.1023620e+02 1.73e+03 1.78e+05  -1.0 9.77e+04    -  2.45e-03 9.17e-04h  1
+  81 -4.2097713e+02 1.73e+03 2.05e+05  -1.0 8.75e+04    -  2.51e-03 1.03e-03h  1
+  82 -4.3263239e+02 1.72e+03 2.09e+05  -1.0 7.91e+04    -  1.37e-03 1.13e-03h  1
+  83 -4.4465286e+02 1.72e+03 1.96e+05  -1.0 7.26e+04    -  5.15e-04 1.20e-03h  1
+  84 -4.4801924e+02 1.72e+03 1.99e+05  -1.0 1.76e+05    -  6.35e-04 3.41e-04h  1
+  85 -4.4832505e+02 1.72e+03 2.88e+05  -1.0 8.57e+04    -  3.45e-03 3.03e-05h  1
+  86 -4.5638466e+02 1.72e+03 3.50e+05  -1.0 6.64e+04    -  3.15e-03 8.05e-04h  2
+  87 -4.6528536e+02 1.72e+03 4.14e+05  -1.0 6.65e+04    -  3.40e-03 8.99e-04h  2
+  88 -4.7503903e+02 1.72e+03 3.97e+05  -1.0 5.73e+04    -  3.21e-04 9.75e-04h  2
+  89 -4.8890922e+02 1.71e+03 4.16e+05  -1.0 5.77e+04    -  2.10e-03 1.39e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  90 -5.0565221e+02 1.71e+03 3.72e+05  -1.0 6.12e+04    -  2.30e-05 1.69e-03h  1
+  91 -5.2638174e+02 1.71e+03 3.66e+05  -1.0 3.18e+05    -  3.08e-04 2.02e-03h  1
+  92 -5.3040394e+02 1.71e+03 3.68e+05  -1.0 2.63e+05    -  8.15e-04 3.81e-04h  1
+  93 -5.6761774e+02 1.70e+03 3.61e+05  -1.0 2.81e+05    -  9.94e-04 3.50e-03h  1
+  94 -6.2831256e+02 1.69e+03 3.50e+05  -1.0 2.20e+05    -  3.23e-03 5.69e-03h  1
+  95 -6.6312731e+02 1.69e+03 3.66e+05  -1.0 1.55e+05    -  6.76e-03 3.25e-03h  1
+  96 -7.0742192e+02 1.68e+03 4.01e+05  -1.0 1.30e+05    -  1.12e-02 4.10e-03h  1
+  97 -7.5424718e+02 1.67e+03 4.43e+05  -1.0 1.02e+05    -  1.09e-02 4.33e-03h  1
+  98 -7.9735710e+02 1.66e+03 4.76e+05  -1.0 7.92e+04    -  7.48e-03 3.99e-03h  1
+  99 -8.1630713e+02 1.66e+03 5.59e+05  -1.0 8.00e+04    -  7.39e-03 1.75e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 100 -8.2527786e+02 1.66e+03 6.45e+05  -1.0 8.02e+04    -  4.83e-03 8.41e-04h  1
+ 101 -8.2560215e+02 1.66e+03 6.75e+05  -1.0 8.14e+04    -  1.64e-03 2.74e-05h  1
+ 102 -8.2629997e+02 1.66e+03 6.45e+05  -1.0 2.88e+04  -2.1 7.29e-05 3.35e-04h  1
+ 103 -8.2652661e+02 1.66e+03 6.84e+05  -1.0 2.37e+04  -1.7 3.48e-04 1.14e-04h  1
+ 104 -8.2719839e+02 1.66e+03 6.71e+05  -1.0 3.82e+04  -2.2 1.15e-04 2.81e-04h  1
+ 105 -8.2814292e+02 1.66e+03 6.58e+05  -1.0 3.24e+04  -1.7 3.17e-04 4.44e-04h  1
+ 106 -8.2845780e+02 1.66e+03 6.58e+05  -1.0 3.32e+04  -1.3 1.04e-04 1.84e-04h  1
+ 107 -8.2853911e+02 1.66e+03 6.81e+05  -1.0 3.01e+04  -0.9 3.15e-05 1.40e-04h  1
+ 108 -8.2857078e+02 1.66e+03 6.53e+05  -1.0 1.03e+04   0.5 6.15e-05 2.70e-05h  1
+ 109 -8.2871596e+02 1.66e+03 8.18e+05  -1.0 8.78e+03   0.9 1.60e-05 8.47e-05h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 110 -8.2883051e+02 1.66e+03 9.67e+05  -1.0 6.07e+03   1.3 3.40e-05 6.15e-05h  1
+ 111 -8.2892615e+02 1.66e+03 1.32e+06  -1.0 4.24e+03   1.7 8.70e-07 5.19e-05h  1
+ 112 -8.2897133e+02 1.66e+03 9.49e+05  -1.0 3.79e+03   2.2 4.54e-05 2.39e-05h  1
+ 113 -8.2919145e+02 1.66e+03 1.37e+06  -1.0 4.01e+03   1.7 1.53e-05 1.24e-04f  1
+ 114 -8.2922440e+02 1.66e+03 1.33e+06  -1.0 3.68e+03   2.1 6.37e-06 1.96e-05h  1
+ 115r-8.2922440e+02 1.66e+03 1.00e+03   3.2 0.00e+00   2.5 0.00e+00 3.10e-07R  6
+ 116r-1.0038791e+03 1.14e+03 1.09e+03   3.2 3.28e+07    -  2.14e-05 1.00e-03f  1
+ 117 -1.0076170e+03 1.14e+03 5.49e+01  -1.0 1.20e+05    -  2.20e-02 4.07e-04h  1
+ 118 -1.0138525e+03 1.14e+03 2.01e+02  -1.0 1.26e+05    -  6.39e-03 1.03e-03h  1
+ 119 -1.0140535e+03 1.14e+03 4.30e+02  -1.0 1.28e+05    -  2.99e-03 5.50e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 120 -9.9210691e+02 1.14e+03 2.40e+02  -1.0 1.27e+05    -  1.21e-03 3.00e-03f  1
+ 121 -9.8446519e+02 1.14e+03 3.90e+02  -1.0 1.27e+05    -  2.86e-03 9.47e-04f  1
+ 122 -9.6392258e+02 1.13e+03 4.75e+02  -1.0 1.31e+05    -  3.47e-03 2.62e-03f  1
+ 123 -9.6368580e+02 1.13e+03 1.50e+03  -1.0 1.26e+05    -  4.80e-03 5.91e-05h  1
+ 124 -9.4775515e+02 1.13e+03 2.58e+03  -1.0 1.24e+05    -  5.20e-03 3.65e-03f  1
+ 125 -9.4243638e+02 1.12e+03 1.41e+03  -1.0 1.24e+05    -  6.67e-03 8.82e-03h  1
+ 126 -9.8007898e+02 1.10e+03 1.23e+03  -1.0 1.27e+05    -  1.26e-02 1.35e-02h  1
+ 127 -1.0029478e+03 1.10e+03 2.47e+03  -1.0 1.31e+05    -  1.60e-02 4.66e-03h  1
+ 128 -1.0090543e+03 1.10e+03 7.67e+03  -1.0 1.17e+05    -  1.88e-02 1.31e-03h  1
+ 129 -1.0583266e+03 1.08e+03 4.06e+03  -1.0 1.16e+05    -  7.04e-03 1.12e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 130 -1.0657923e+03 1.08e+03 3.16e+03  -1.0 1.16e+05    -  1.53e-05 1.86e-03h  1
+ 131 -1.2546521e+03 1.04e+03 6.43e+03  -1.0 1.16e+05    -  7.36e-03 4.14e-02h  1
+ 132 -1.2619303e+03 1.03e+03 8.35e+03  -1.0 1.13e+05    -  3.68e-02 9.83e-04h  1
+ 133 -1.6372009e+03 9.78e+02 7.12e+03  -1.0 1.13e+05    -  3.59e-02 5.11e-02h  1
+ 134 -1.6609964e+03 9.76e+02 6.61e+03  -1.0 1.09e+05    -  2.45e-04 2.36e-03h  1
+ 135 -1.8682182e+03 9.54e+02 5.51e+03  -1.0 1.09e+05    -  1.02e-04 2.20e-02h  1
+ 136 -1.9478260e+03 9.47e+02 5.62e+03  -1.0 1.07e+05    -  2.27e-02 6.91e-03h  1
+ 137 -1.9765941e+03 9.45e+02 5.61e+03  -1.0 1.06e+05    -  1.36e-03 2.20e-03h  1
+ 138 -1.9765949e+03 9.45e+02 1.43e+04  -1.0 2.66e+03   2.1 1.41e-06 1.35e-05f  1
+ 139 -1.9765967e+03 9.45e+02 1.87e+04  -1.0 3.52e+03   1.6 4.64e-06 2.27e-05h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 140 -1.9766484e+03 9.45e+02 5.48e+04  -1.0 3.58e+03   1.1 3.10e-05 4.69e-04f  1
+ 141 -1.9766493e+03 9.45e+02 5.48e+04  -1.0 2.67e+03   1.5 2.41e-05 1.06e-05h  1
+ 142r-1.9766493e+03 9.45e+02 1.00e+03   2.7 0.00e+00   1.0 0.00e+00 5.62e-08R  2
+ 143r-1.9766953e+03 9.58e+02 9.99e+02   2.7 3.54e+05    -  3.76e-04 4.11e-04f  1
+ 144 -2.0196734e+03 9.55e+02 6.73e+02  -1.0 1.07e+05    -  7.67e-03 3.62e-03h  1
+ 145 -2.0226662e+03 9.55e+02 6.76e+02  -1.0 8.54e+05    -  9.88e-04 1.31e-04h  1
+ 146 -2.0246797e+03 9.55e+02 6.62e+02  -1.0 3.08e+05    -  4.48e-02 1.11e-04h  1
+ 147 -2.0385879e+03 9.53e+02 6.60e+02  -1.0 1.86e+05    -  3.92e-03 1.23e-03h  1
+ 148 -2.0406358e+03 9.53e+02 6.56e+02  -1.0 2.86e+05    -  9.05e-03 1.42e-04h  1
+ 149 -2.0630662e+03 9.52e+02 1.20e+04  -1.0 1.79e+05    -  5.73e-03 1.34e-03h  1
+The equality constraints contain an invalid number
+Warning: Cutting back alpha due to evaluation error
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 150 -2.0642630e+03 9.52e+02 1.13e+05  -1.0 1.23e+05    -  7.77e-03 6.67e-05h  2
+The equality constraints contain an invalid number
+Warning: Cutting back alpha due to evaluation error
+ 151 -2.0691068e+03 9.52e+02 1.81e+05  -1.0 1.12e+05    -  4.81e-03 4.55e-04h  2
+ 152 -2.0691175e+03 9.51e+02 2.44e+05  -1.0 3.59e+03   0.6 1.30e-03 1.43e-04h  1
+ 153 -2.0691514e+03 9.51e+02 2.68e+05  -1.0 3.60e+03   0.1 1.63e-03 4.01e-04h  1
+ 154r-2.0691514e+03 9.51e+02 1.00e+03   2.7 0.00e+00  -0.4 0.00e+00 4.22e-07R  5
+ 155r-2.0693719e+03 9.99e+02 1.00e+03   2.7 1.83e+05    -  1.73e-03 1.70e-03f  1
+ 156r-2.0694419e+03 1.00e+03 1.02e+03   1.3 3.03e+04    -  6.47e-03 5.62e-04f  1
+ 157r-2.0704074e+03 1.03e+03 9.95e+02   1.3 1.87e+04    -  7.50e-03 9.08e-03f  1
+ 158 -2.1438154e+03 1.01e+03 8.35e+02  -1.0 1.04e+05    -  1.72e-05 1.45e-02h  1
+ 159 -2.2423202e+03 9.90e+02 5.83e+03  -1.0 1.05e+05    -  1.46e-02 2.08e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 160 -2.2599364e+03 9.87e+02 1.25e+04  -1.0 1.06e+05    -  2.17e-02 2.97e-03h  1
+ 161 -2.2808163e+03 9.84e+02 2.74e+04  -1.0 1.02e+05    -  3.20e-02 3.48e-03h  1
+ 162 -2.4101557e+03 9.61e+02 1.66e+04  -1.0 1.02e+05    -  4.02e-02 2.26e-02h  1
+ 163 -2.5209920e+03 9.41e+02 4.28e+03  -1.0 9.98e+04    -  2.39e-02 2.05e-02h  1
+ 164 -2.6266371e+03 9.20e+02 1.93e+04  -1.0 9.80e+04    -  8.10e-02 2.10e-02h  1
+ 165 -2.7517751e+03 8.87e+02 1.51e+04  -1.0 9.62e+04    -  2.33e-02 3.49e-02h  1
+ 166 -2.8760902e+03 8.52e+02 1.80e+04  -1.0 9.31e+04    -  9.73e-02 3.71e-02h  1
+ 167 -2.9923085e+03 7.98e+02 1.73e+04  -1.0 9.00e+04    -  5.78e-02 5.93e-02h  1
+ 168 -3.0447155e+03 7.72e+02 1.73e+04  -1.0 8.50e+04    -  7.01e-02 3.10e-02h  1
+ 169 -3.0451136e+03 7.72e+02 1.70e+04  -1.0 8.26e+04    -  1.37e-01 3.19e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 170 -3.0446384e+03 7.72e+02 2.00e+04  -1.0 9.30e+05    -  1.86e-05 1.05e-05h  1
+ 171 -3.0423776e+03 7.72e+02 3.73e+04  -1.0 9.61e+05    -  2.13e-05 4.85e-05f  1
+ 172 -2.9915978e+03 7.70e+02 1.16e+05  -1.0 3.83e+05    -  1.48e-03 2.70e-03f  1
+ 173 -2.9299511e+03 7.01e+02 1.27e+05  -1.0 8.23e+04    -  2.91e-03 8.06e-02f  1
+ 174 -2.9294003e+03 6.99e+02 1.23e+05  -1.0 7.61e+04    -  4.77e-02 3.34e-03h  1
+ 175 -2.9294166e+03 6.98e+02 1.22e+05  -1.0 3.16e+03  -0.9 6.47e-03 2.84e-04h  1
+ 176 -2.9295219e+03 6.98e+02 1.22e+05  -1.0 7.01e+04  -1.3 2.06e-03 3.67e-05h  1
+ 177 -2.9417002e+03 6.96e+02 1.22e+05  -1.0 7.55e+04  -1.8 5.84e-05 3.98e-03h  1
+ 178 -2.9421586e+03 6.95e+02 1.22e+05  -1.0 6.81e+04  -2.3 1.89e-04 1.92e-04h  1
+ 179 -2.9430347e+03 6.95e+02 1.22e+05  -1.0 7.24e+04  -2.8 1.79e-03 4.01e-04h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 180 -2.9446285e+03 6.94e+02 1.21e+05  -1.0 7.47e+04  -3.2 2.37e-03 1.45e-03h  1
+ 181 -2.9440735e+03 6.94e+02 1.21e+05  -1.0 7.55e+04  -3.7 2.39e-04 1.13e-04h  1
+ 182 -2.9425449e+03 6.94e+02 1.21e+05  -1.0 7.47e+04  -3.3 1.29e-04 2.34e-04f  1
+ 183 -2.9385143e+03 6.94e+02 1.21e+05  -1.0 7.55e+04  -3.8 2.22e-04 3.61e-04f  1
+ 184 -2.9336123e+03 6.93e+02 1.21e+05  -1.0 7.48e+04  -3.3 2.15e-04 3.51e-04f  1
+ 185 -2.9222055e+03 6.93e+02 1.21e+05  -1.0 7.55e+04  -3.8 2.84e-04 6.11e-04f  1
+ 186 -2.9159656e+03 6.93e+02 1.21e+05  -1.0 7.49e+04  -3.4 1.68e-04 3.42e-04f  1
+ 187 -2.8995946e+03 6.92e+02 1.21e+05  -1.0 7.55e+04  -3.9 2.60e-04 7.61e-04f  1
+ 188 -2.8989582e+03 6.92e+02 1.21e+05  -1.0 7.49e+04  -3.4 3.51e-05 3.33e-05f  1
+ 189 -2.8892909e+03 6.92e+02 1.21e+05  -1.0 7.55e+04  -3.9 5.32e-05 4.40e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 190 -2.8889519e+03 6.92e+02 1.21e+05  -1.0 7.50e+04  -3.5 7.72e-05 1.75e-05h  1
+ 191 -2.8766951e+03 6.91e+02 1.21e+05  -1.0 7.55e+04  -4.0 7.15e-05 5.51e-04f  1
+ 192 -2.8671582e+03 6.91e+02 1.21e+05  -1.0 7.50e+04  -3.6 4.65e-04 4.96e-04f  1
+ 193 -2.8562509e+03 6.91e+02 1.21e+05  -1.0 7.54e+04  -4.0 9.71e-04 5.13e-04f  1
+ 194 -2.8187692e+03 6.89e+02 1.21e+05  -1.0 7.50e+04  -3.6 2.91e-03 2.07e-03f  1
+ 195 -2.7241263e+03 6.86e+02 1.20e+05  -1.0 7.53e+04  -4.1 5.13e-03 5.15e-03f  1
+ 196 -2.6926150e+03 6.84e+02 1.19e+05  -1.0 7.46e+04  -3.7 1.04e-02 2.83e-03f  1
+ 197 -2.6880180e+03 6.83e+02 1.19e+05  -1.0 6.01e+04  -1.4 2.41e-04 1.04e-03f  1
+ 198 -2.6878076e+03 6.83e+02 7.09e+05  -1.0 5.81e+04  -0.1 7.07e-03 6.89e-05h  1
+ 199 -2.6833017e+03 6.82e+02 1.97e+06  -1.0 5.84e+04   0.3 5.76e-03 1.07e-03f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 200 -2.6822236e+03 6.82e+02 1.64e+07  -1.0 5.96e+04   1.7 2.74e-03 2.83e-04h  1
+ 201 -2.6801405e+03 6.82e+02 1.31e+07  -1.0 6.02e+04   2.1 3.34e-04 5.42e-04h  1
+ 202 -2.6800355e+03 6.82e+02 3.14e+06  -1.0 6.07e+04   3.4 3.08e-07 2.95e-05h  1
+ 203 -2.6799982e+03 6.82e+02 6.43e+06  -1.0 6.07e+04   3.8 1.43e-05 1.07e-05h  1
+ 204 -2.6798256e+03 6.81e+02 1.29e+09  -1.0 6.09e+04   3.4 4.26e-03 4.72e-05h  1
+ 205 -2.6786590e+03 6.81e+02 1.09e+09  -1.0 6.10e+04   3.8 6.91e-05 3.17e-04h  1
+ 206 -2.6785983e+03 6.81e+02 1.61e+10  -1.0 6.14e+04   4.2 6.89e-03 1.70e-05h  1
+ 207 -2.6770086e+03 6.81e+02 1.70e+10  -1.0 6.14e+04   4.6 6.07e-04 4.45e-04f  1
+ 208 -2.6769327e+03 6.81e+02 1.12e+12  -1.0 6.19e+04   6.0 8.78e-03 2.22e-05h  1
+ 209 -2.6754293e+03 6.81e+02 1.14e+12  -1.0 6.20e+04   5.5 9.40e-04 4.38e-04f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 210 -2.6753046e+03 6.81e+02 1.29e+13  -1.0 6.24e+04   6.8 1.32e-02 3.78e-05h  1
+ 211 -2.6728035e+03 6.80e+02 1.46e+13  -1.0 6.25e+04   7.3 1.46e-03 7.61e-04f  1
+ 212r-2.6728035e+03 6.80e+02 1.00e+03   2.4 0.00e+00   8.6 0.00e+00 4.85e-07R  5
+ 213r-2.6737649e+03 7.71e+02 1.18e+03   2.4 1.39e+04    -  5.78e-04 7.94e-03f  1
+ 214 -2.6777337e+03 7.70e+02 1.72e+02  -1.0 7.39e+04    -  2.18e-01 1.34e-03h  1
+ 215 -2.6698718e+03 7.70e+02 4.77e+03  -1.0 7.40e+04    -  1.75e-02 6.40e-04f  1
+ 216 -2.4578747e+03 7.57e+02 4.73e+03  -1.0 7.40e+04    -  1.68e-02 1.63e-02f  1
+ 217 -2.3222992e+03 7.46e+02 4.73e+03  -1.0 7.29e+04    -  2.55e-02 1.39e-02f  1
+ 218 -2.2127112e+03 7.36e+02 4.47e+03  -1.0 7.20e+04    -  4.92e-02 1.33e-02f  1
+ 219 -1.9233042e+03 7.07e+02 4.29e+03  -1.0 7.11e+04    -  3.86e-02 3.69e-02f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 220 -1.7480932e+03 6.82e+02 3.79e+03  -1.0 6.87e+04    -  7.70e-02 3.46e-02f  1
+ 221 -1.6418557e+03 6.62e+02 3.19e+03  -1.0 6.57e+04    -  9.79e-02 2.77e-02f  1
+ 222 -1.3108643e+03 5.90e+02 2.67e+03  -1.0 6.40e+04    -  1.33e-01 1.01e-01f  1
+ 223 -1.1745092e+03 5.11e+02 2.04e+03  -1.0 5.78e+04    -  1.92e-01 1.26e-01f  1
+ 224 -1.1826941e+03 4.34e+02 1.64e+03  -1.0 5.08e+04    -  1.74e-01 1.43e-01f  1
+ 225 -1.2523431e+03 3.69e+02 1.47e+03  -1.0 4.38e+04    -  1.19e-01 1.45e-01h  1
+ 226 -1.3472974e+03 3.11e+02 1.32e+03  -1.0 3.76e+04    -  1.17e-01 1.54e-01h  1
+ 227 -1.4537866e+03 2.55e+02 1.14e+03  -1.0 3.19e+04    -  1.49e-01 1.76e-01h  1
+ 228 -1.5758921e+03 1.90e+02 1.01e+03  -1.0 2.63e+04    -  1.41e-01 2.49e-01h  1
+ 229 -1.6778707e+03 1.33e+02 8.49e+02  -1.0 1.99e+04    -  1.84e-01 2.95e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 230 -1.7516016e+03 7.52e+01 6.94e+02  -1.0 1.40e+04    -  2.16e-01 4.30e-01h  1
+ 231 -1.7365226e+03 1.65e+01 6.00e+02  -1.0 8.02e+03    -  1.90e-01 7.71e-01f  1
+ 232 -1.5489352e+03 9.17e+00 4.73e+02  -1.0 1.85e+03    -  2.25e-01 1.00e+00f  1
+ 233 -1.4986616e+03 7.03e+00 3.56e+02  -1.0 4.57e+02    -  2.48e-01 2.47e-01f  1
+ 234 -1.2768236e+03 7.47e+00 2.77e+02  -1.0 8.09e+02    -  2.22e-01 1.00e+00f  1
+ 235 -1.0561672e+03 8.14e+00 2.13e+02  -1.0 4.18e+02    -  2.29e-01 1.00e+00f  1
+ 236 -8.8302145e+02 9.18e+00 1.38e+02  -1.0 6.87e+02    -  3.54e-01 1.00e+00f  1
+ 237 -7.4859198e+02 1.09e+01 9.95e+01  -1.0 3.19e+02    -  2.78e-01 1.00e+00f  1
+ 238 -6.2284174e+02 1.26e+01 6.55e+01  -1.0 3.06e+02    -  3.41e-01 1.00e+00f  1
+ 239 -4.9955957e+02 1.51e+01 3.74e+01  -1.0 3.74e+02    -  4.29e-01 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 240 -3.9901128e+02 1.48e+01 2.66e+01  -1.0 4.47e+02    -  2.90e-01 8.27e-01f  1
+ 241 -2.7953707e+02 1.79e+01 1.76e+01  -1.0 4.38e+02    -  3.39e-01 1.00e+00f  1
+ 242 -1.6761805e+02 2.24e+01 1.11e+01  -1.0 4.72e+02    -  3.68e-01 1.00e+00f  1
+ 243 -6.1565610e+01 2.79e+01 6.94e+00  -1.0 6.23e+02    -  3.74e-01 1.00e+00f  1
+ 244  4.4346604e+01 3.47e+01 4.24e+00  -1.0 6.59e+02    -  3.90e-01 1.00e+00f  1
+ 245  9.4257097e+01 3.63e+01 2.43e+00  -1.0 8.11e+02    -  4.27e-01 4.96e-01f  1
+ 246  1.4116091e+02 5.26e+01 1.40e+00  -1.0 1.23e+03    -  4.23e-01 4.10e-01f  1
+ 247  2.4828646e+02 2.72e+02 2.83e+00  -1.0 2.03e+03    -  4.38e-01 9.05e-01f  1
+ 248  3.2731819e+02 4.54e+02 4.23e+00  -1.0 2.64e+03    -  4.92e-01 8.95e-01f  1
+ 249  4.1265040e+02 7.10e+02 6.50e-01  -1.0 3.46e+03    -  5.82e-01 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 250  4.8756898e+02 6.92e+02 1.92e+00  -1.0 3.38e+03    -  5.68e-01 1.00e+00f  1
+ 251  5.5299169e+02 7.01e+02 5.91e-01  -1.0 3.98e+03    -  6.84e-01 1.00e+00f  1
+ 252  6.1800798e+02 8.42e+02 4.62e-01  -1.0 5.18e+03    -  6.17e-01 1.00e+00f  1
+ 253  6.6762986e+02 9.11e+02 2.79e-01  -1.0 5.89e+03    -  6.90e-01 1.00e+00f  1
+ 254  7.1783143e+02 8.97e+02 3.39e-01  -1.0 6.72e+03    -  6.20e-01 1.00e+00f  1
+ 255  7.3890971e+02 5.18e+02 2.12e-01  -1.0 8.93e+03    -  6.99e-01 5.19e-01f  1
+ 256  7.5995620e+02 5.45e+02 1.90e-01  -1.0 1.20e+04    -  6.90e-01 4.33e-01f  1
+ 257  7.7820853e+02 5.37e+02 1.73e-01  -1.0 1.46e+04    -  7.77e-01 4.35e-01f  1
+ 258  7.9354718e+02 5.70e+02 1.65e-01  -1.0 1.69e+04    -  6.82e-01 3.85e-01f  1
+ 259  8.0969331e+02 6.59e+02 1.52e-01  -1.0 1.93e+04    -  8.07e-01 5.09e-01f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 260  8.2101774e+02 7.07e+02 1.26e-01  -1.0 2.25e+04    -  6.73e-01 4.14e-01f  1
+ 261  8.3093938e+02 7.74e+02 1.06e-01  -1.0 2.52e+04    -  8.23e-01 4.62e-01f  1
+ 262  8.4012742e+02 9.71e+02 8.04e-02  -1.0 3.00e+04    -  6.90e-01 5.24e-01f  1
+ 263  8.4634905e+02 1.07e+03 7.04e-02  -1.0 3.60e+04    -  7.92e-01 5.58e-01h  1
+ 264  8.5088874e+02 1.35e+03 8.03e-02  -1.0 4.68e+04    -  7.03e-01 6.30e-01h  1
+ 265  8.5286186e+02 1.48e+03 5.21e-02  -1.0 5.71e+04    -  8.05e-01 6.71e-01h  1
+ 266  8.5385533e+02 1.77e+03 5.68e-02  -1.0 7.00e+04    -  8.39e-01 9.10e-01h  1
+ 267  8.5362255e+02 1.66e+02 3.93e-02  -1.0 2.71e+04    -  1.00e+00 1.00e+00h  1
+ 268  8.5369242e+02 2.27e+01 1.91e-03  -1.0 1.19e+04    -  1.00e+00 1.00e+00h  1
+ 269  8.8616114e+02 9.37e+01 1.88e+01  -2.5 1.71e+04    -  5.10e-01 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 270  8.8615330e+02 9.32e+01 4.39e+09  -2.5 3.96e+02   8.1 2.50e-03 4.57e-03h  1
+ 271  8.8615329e+02 9.32e+01 4.39e+09  -2.5 3.90e+02   7.6 8.30e-03 1.16e-05h  1
+ 272r 8.8615329e+02 9.32e+01 9.99e+02   2.0 0.00e+00   7.1 0.00e+00 3.03e-07R  3
+ 273r 8.8615329e+02 8.24e+02 1.72e+03   2.0 5.68e+06    -  9.91e-02 1.03e-03f  1
+ 274  1.1083506e+03 8.21e+02 9.73e+01  -2.5 6.12e+05    -  1.82e-03 3.77e-03f  1
+ 275  1.1087482e+03 8.21e+02 9.69e+01  -2.5 2.26e+05    -  4.25e-03 2.08e-05f  1
+ 276  1.1632032e+03 7.05e+02 9.43e+01  -2.5 2.55e+04    -  2.68e-02 1.42e-01f  1</code></pre></div></details><h3 id="Emissions"><a class="docs-heading-anchor" href="#Emissions">Emissions</a><a id="Emissions-1"></a><a class="docs-heading-anchor-permalink" href="#Emissions" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">scenarios_plot=[&quot;$(nregs[n])_regions&quot; for n in 1:n_nregscen]
 p = plot();
 for(i,s) in enumerate(scenarios_plot)
     if i == 1
@@ -26,20 +846,20 @@ for(i,s) in enumerate(scenarios_plot)
     else
         plot!(times[1:11] ,results[s].ECO2[1:11];plot_attributes[s]...)
     end
-end</code></pre></div></details><img src="rice_results-5394b9dc.svg" alt="Example block output"/><h3 id="Temperatures"><a class="docs-heading-anchor" href="#Temperatures">Temperatures</a><a id="Temperatures-1"></a><a class="docs-heading-anchor-permalink" href="#Temperatures" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot();
+end</code></pre></div></details><img src="rice_results-854a4d0f.svg" alt="Example block output"/><h3 id="Temperatures"><a class="docs-heading-anchor" href="#Temperatures">Temperatures</a><a id="Temperatures-1"></a><a class="docs-heading-anchor-permalink" href="#Temperatures" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot();
 for(i,s) in enumerate(scenarios_plot)
     if i == 1
         global p = plot(times[1:17] ,results[s].TATM[1:17],ylim=(0.0,4.0), title=&quot;Global Temperatures&quot;,ylabel=&quot;°C from 1765&quot;;plot_attributes[s]...);
     else
         plot!(times[1:17] ,results[s].TATM[1:17];plot_attributes[s]...)
     end
-end</code></pre></div></details><img src="rice_results-dd347ff6.svg" alt="Example block output"/><h3 id="Emission-Control-rate"><a class="docs-heading-anchor" href="#Emission-Control-rate">Emission Control rate</a><a id="Emission-Control-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Emission-Control-rate" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">for(i,s) in enumerate(scenarios_plot)
+end</code></pre></div></details><img src="rice_results-fea9be37.svg" alt="Example block output"/><h3 id="Emission-Control-rate"><a class="docs-heading-anchor" href="#Emission-Control-rate">Emission Control rate</a><a id="Emission-Control-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Emission-Control-rate" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">for(i,s) in enumerate(scenarios_plot)
     if i == 1
         global p = plot(times[1:17] ,results[s].MIU[1:17] .* 100,ylim=(0.0,100), title=&quot;Emission control rate&quot;,ylabel=&quot;%&quot;;plot_attributes[s]...);
     else
         plot!(times[1:17] ,results[s].MIU[1:17] .* 100;plot_attributes[s]...)
     end
-end</code></pre></div></details><img src="rice_results-304f5c32.svg" alt="Example block output"/><h3 id="Interregional-variability"><a class="docs-heading-anchor" href="#Interregional-variability">Interregional variability</a><a id="Interregional-variability-1"></a><a class="docs-heading-anchor-permalink" href="#Interregional-variability" title="Permalink"></a></h3><p>Testing that, with equal weighths, the regions behave the same:</p><pre><code class="language-julia hljs">@test results[&quot;2_regions&quot;].ECO2_R[:,1] ≈ results[&quot;2_regions&quot;].ECO2_R[:,2]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi"><span class="sgr32"><span class="sgr1">Test Passed</span></span></code></pre><p>Testing a skewed welfare weights distribution, with more welfare weighth to the first region:</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">results2r = run_dice(DICE2023_NREG(2,weights=[5,1]))
+end</code></pre></div></details><img src="rice_results-b09a302f.svg" alt="Example block output"/><h3 id="Interregional-variability"><a class="docs-heading-anchor" href="#Interregional-variability">Interregional variability</a><a id="Interregional-variability-1"></a><a class="docs-heading-anchor-permalink" href="#Interregional-variability" title="Permalink"></a></h3><p>Testing that, with equal weighths, the regions behave the same:</p><pre><code class="language-julia hljs">@test results[&quot;2_regions&quot;].ECO2_R[:,1] ≈ results[&quot;2_regions&quot;].ECO2_R[:,2]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi"><span class="sgr32"><span class="sgr1">Test Passed</span></span></code></pre><p>Testing a skewed welfare weights distribution, with more welfare weighth to the first region:</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">results2r = run_dice(DICE2023_NREG(2,weights=[5,1]))
 p1 = plot(times[1:11] ,results2r.ECO2_R[1:11,1],ylim=(0,40), title=&quot;CO₂ emissions&quot;,ylabel=&quot;GtCO₂/yr&quot;, label=&quot;More utility weigthed region&quot;)
 plot!(p1,times[1:11] ,results2r.ECO2_R[1:11,2],ylim=(0,40), title=&quot;CO₂ emissions&quot;,ylabel=&quot;GtCO₂/yr&quot;, label=&quot;Less utility weigthed region&quot;)
 p2 = plot(times[1:17] ,results2r.MIU_R[1:17,1] .* 100, ylim=(0.0,100), title=&quot;Emission control rate&quot;,ylabel=&quot;%&quot;, label=&quot;More utility weigthed region&quot;);
@@ -504,10 +1324,9 @@ Number of inequality constraint evaluations          = 428
 Number of equality constraint Jacobian evaluations   = 393
 Number of inequality constraint Jacobian evaluations = 393
 Number of Lagrangian Hessian evaluations             = 386
-Total seconds in IPOPT                               = 4.405
+Total seconds in IPOPT                               = 4.837
 
-EXIT: Optimal Solution Found.</code></pre></div></details><img src="rice_results-44ab6711.svg" alt="Example block output"/><img src="rice_results-1394ca20.svg" alt="Example block output"/><h2 id="RICE2023"><a class="docs-heading-anchor" href="#RICE2023">RICE2023</a><a id="RICE2023-1"></a><a class="docs-heading-anchor-permalink" href="#RICE2023" title="Permalink"></a></h2><p>Here we run <code>RICE2023</code>, a version of the multi-regional model with a parameterisation where regional data has a distribution from the RICE2020 model, but rescaled to total (world) data from DICE2023.</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">rice_eq = run_dice(RICE2023(), optimizer=optimizer_with_attributes(Ipopt.Optimizer,&quot;print_level&quot; =&gt; 5, &quot;max_iter&quot; =&gt; 3000, &quot;tol&quot;=&gt; 5*10^-8, &quot;acceptable_tol&quot; =&gt;5*10^-6))
-
+EXIT: Optimal Solution Found.</code></pre></div></details><img src="rice_results-90bacbe3.svg" alt="Example block output"/><img src="rice_results-d5c2f681.svg" alt="Example block output"/><h2 id="RICE2023"><a class="docs-heading-anchor" href="#RICE2023">RICE2023</a><a id="RICE2023-1"></a><a class="docs-heading-anchor-permalink" href="#RICE2023" title="Permalink"></a></h2><p>Here we run <code>RICE2023</code>, a version of the multi-regional model with a parameterisation where regional data has a distribution from the RICE2020 model, but rescaled to total (world) data from DICE2023.</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">rice_eq = run_dice(RICE2023(), optimizer=optimizer_with_attributes(Ipopt.Optimizer,&quot;print_level&quot; =&gt; 5, &quot;max_iter&quot; =&gt; 3000, &quot;tol&quot;=&gt; 5*10^-8, &quot;acceptable_tol&quot; =&gt;5*10^-6))
 regions = rice_eq.pars.regions
 nreg = length(regions)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">This is Ipopt version 3.14.17, running with linear solver MUMPS 5.7.3.
 
@@ -1012,7 +1831,7 @@ Number of inequality constraint evaluations          = 533
 Number of equality constraint Jacobian evaluations   = 434
 Number of inequality constraint Jacobian evaluations = 434
 Number of Lagrangian Hessian evaluations             = 424
-Total seconds in IPOPT                               = 28.693
+Total seconds in IPOPT                               = 30.601
 
 EXIT: Optimal Solution Found.</code></pre></div></details><h3 id="Totals-and-comparision-with-DICE/DICE-12-region"><a class="docs-heading-anchor" href="#Totals-and-comparision-with-DICE/DICE-12-region">Totals and comparision with DICE/DICE 12 region</a><a id="Totals-and-comparision-with-DICE/DICE-12-region-1"></a><a class="docs-heading-anchor-permalink" href="#Totals-and-comparision-with-DICE/DICE-12-region" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">plot_attributes = Dict(
     &quot;1_regions&quot;    =&gt; (label=&quot;DICE&quot;,   linestyle=:solid, colour=:red3, linewidth=:2),
@@ -1020,11 +1839,11 @@ EXIT: Optimal Solution Found.</code></pre></div></details><h3 id="Totals-and-com
     &quot;rice&quot;  =&gt; (label=&quot;RICE 12 REG&quot;,   linestyle=:dot, colour=:blue3, linewidth=:2)
 )</code></pre></div></details><h4 id="Emissions-2"><a class="docs-heading-anchor" href="#Emissions-2">Emissions</a><a class="docs-heading-anchor-permalink" href="#Emissions-2" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,results[&quot;1_regions&quot;].ECO2[1:11],ylim=(0,100), title=&quot;CO₂ emissions&quot;,ylabel=&quot;GtCO₂/yr&quot;;plot_attributes[&quot;1_regions&quot;]...);
 plot!(times[1:11] ,results[&quot;12_regions&quot;].ECO2[1:11];plot_attributes[&quot;12_regions&quot;]...);
-plot!(times[1:11] ,rice_eq.ECO2[1:11];plot_attributes[&quot;rice&quot;]...)</code></pre></div></details><img src="rice_results-6ccc72c2.svg" alt="Example block output"/><h4 id="Temperatures-2"><a class="docs-heading-anchor" href="#Temperatures-2">Temperatures</a><a class="docs-heading-anchor-permalink" href="#Temperatures-2" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,results[&quot;1_regions&quot;].TATM[1:11],ylim=(0.0,4.0), title=&quot;Global Temperatures&quot;,ylabel=&quot;°C from 1765&quot;;plot_attributes[&quot;1_regions&quot;]...);
+plot!(times[1:11] ,rice_eq.ECO2[1:11];plot_attributes[&quot;rice&quot;]...)</code></pre></div></details><img src="rice_results-23e79a51.svg" alt="Example block output"/><h4 id="Temperatures-2"><a class="docs-heading-anchor" href="#Temperatures-2">Temperatures</a><a class="docs-heading-anchor-permalink" href="#Temperatures-2" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,results[&quot;1_regions&quot;].TATM[1:11],ylim=(0.0,4.0), title=&quot;Global Temperatures&quot;,ylabel=&quot;°C from 1765&quot;;plot_attributes[&quot;1_regions&quot;]...);
 plot!(times[1:11] ,results[&quot;12_regions&quot;].TATM[1:11];plot_attributes[&quot;12_regions&quot;]...);
-plot!(times[1:11] ,rice_eq.TATM[1:11];plot_attributes[&quot;rice&quot;]...)</code></pre></div></details><img src="rice_results-7058981a.svg" alt="Example block output"/><h4 id="Mean-control-rate"><a class="docs-heading-anchor" href="#Mean-control-rate">Mean control rate</a><a id="Mean-control-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Mean-control-rate" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,results[&quot;1_regions&quot;].MIU[1:11] .* 100,ylim=(0.0,100), title=&quot;Emission control rate&quot;,ylabel=&quot;%&quot;;plot_attributes[&quot;1_regions&quot;]...);
+plot!(times[1:11] ,rice_eq.TATM[1:11];plot_attributes[&quot;rice&quot;]...)</code></pre></div></details><img src="rice_results-0a266450.svg" alt="Example block output"/><h4 id="Mean-control-rate"><a class="docs-heading-anchor" href="#Mean-control-rate">Mean control rate</a><a id="Mean-control-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Mean-control-rate" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,results[&quot;1_regions&quot;].MIU[1:11] .* 100,ylim=(0.0,100), title=&quot;Emission control rate&quot;,ylabel=&quot;%&quot;;plot_attributes[&quot;1_regions&quot;]...);
 plot!(times[1:11] ,results[&quot;12_regions&quot;].MIU[1:11] .* 100;plot_attributes[&quot;12_regions&quot;]...);
-plot!(times[1:11] ,rice_eq.MIU[1:11] .* 100;plot_attributes[&quot;rice&quot;]...)</code></pre></div></details><img src="rice_results-3f2b2456.svg" alt="Example block output"/><h3 id="Regional-Variance"><a class="docs-heading-anchor" href="#Regional-Variance">Regional Variance</a><a id="Regional-Variance-1"></a><a class="docs-heading-anchor-permalink" href="#Regional-Variance" title="Permalink"></a></h3><h4 id="Emissions-3"><a class="docs-heading-anchor" href="#Emissions-3">Emissions</a><a class="docs-heading-anchor-permalink" href="#Emissions-3" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">plot_attributes = Dict(
+plot!(times[1:11] ,rice_eq.MIU[1:11] .* 100;plot_attributes[&quot;rice&quot;]...)</code></pre></div></details><img src="rice_results-c58ddd5b.svg" alt="Example block output"/><h3 id="Regional-Variance"><a class="docs-heading-anchor" href="#Regional-Variance">Regional Variance</a><a id="Regional-Variance-1"></a><a class="docs-heading-anchor-permalink" href="#Regional-Variance" title="Permalink"></a></h3><h4 id="Emissions-3"><a class="docs-heading-anchor" href="#Emissions-3">Emissions</a><a class="docs-heading-anchor-permalink" href="#Emissions-3" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">plot_attributes = Dict(
     regions[1]    =&gt; (label=regions[1], linestyle=:solid, colour=:navy, linewidth=:2, fillalpha=0.8),
     regions[2]    =&gt; (label=regions[2], linestyle=:dash, colour=:navy, linewidth=:2, fillalpha=0.5),
     regions[3]    =&gt; (label=regions[3], linestyle=:dashdot, colour=:navy, linewidth=:2, fillalpha=0.3),
@@ -1038,26 +1857,22 @@ plot!(times[1:11] ,rice_eq.MIU[1:11] .* 100;plot_attributes[&quot;rice&quot;]...
     regions[11]    =&gt; (label=regions[11], linestyle=:dash, colour=:darkgreen, linewidth=:2, fillalpha=0.5),
     regions[12]    =&gt; (label=regions[12], linestyle=:dashdot, colour=:darkgreen, linewidth=:2, fillalpha=0.3),
 )
-
 plot_colours = hcat([plot_attributes[regions[i]].colour for i in 1:nreg]...)
 plot_alphas  = hcat([plot_attributes[regions[i]].fillalpha for i in 1:nreg]...)
-plot_rnames  = hcat([plot_attributes[regions[i]].label for i in 1:nreg]...)</code></pre></div></details><h3 id="Emmissions"><a class="docs-heading-anchor" href="#Emmissions">Emmissions</a><a id="Emmissions-1"></a><a class="docs-heading-anchor-permalink" href="#Emmissions" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = areaplot(times[1:11], 100 .* rice_eq.ECO2_R[1:11,:] ./ sum(rice_eq.ECO2_R[1:11,:],dims=2), title= &quot;Share of CO₂eq emissions&quot;, ylabel=&quot;%&quot;, seriescolor = plot_colours, fillalpha = plot_alphas, label = plot_rnames)</code></pre></div></details><img src="rice_results-10a2ab5f.svg" alt="Example block output"/><h3 id="Control-rates"><a class="docs-heading-anchor" href="#Control-rates">Control rates</a><a id="Control-rates-1"></a><a class="docs-heading-anchor-permalink" href="#Control-rates" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot();
+plot_rnames  = hcat([plot_attributes[regions[i]].label for i in 1:nreg]...)</code></pre></div></details><h3 id="Emmissions"><a class="docs-heading-anchor" href="#Emmissions">Emmissions</a><a id="Emmissions-1"></a><a class="docs-heading-anchor-permalink" href="#Emmissions" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = areaplot(times[1:11], 100 .* rice_eq.ECO2_R[1:11,:] ./ sum(rice_eq.ECO2_R[1:11,:],dims=2), title= &quot;Share of CO₂eq emissions&quot;, ylabel=&quot;%&quot;, seriescolor = plot_colours, fillalpha = plot_alphas, label = plot_rnames)</code></pre></div></details><img src="rice_results-8460bf6e.svg" alt="Example block output"/><h3 id="Control-rates"><a class="docs-heading-anchor" href="#Control-rates">Control rates</a><a id="Control-rates-1"></a><a class="docs-heading-anchor-permalink" href="#Control-rates" title="Permalink"></a></h3><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot();
 for(i,s) in enumerate(regions)
     if i == 1
         global p = plot(times[1:11] ,rice_eq.MIU_R[1:11,i] .* 100,ylim=(0.0,100), title=&quot;Emission control rate&quot;,ylabel=&quot;%&quot;;plot_attributes[s]...);
     else
         plot!(times[1:11] ,rice_eq.MIU_R[1:11,i] .* 100;plot_attributes[s]...)
     end
-end</code></pre></div></details><img src="rice_results-52498da2.svg" alt="Example block output"/><h3 id="Welfare-analysis-(weights-distribution)"><a class="docs-heading-anchor" href="#Welfare-analysis-(weights-distribution)">Welfare analysis (weights distribution)</a><a id="Welfare-analysis-(weights-distribution)-1"></a><a class="docs-heading-anchor-permalink" href="#Welfare-analysis-(weights-distribution)" title="Permalink"></a></h3><p>Finally, we complement the default RICE213 output, that runs on equal welfare weights, with a couple of runs when we &quot;favour&quot; developed countries (giving them a higher weighth) or, at the opposite, less developed ones:</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">w_rich  = [5,4,3,3,1,1,3,2,2,1,1.5,1]
+end</code></pre></div></details><img src="rice_results-4fbd518e.svg" alt="Example block output"/><h3 id="Welfare-analysis-(weights-distribution)"><a class="docs-heading-anchor" href="#Welfare-analysis-(weights-distribution)">Welfare analysis (weights distribution)</a><a id="Welfare-analysis-(weights-distribution)-1"></a><a class="docs-heading-anchor-permalink" href="#Welfare-analysis-(weights-distribution)" title="Permalink"></a></h3><p>Finally, we complement the default RICE213 output, that runs on equal welfare weights, with a couple of runs when we &quot;favour&quot; developed countries (giving them a higher weighth) or, at the opposite, less developed ones:</p><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">w_rich  = [5,4,3,3,1,1,3,2,2,1,1.5,1]
 w_poor  = [1,1,1,1.5,2,2,3,3,2,5,5,5]
-
 rice_rich = run_dice(RICE2023(;weights=w_rich))
 rice_poor = run_dice(RICE2023(;weights=w_poor))
-
 rice_wanalysis = [rice_rich, rice_eq, rice_poor]
 ncols = 4
 nrows = 3
-
 plot_attributes = Dict(
     &quot;rich&quot;    =&gt; (label=&quot;Pref to developed countries&quot;,   linestyle=:solid, colour=:red3, linewidth=:2),
     &quot;eq&quot;  =&gt; (label=&quot;Equal preferences&quot;,   linestyle=:dash, colour=:green3, linewidth=:2),
@@ -1691,7 +2506,7 @@ Number of inequality constraint evaluations          = 629
 Number of equality constraint Jacobian evaluations   = 547
 Number of inequality constraint Jacobian evaluations = 547
 Number of Lagrangian Hessian evaluations             = 539
-Total seconds in IPOPT                               = 39.284
+Total seconds in IPOPT                               = 39.095
 
 EXIT: Optimal Solution Found.
 This is Ipopt version 3.14.17, running with linear solver MUMPS 5.7.3.
@@ -2242,11 +3057,11 @@ Number of inequality constraint evaluations          = 569
 Number of equality constraint Jacobian evaluations   = 473
 Number of inequality constraint Jacobian evaluations = 473
 Number of Lagrangian Hessian evaluations             = 465
-Total seconds in IPOPT                               = 34.506
+Total seconds in IPOPT                               = 35.970
 
 EXIT: Optimal Solution Found.</code></pre></div></details><h4 id="Emissions-4"><a class="docs-heading-anchor" href="#Emissions-4">Emissions</a><a class="docs-heading-anchor-permalink" href="#Emissions-4" title="Permalink"></a></h4><h5 id="Global"><a class="docs-heading-anchor" href="#Global">Global</a><a id="Global-1"></a><a class="docs-heading-anchor-permalink" href="#Global" title="Permalink"></a></h5><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,rice_rich.ECO2[1:11],ylim=(0,100), title=&quot;CO₂ emissions&quot;,ylabel=&quot;GtCO₂/yr&quot;;plot_attributes[&quot;rich&quot;]...);
 plot!(times[1:11] ,rice_eq.ECO2[1:11];plot_attributes[&quot;eq&quot;]...);
-plot!(times[1:11] ,rice_poor.ECO2[1:11];plot_attributes[&quot;poor&quot;]...)</code></pre></div></details><img src="rice_results-008173e9.svg" alt="Example block output"/><h5 id="Regional-control-rate"><a class="docs-heading-anchor" href="#Regional-control-rate">Regional control rate</a><a id="Regional-control-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Regional-control-rate" title="Permalink"></a></h5><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"></div></details><pre><code class="language-julia hljs">plots = Array{Plots.Plot,1}(undef,nreg)
+plot!(times[1:11] ,rice_poor.ECO2[1:11];plot_attributes[&quot;poor&quot;]...)</code></pre></div></details><img src="rice_results-9649b565.svg" alt="Example block output"/><h5 id="Regional-control-rate"><a class="docs-heading-anchor" href="#Regional-control-rate">Regional control rate</a><a id="Regional-control-rate-1"></a><a class="docs-heading-anchor-permalink" href="#Regional-control-rate" title="Permalink"></a></h5><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">plots = Array{Plots.Plot,1}(undef,nreg)
 for ri in 1:nreg
     c = ri%ncols == 0 ? ncols : ri%ncols
     r = Int(ceil(ri/ncols))
@@ -2258,6 +3073,6 @@ for ri in 1:nreg
     plots[ri] = pr
 end
 sizebottom= 3000
-plot(plots...,layout=(nrows,ncols), size=(sizebottom/3,sizebottom/4))</code></pre><img src="rice_results-a1b0fbc9.svg" alt="Example block output"/><h4 id="Temperatures-3"><a class="docs-heading-anchor" href="#Temperatures-3">Temperatures</a><a class="docs-heading-anchor-permalink" href="#Temperatures-3" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,rice_rich.TATM[1:11],ylim=(0.0,4.0), title=&quot;Global Temperatures&quot;,ylabel=&quot;°C from 1765&quot;;plot_attributes[&quot;rich&quot;]...);
+plot(plots...,layout=(nrows,ncols), size=(sizebottom/3,sizebottom/4))</code></pre></div></details><img src="rice_results-7abd38a3.svg" alt="Example block output"/><h4 id="Temperatures-3"><a class="docs-heading-anchor" href="#Temperatures-3">Temperatures</a><a class="docs-heading-anchor-permalink" href="#Temperatures-3" title="Permalink"></a></h4><details class="admonition is-details"><summary class="admonition-header">Show code</summary><div class="admonition-body"><pre><code class="language-julia hljs">p = plot(times[1:11] ,rice_rich.TATM[1:11],ylim=(0.0,4.0), title=&quot;Global Temperatures&quot;,ylabel=&quot;°C from 1765&quot;;plot_attributes[&quot;rich&quot;]...);
 plot!(times[1:11] ,rice_eq.TATM[1:11];plot_attributes[&quot;eq&quot;]...);
-plot!(times[1:11] ,rice_poor.TATM[1:11];plot_attributes[&quot;poor&quot;]...)</code></pre></div></details><img src="rice_results-6de9e3bf.svg" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="results.html">« DICE Results</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.2 on <span class="colophon-date" title="Tuesday 29 April 2025 08:49">Tuesday 29 April 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+plot!(times[1:11] ,rice_poor.TATM[1:11];plot_attributes[&quot;poor&quot;]...)</code></pre></div></details><img src="rice_results-6325c126.svg" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="results.html">« DICE Results</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.2 on <span class="colophon-date" title="Tuesday 29 April 2025 12:55">Tuesday 29 April 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
