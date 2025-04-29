@@ -9,7 +9,7 @@ This package currently implements "exactly" (in structure, data and hence output
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sylvaticus.github.io/DICEModel.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sylvaticus.github.io/DICEModel.jl/dev)
 
-**This program and output is not the original Barrage/Nordhaus version, which is currently only [available in GAMS](https://bit.ly/3TwJ5nO).**
+**This program and output is not the original Barrage/Nordhaus version, which is currently only [available in GAMS](https://bit.ly/3TwJ5nO). Further, the RICE implementation here uses exogenous welfare weighths, default to equal ones, not to the Nagishi ones.**
 
 While `DICEModel.jl` is _implemented_ in Julia it can easily be used in Python or R using the [`JuliaCall` (Python)](https://github.com/JuliaPy/PythonCall.jl) and [`JuliaCall` (R)](https://cran.r-project.org/web/packages/JuliaCall/index.html) packages respectively. 
 
@@ -28,7 +28,7 @@ One of the parameters is `weights`. These are fully exogenous utility weights fo
 
 The output (results) or `run_rice` is a named tuple. Use `keys(results)` to find the available information (or just look at the source code) and `results.VARIABLEX` to obtain the values.
 
-A summary of the main results is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
+A summary of the main results od DICE2023 is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html).
 
 
 ## Example
