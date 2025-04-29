@@ -15,7 +15,7 @@ This function runs the DICE model and returns the results as a named tuple. Note
 # Function arguments
 
 ## Positional:
-- `pars`: An istance of the [`DICEModel`](@ref) struct containing the needed parameters
+- `pars`: An istance of the [`DICEParameters`](@ref) struct containing the needed parameters
 
 ## Keyword arguments:
 - `optimizer`: The optimiser to use and possibly its options. Defaults to: [`optimizer = optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 0, "max_wall_time"=>10.0^20, "max_cpu_time" => 10.0^20, "max_iter" => 3000, "acceptable_tol" =>10^-6, "acceptable_iter" => 15, "acceptable_dual_inf_tol" =>10.0^10, "acceptable_constr_viol_tol" => 0.01, "acceptable_compl_inf_tol" =>0.01, "acceptable_obj_change_tol" =>10.0^20)`]. All, except the print levels, are the Ipopt defaults.

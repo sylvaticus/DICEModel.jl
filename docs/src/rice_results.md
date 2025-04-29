@@ -135,7 +135,6 @@ Here we run `RICE2023`, a version of the multi-regional model with a parameteris
 !!! details "Show code"
     ```@example mr
     rice_eq = run_dice(RICE2023(), optimizer=optimizer_with_attributes(Ipopt.Optimizer,"print_level" => 5, "max_iter" => 3000, "tol"=> 5*10^-8, "acceptable_tol" =>5*10^-6))
-
     regions = rice_eq.pars.regions
     nreg = length(regions)
     nothing #hide
@@ -212,7 +211,6 @@ p #hide
         regions[11]    => (label=regions[11], linestyle=:dash, colour=:darkgreen, linewidth=:2, fillalpha=0.5),
         regions[12]    => (label=regions[12], linestyle=:dashdot, colour=:darkgreen, linewidth=:2, fillalpha=0.3),
     )
-
     plot_colours = hcat([plot_attributes[regions[i]].colour for i in 1:nreg]...)
     plot_alphas  = hcat([plot_attributes[regions[i]].fillalpha for i in 1:nreg]...)
     plot_rnames  = hcat([plot_attributes[regions[i]].label for i in 1:nreg]...)
@@ -256,14 +254,11 @@ Finally, we complement the default RICE213 output, that runs on equal welfare we
     ```@example mr
     w_rich  = [5,4,3,3,1,1,3,2,2,1,1.5,1]
     w_poor  = [1,1,1,1.5,2,2,3,3,2,5,5,5]
-
     rice_rich = run_dice(RICE2023(;weights=w_rich))
     rice_poor = run_dice(RICE2023(;weights=w_poor))
-
     rice_wanalysis = [rice_rich, rice_eq, rice_poor]
     ncols = 4
     nrows = 3
-
     plot_attributes = Dict(
         "rich"    => (label="Pref to developed countries",   linestyle=:solid, colour=:red3, linewidth=:2),
         "eq"  => (label="Equal preferences",   linestyle=:dash, colour=:green3, linewidth=:2),
@@ -290,22 +285,22 @@ p #hide
 ##### Regional control rate
 
 !!! details "Show code"
-```@example mr
-plots = Array{Plots.Plot,1}(undef,nreg)
-for ri in 1:nreg
-    c = ri%ncols == 0 ? ncols : ri%ncols
-    r = Int(ceil(ri/ncols))
-    ylabel = (c == 1) ? "%" : ""
-    #legend = (ri == 1) ? :bottomright : nothing
-    pr = plot(times[1:11],rice_wanalysis[1].MIU_R[1:11,ri] .* 100;ylabel=ylabel,ylim=(0.0,100.0),xlabel=regions[ri],legend=nothing,plot_attributes["rich"]...) 
-    plot!(pr,times[1:11],rice_wanalysis[2].MIU_R[1:11,ri] .* 100;plot_attributes["eq"]...)
-    plot!(pr,times[1:11],rice_wanalysis[3].MIU_R[1:11,ri] .* 100;plot_attributes["poor"]...)
-    plots[ri] = pr
-end
-sizebottom= 3000
-plot(plots...,layout=(nrows,ncols), size=(sizebottom/3,sizebottom/4))
-nothing #hide
-```
+    ```@example mr
+    plots = Array{Plots.Plot,1}(undef,nreg)
+    for ri in 1:nreg
+        c = ri%ncols == 0 ? ncols : ri%ncols
+        r = Int(ceil(ri/ncols))
+        ylabel = (c == 1) ? "%" : ""
+        #legend = (ri == 1) ? :bottomright : nothing
+        pr = plot(times[1:11],rice_wanalysis[1].MIU_R[1:11,ri] .* 100;ylabel=ylabel,ylim=(0.0,100.0),xlabel=regions[ri],legend=nothing,plot_attributes["rich"]...) 
+        plot!(pr,times[1:11],rice_wanalysis[2].MIU_R[1:11,ri] .* 100;plot_attributes["eq"]...)
+        plot!(pr,times[1:11],rice_wanalysis[3].MIU_R[1:11,ri] .* 100;plot_attributes["poor"]...)
+        plots[ri] = pr
+    end
+    sizebottom= 3000
+    plot(plots...,layout=(nrows,ncols), size=(sizebottom/3,sizebottom/4))
+    nothing #hide
+    ```
 ```@example mr
 plot(plots...,layout=(nrows,ncols), size=(sizebottom/3,sizebottom/4)) #hide
 ```

@@ -29,7 +29,7 @@ To run the model:
 
 The output of the model (results) is a named tuple. Use `keys(results)` to find the available information (or just look at the source code) and `results.VARIABLEX` to obtain the values.
 
-A summary of the main results, and a comparision with the official Barrage/Nordhaus DICE2023 version, is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html) While DICE2023 output matches very well the "official" output, the same is not yet true for RICE. Some preliminary results of the multi-regional version of the model are available [here](run_dice(pars;optimizer,bounds)), but they still clearly have some calibration issues.
+A summary of the main results, and a comparision with the official Barrage/Nordhaus DICE2023 version, is available [on this page](https://sylvaticus.github.io/DICEModel.jl/dev/results.html) While DICE2023 output matches very well the "official" output, the same is not yet true for RICE. Some preliminary results of the multi-regional version of the model are available [here](https://sylvaticus.github.io/DICEModel.jl/dev/rice_results.html), but they still clearly have some calibration issues.
 
 An Excel version of all the results for DICE2023 is available [here](DICEModelDetailedResults.xlsx).
 
