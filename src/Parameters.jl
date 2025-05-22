@@ -323,7 +323,7 @@ Base.@kwdef struct DICEParameters
     f_misc         = f_misc2020    .+ [(f_misc2100-f_misc2020) * min(1,ti/16) for ti in t0idx]
     emissrat       = [emissrat2020[ri] + (emissrat2100[ri]-emissrat2020[ri]) * min(1,ti/16) for ti in t0idx, ri in ridx]
     sigmatot       = @. sigma * emissrat
-    cost1tot       = [pbacktime[ti,ri] * sigmatot[ti,ri] / expcost2[ri] / 1000 for ti in tidx, ri in ridx]
+    cost1tot       = [pbacktime[ti,ri] * sigmatot[ti,ri] / expcost2[ri,ti] / 1000 for ti in tidx, ri in ridx]
 
 end
 
@@ -399,7 +399,7 @@ function DICE2023_NREG(n=2;
     a3     = fill(2,n), # "Damage exponent"
     # --------------------------------------------------------------------
     # Abatement cost
-    expcost2  = fill(2.6,n), # "Exponent of control cost function"
+    expcost2  = fill(2.6,n,81), # "Exponent of control cost function"
     pback2050 = fill(515,n), # "Cost of backstop in 2019\$ per tCO2 (2050)"
     # --------------------------------------------------------------------
     # Limits on emissions controls
@@ -482,7 +482,7 @@ function RICE2023(;
     deland         = fill(0.1,12),    # "Decline rate of land emissions (per period)"  
     # Cost of mitigation
     # The regional diversity is already accounted in the computation of cost1tot variable, based on emission intensity of the different economies
-    expcost2  = fill(2.6,12),     # "Exponent of control cost function"
+    expcost2  = fill(2.6,12,81),     # "Exponent of control cost function"
 
     # Climate change damage
     # 2 region example total dam equivalence with dam in 2nd region double (in proportion to Y terms): 
