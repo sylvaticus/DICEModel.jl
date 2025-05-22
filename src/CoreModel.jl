@@ -214,11 +214,11 @@ function run_dice(
     @constraint(m, dameq[ti in tidx], DAMAGES[ti] == sum(DAMAGES_R[ti,ri] for ri in ridx))
 
     # Cost of emissions reductions equation
-    @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * cost1tot[ti,ri] * (MIU_R[ti,ri]^expcost2[ri]))
+    @constraint(m, abateeq_r[ti in tidx,ri in ridx], ABATECOST_R[ti,ri] == YGROSS_R[ti,ri] * cost1tot[ti,ri] * (MIU_R[ti,ri]^expcost2[ri,ti]))
     @constraint(m, abateeq[ti in tidx], ABATECOST[ti] == sum(ABATECOST_R[ti,ri] for ri in ridx))
 
     # Carbon price equation from abatement
-    @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == pbacktime[ti,ri] * MIU_R[ti,ri]^(expcost2[ri]-1))
+    @constraint(m, carbpriceeq_r[ti in tidx, ri in ridx], CPRICE_R[ti,ri] == pbacktime[ti,ri] * MIU_R[ti,ri]^(expcost2[ri,ti]-1))
 
     # --------------------------------------------------------------------
     # Economic variables
