@@ -92,7 +92,7 @@ Base.@kwdef struct DICEParameters
     # --------------------------------------------------------------------
     # Abatement cost
     "Exponent of control cost function"
-    expcost2  = [2.6]   
+    expcost2  = fill(2.6,ntsteps)   
     "Cost of backstop in 2019\$ per tCO2 (2050)"
     pback2050 = [515]   
 
@@ -323,7 +323,7 @@ Base.@kwdef struct DICEParameters
     f_misc         = f_misc2020    .+ [(f_misc2100-f_misc2020) * min(1,ti/16) for ti in t0idx]
     emissrat       = [emissrat2020[ri] + (emissrat2100[ri]-emissrat2020[ri]) * min(1,ti/16) for ti in t0idx, ri in ridx]
     sigmatot       = @. sigma * emissrat
-    cost1tot       = [pbacktime[ti,ri] * sigmatot[ti,ri] / expcost2[ri,ti] / 1000 for ti in tidx, ri in ridx]
+    cost1tot       = [pbacktime[ti,ri] * sigmatot[ti,ri] / expcost2[ti,ri] / 1000 for ti in tidx, ri in ridx]
 
 end
 
@@ -375,6 +375,8 @@ results = run_dice(four_regions_parameters)
 """
 function DICE2023_NREG(n=2;
     regions = ["Reg_$(r_n)" for r_n in 1:n],
+    tstep   = 5, # "Years per period"
+    ntsteps = 81, # "Number of time periods"
     weights = fill(1/n,n),
     gamma   = fill(0.3,n), # "Capital elasticity in production function"    
     pop1    = fill(7752.9/n,n), # "Initial world population 2020 (millions)" 
@@ -399,7 +401,7 @@ function DICE2023_NREG(n=2;
     a3     = fill(2,n), # "Damage exponent"
     # --------------------------------------------------------------------
     # Abatement cost
-    expcost2  = fill(2.6,n,81), # "Exponent of control cost function"
+    expcost2  = fill(2.6,ntsteps,n), # "Exponent of control cost function"
     pback2050 = fill(515,n), # "Cost of backstop in 2019\$ per tCO2 (2050)"
     # --------------------------------------------------------------------
     # Limits on emissions controls
@@ -430,7 +432,7 @@ function DICE2023_NREG(n=2;
     emissrat2100   = fill(1.21,n), # "Ratio of CO2e to industrial CO2 in 2100"
     kwargs...
     )
-    pars = DICEParameters(;regions, weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
+    pars = DICEParameters(;regions, tstep, ntsteps, weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
     return pars
 end
 
@@ -458,6 +460,8 @@ res_cbopt_12r_rich = run_dice(RICE2023(;weights=w_rich))
 function RICE2023(;
     regions = ["USA", "EUS", "JPN", "OHI", "RUS", "EEC", "CHN", "IND", "MDE", "SSA", "LAA", "ROW"],
     weights = fill(1,12),
+    tstep   = 5, # "Years per period"
+    ntsteps = 81, # "Number of time periods"
     # ----------------------------------
     # Main regionalised data
     
@@ -482,7 +486,7 @@ function RICE2023(;
     deland         = fill(0.1,12),    # "Decline rate of land emissions (per period)"  
     # Cost of mitigation
     # The regional diversity is already accounted in the computation of cost1tot variable, based on emission intensity of the different economies
-    expcost2  = fill(2.6,12,81),     # "Exponent of control cost function"
+    expcost2  = fill(2.6,ntsteps,12),     # "Exponent of control cost function"
 
     # Climate change damage
     # 2 region example total dam equivalence with dam in 2nd region double (in proportion to Y terms): 
@@ -532,6 +536,6 @@ function RICE2023(;
     emissrat2100   = fill(1.21,12), # "Ratio of CO2e to industrial CO2 in 2100"
     kwargs...
     )
-    pars = DICEParameters(;regions, weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
+    pars = DICEParameters(;regions, tstep, ntsteps,weights, gamma, pop1, popadj, popasym, dk, q1, al1, ga1, dela, gsigma1, delgsig, asymgsig, e1, miu1, a1, a2base, a3, expcost2, pback2050, limmiu2070, limmiu2120, limmiu2200, limmiu2300, delmiumax, betaclim, elasmu, prstp, pi_val, k0, siggc1, srf, eland0, deland, f_ghgabate2020, eco2eghgb2020, eco2eghgb2100, emissrat2020, emissrat2100, kwargs...) 
     return pars
 end
