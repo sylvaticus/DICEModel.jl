@@ -4,7 +4,7 @@ This page reports preliminary results from running the package with multi-region
 
 We first run the model with _equal_ n regions (changing n) and then with the more realistic RICE-based partition (changing the weights).
 
-**Warning** This is a first draft of the model results. Several anomalies are present, most likely due to errors in the code or in the parametrisation.
+**Warning** This is a first draft of the model results. 
 
 
 ```@contents
