@@ -224,7 +224,7 @@ function run_dice(
     # Economic variables
 
     # Output gross equation
-    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti,ri]*(l[ti,ri]/1000)^(1-gamma[ri]))*(K[ti]^gamma[ri]))
+    @constraint(m, ygrosseq_r[ti in tidx, ri in ridx], YGROSS_R[ti,ri] == (al[ti,ri]*(l[ti,ri]/1000)^(1-gamma[ri]))*(K_R[ti,ri]^gamma[ri]))
     @constraint(m, ygrosseq[ti in tidx], YGROSS[ti] ==  sum(YGROSS_R[ti,ri] for ri in ridx))
 
     # Output net of damage equation
